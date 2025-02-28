@@ -41,7 +41,7 @@ export function DataTable({ columns, data }) {
   });
   // const [columnFilters, setColumnFilters] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState([]);
-  const [sorting, setSorting] = React.useState([]);
+  const [sorting, setSorting] = React.useState([{ id: "createdAt", desc: true }]);
 
   const table = useReactTable({
     columns,
@@ -71,47 +71,60 @@ export function DataTable({ columns, data }) {
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <div className="rounded-md border">
-        <Table className="bg-light-background">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      className={header.index === 0 ? "" : "ps-2"}
-                      key={header.id}
-                      colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  );
-                })}
+      <Table className="">
+        <TableHeader className="sticky top-0 z-20">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow
+              key={headerGroup.id}
+              // group/tr outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 cursor-default
+              className="group/tr border-none cursor-default">
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead
+                    className="group/th px-3 h-10 bg-accent whitespace-nowrap font-semibold first:rounded-s-lg last:rounded-e-lg"
+                    key={header.id}
+                    colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody className="">
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row, rowIndex) => (
+              <TableRow
+                key={row.id}
+                className={`group/tr border-none cursor-default ${
+                  rowIndex % 2 === 0 ? "bg-background" : ""
+                }`}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={`relative text-start ${
+                      rowIndex === 0 ? "first:rounded-ss-lg last:rounded-se-lg" : ""
+                    } ${
+                      rowIndex === table.getRowModel().rows.length - 1
+                        ? "first:rounded-es-lg last:rounded-ee-lg"
+                        : ""
+                    }`}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  لا يوجد بيانات
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                لا يوجد بيانات
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
       <DataTablePagination table={table} />
     </div>
   );

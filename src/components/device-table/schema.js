@@ -22,4 +22,5 @@ export const taskSchema = z.object({
   ramType: z.any(),
   romSize: z.any(),
   romType: z.any(),
+  createdAt: z.any(),
 });

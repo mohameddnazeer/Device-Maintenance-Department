@@ -30,19 +30,19 @@ export function DataTableColumnHeader({ column, title, className }) {
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
+        <DropdownMenuContent dir="rtl" align="start">
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUp className="h-3.5 w-3.5 text-muted-foreground/70" />
-            Asc
+            تصاعدي
+            <ArrowUp className="ms-auto h-3.5 w-3.5 text-muted-foreground/70" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDown className="h-3.5 w-3.5 text-muted-foreground/70" />
-            Desc
+            تنازلي
+            <ArrowDown className="ms-auto h-3.5 w-3.5 text-muted-foreground/70" />
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-            <EyeOff className="h-3.5 w-3.5 text-muted-foreground/70" />
-            Hide
+            إخفاء
+            <EyeOff className="ms-auto h-3.5 w-3.5 text-muted-foreground/70" />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -350,6 +350,33 @@ export const columns = [
     enableGlobalFilter: false,
   },
   {
+    accessorKey: "createdAt",
+    label: "تاريخ الاضافة",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="text-right"
+        column={column}
+        title={column.columnDef.label || capitalize(column.id)}
+      />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="text-right text-nowrap gap-4 flex">
+          <p>
+            {new Date(row.getValue("createdAt")).toLocaleString("ar-EG", { dateStyle: "short" })}
+          </p>
+          <p>
+            {new Date(row.getValue("createdAt")).toLocaleString("ar-EG", { timeStyle: "short" })}
+          </p>
+        </div>
+      );
+    },
+    enableSorting: true,
+    enableHiding: true,
+    enableGlobalFilter: false,
+    // filterFn: "includesString",
+  },
+  {
     id: "actions",
     cell: ({ row }) => (
       <div className="flex justify-end">

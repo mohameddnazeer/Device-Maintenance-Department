@@ -3,8 +3,9 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
-    <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+  // p-4 z-0 flex flex-col relative justify-between gap-4 bg-content1 overflow-auto rounded-large shadow-small w-full max-h-[382px]
+  <div className="z-0 flex flex-col relative w-full justify-between gap-4 overflow-auto max-h-[40rem] p-4 bg-light-background rounded-lg border scrollbar-hide shadow-sm">
+    <table ref={ref} className={cn("w-full caption-bottom", className)} {...props} />
   </div>
 ));
 Table.displayName = "Table";
