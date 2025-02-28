@@ -1,0 +1,33 @@
+@media (min-width: 1350px) and (max-width: 1650px) {
+  .selectInput {
+    max-width: 180px;
+  }
+  .selectIcon {
+    left: 65px;
+  }
+  .textInput {
+    max-width: 180px;
+  }
+}
+@media (min-width: 1190px) and (max-width: 1349px) {
+  .selectInput {
+    max-width: 150px;
+  }
+  .selectIcon {
+    left: 95px;
+  }
+  .textInput {
+    max-width: 150px;
+  }
+}
+@media (min-width: 1024px) and (max-width: 1190px) {
+  .selectInput {
+    max-width: 130px;
+  }
+  .selectIcon {
+    left: 114px;
+  }
+  .textInput {
+    max-width: 130px;
+  }
+}

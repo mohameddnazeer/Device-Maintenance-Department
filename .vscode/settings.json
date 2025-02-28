@@ -1,0 +1,7 @@
+{
+  "restoreTerminals.terminals": [
+    {
+      "splitTerminals": [{ "name": "client", "commands": ["npm run start"] }, { "name": "install" }]
+    }
+  ]
+}
