@@ -17,6 +17,7 @@ function getData() {
     {
       id: "D3532",
       region: "dabaa",
+      gate: "emaratGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 1",
@@ -37,6 +38,7 @@ function getData() {
     {
       id: "D4294",
       region: "lahoon",
+      gate: "emaratGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 2",
@@ -57,6 +59,7 @@ function getData() {
     {
       id: "D5835",
       region: "dabaa",
+      gate: "emaratGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 3",
@@ -77,6 +80,7 @@ function getData() {
     {
       id: "D2926",
       region: "east",
+      gate: "emaratGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 4",
@@ -97,6 +101,7 @@ function getData() {
     {
       id: "D4769",
       region: "lahoon",
+      gate: "emaratGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 5",
@@ -117,6 +122,7 @@ function getData() {
     {
       id: "D2544",
       region: "dabaa",
+      gate: "emaratGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 6",
@@ -137,6 +143,7 @@ function getData() {
     {
       id: "D3532",
       region: "dabaa",
+      gate: "emaratGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 1",
@@ -157,6 +164,7 @@ function getData() {
     {
       id: "D4294",
       region: "lahoon",
+      gate: "emaratGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 2",
@@ -177,6 +185,7 @@ function getData() {
     {
       id: "D5835",
       region: "dabaa",
+      gate: "emaratGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 3",
@@ -197,6 +206,7 @@ function getData() {
     {
       id: "D2926",
       region: "east",
+      gate: "emaratGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 4",
@@ -217,6 +227,7 @@ function getData() {
     {
       id: "D4769",
       region: "lahoon",
+      gate: "emaratGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 5",
@@ -237,6 +248,7 @@ function getData() {
     {
       id: "D2544",
       region: "dabaa",
+      gate: "emaratGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 6",
@@ -257,6 +269,7 @@ function getData() {
     {
       id: "D6543",
       region: "east",
+      gate: "emaratGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 7",
@@ -277,6 +290,7 @@ function getData() {
     {
       id: "D7890",
       region: "lahoon",
+      gate: "emaratGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 8",
@@ -297,6 +311,7 @@ function getData() {
     {
       id: "D1234",
       region: "dabaa",
+      gate: "emaratGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 9",
@@ -317,6 +332,7 @@ function getData() {
     {
       id: "D5678",
       region: "east",
+      gate: "emaratGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 10",
@@ -337,6 +353,7 @@ function getData() {
     {
       id: "D9101",
       region: "lahoon",
+      gate: "emaratGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 11",
@@ -357,6 +374,7 @@ function getData() {
     {
       id: "D1121",
       region: "dabaa",
+      gate: "iraqGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 12",
@@ -377,6 +395,7 @@ function getData() {
     {
       id: "D3141",
       region: "east",
+      gate: "iraqGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 13",
@@ -397,6 +416,7 @@ function getData() {
     {
       id: "D5161",
       region: "lahoon",
+      gate: "iraqGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 14",
@@ -417,6 +437,7 @@ function getData() {
     {
       id: "D7181",
       region: "dabaa",
+      gate: "iraqGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 15",
@@ -437,6 +458,7 @@ function getData() {
     {
       id: "D9201",
       region: "east",
+      gate: "iraqGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 16",
@@ -457,6 +479,7 @@ function getData() {
     {
       id: "D1222",
       region: "lahoon",
+      gate: "iraqGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 17",
@@ -477,6 +500,7 @@ function getData() {
     {
       id: "D3242",
       region: "dabaa",
+      gate: "iraqGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 18",
@@ -497,6 +521,7 @@ function getData() {
     {
       id: "D5262",
       region: "east",
+      gate: "iraqGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 19",
@@ -517,6 +542,7 @@ function getData() {
     {
       id: "D7282",
       region: "lahoon",
+      gate: "iraqGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 20",
@@ -537,6 +563,7 @@ function getData() {
     {
       id: "D9302",
       region: "dabaa",
+      gate: "iraqGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 21",
@@ -557,6 +584,7 @@ function getData() {
     {
       id: "D1323",
       region: "east",
+      gate: "iraqGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 22",
@@ -577,6 +605,7 @@ function getData() {
     {
       id: "D3532",
       region: "dabaa",
+      gate: "iraqGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 1",
@@ -597,6 +626,7 @@ function getData() {
     {
       id: "D4294",
       region: "lahoon",
+      gate: "iraqGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 2",
@@ -617,6 +647,7 @@ function getData() {
     {
       id: "D5835",
       region: "dabaa",
+      gate: "iraqGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 3",
@@ -637,6 +668,7 @@ function getData() {
     {
       id: "D2926",
       region: "east",
+      gate: "iraqGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 4",
@@ -657,6 +689,7 @@ function getData() {
     {
       id: "D4769",
       region: "lahoon",
+      gate: "iraqGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 5",
@@ -677,6 +710,7 @@ function getData() {
     {
       id: "D2544",
       region: "dabaa",
+      gate: "saudiGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 6",
@@ -697,6 +731,7 @@ function getData() {
     {
       id: "D6543",
       region: "east",
+      gate: "saudiGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 7",
@@ -717,6 +752,7 @@ function getData() {
     {
       id: "D7890",
       region: "lahoon",
+      gate: "saudiGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 8",
@@ -737,6 +773,7 @@ function getData() {
     {
       id: "D1234",
       region: "dabaa",
+      gate: "saudiGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 9",
@@ -757,6 +794,7 @@ function getData() {
     {
       id: "D5678",
       region: "east",
+      gate: "saudiGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 10",
@@ -777,6 +815,7 @@ function getData() {
     {
       id: "D9101",
       region: "lahoon",
+      gate: "saudiGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 11",
@@ -797,6 +836,7 @@ function getData() {
     {
       id: "D1121",
       region: "dabaa",
+      gate: "saudiGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 12",
@@ -817,6 +857,7 @@ function getData() {
     {
       id: "D3141",
       region: "east",
+      gate: "saudiGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 13",
@@ -837,6 +878,7 @@ function getData() {
     {
       id: "D5161",
       region: "lahoon",
+      gate: "saudiGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 14",
@@ -857,6 +899,7 @@ function getData() {
     {
       id: "D7181",
       region: "dabaa",
+      gate: "saudiGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 15",
@@ -877,6 +920,7 @@ function getData() {
     {
       id: "D9201",
       region: "east",
+      gate: "saudiGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 16",
@@ -897,6 +941,7 @@ function getData() {
     {
       id: "D1222",
       region: "lahoon",
+      gate: "saudiGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 17",
@@ -917,6 +962,7 @@ function getData() {
     {
       id: "D3242",
       region: "dabaa",
+      gate: "saudiGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 18",
@@ -937,6 +983,7 @@ function getData() {
     {
       id: "D5262",
       region: "east",
+      gate: "saudiGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 19",
@@ -957,6 +1004,7 @@ function getData() {
     {
       id: "D7282",
       region: "lahoon",
+      gate: "saudiGate",
       department: "eng",
       office: "abstracts",
       deviceType: "جهاز 20",
@@ -977,6 +1025,7 @@ function getData() {
     {
       id: "D9302",
       region: "dabaa",
+      gate: "saudiGate",
       department: "money",
       office: "area",
       deviceType: "جهاز 21",
@@ -997,6 +1046,7 @@ function getData() {
     {
       id: "D1323",
       region: "east",
+      gate: "saudiGate",
       department: "nozm",
       office: "deps",
       deviceType: "جهاز 22",

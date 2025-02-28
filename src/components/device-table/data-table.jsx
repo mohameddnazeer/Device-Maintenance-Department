@@ -34,7 +34,8 @@ export function DataTable({ columns, data }) {
     id: true,
     macAddress: true,
     region: true,
-    Department: true,
+    // gate: true,
+    department: true,
     office: true,
     ownerName: true,
   });

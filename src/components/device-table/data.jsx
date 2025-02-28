@@ -28,6 +28,21 @@ export const regions = [
   },
 ];
 
+export const gates = [
+  {
+    value: "saudiGate",
+    label: "بوابة السعودية",
+  },
+  {
+    value: "emaratGate",
+    label: "بوابة الامارات",
+  },
+  {
+    value: "iraqGate",
+    label: "بوابة العراق",
+  },
+];
+
 export const departments = [
   {
     value: "nozm",

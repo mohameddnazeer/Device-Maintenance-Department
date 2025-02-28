@@ -4,9 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 
-import { capitalize } from "lodash";
-import { departments, offices, regions } from "./data";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import {
   Select,
   SelectContent,
@@ -14,10 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { capitalize } from "lodash";
+import { departments, gates, offices, regions } from "./data";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
   const regionColumn = table.getColumn("region");
+  const gateColumn = table.getColumn("gate");
   const departmentColumn = table.getColumn("department");
   const officeColumn = table.getColumn("office");
 
@@ -30,21 +31,28 @@ export function DataTableToolbar({ table }) {
           onChange={(event) => table.setGlobalFilter(event.target.value)}
           className="w-[150px] lg:w-[450px] dark:bg-light-background md:text-base"
         />
-        {regionColumn && (
+        {regionColumn && regionColumn.getIsVisible() && (
           <DataTableFacetedFilter
             column={regionColumn}
             title={regionColumn.columnDef.label || capitalize(regionColumn.id)}
             options={regions}
           />
         )}
-        {departmentColumn && (
+        {gateColumn && gateColumn.getIsVisible() && (
+          <DataTableFacetedFilter
+            column={gateColumn}
+            title={gateColumn.columnDef.label || capitalize(gateColumn.id)}
+            options={gates}
+          />
+        )}
+        {departmentColumn && departmentColumn.getIsVisible() && (
           <DataTableFacetedFilter
             column={departmentColumn}
             title={departmentColumn.columnDef.label || capitalize(departmentColumn.id)}
             options={departments}
           />
         )}
-        {officeColumn && (
+        {officeColumn && officeColumn.getIsVisible() && (
           <DataTableFacetedFilter
             column={officeColumn}
             title={officeColumn.columnDef.label || capitalize(officeColumn.id)}

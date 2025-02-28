@@ -5,7 +5,8 @@ import { z } from "zod";
 export const taskSchema = z.object({
   id: z.any(),
   region: z.any(),
-  Department: z.any(),
+  gate: z.any(),
+  department: z.any(),
   office: z.any(),
   deviceType: z.any(),
   macAddress: z.any(),

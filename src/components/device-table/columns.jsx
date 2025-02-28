@@ -1,5 +1,5 @@
 import { capitalize } from "lodash";
-import { departments, offices, regions } from "./data";
+import { departments, gates, offices, regions } from "./data";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 
@@ -37,6 +37,29 @@ export const columns = [
       return (
         <div className="flex w-[100px] items-center">
           <span className="text-nowrap">{region.label}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+  },
+  {
+    accessorKey: "gate",
+    label: "البوابة",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="text-right"
+        column={column}
+        title={column.columnDef.label || capitalize(column.id)}
+      />
+    ),
+    cell: ({ row }) => {
+      const gate = gates.find((gat) => gat.value === row.getValue("gate"));
+
+      if (!gate) return null;
+
+      return (
+        <div className="flex w-[100px] items-center">
+          <span className="text-nowrap">{gate.label}</span>
         </div>
       );
     },
