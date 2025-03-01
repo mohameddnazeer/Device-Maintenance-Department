@@ -3,6 +3,8 @@ import { FaBars } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import classes from "../../assets/css/nav.module.css";
 import navImage from "../../assets/images/navImage.svg";
+import Darkmode from "../Darkmode";
+import { Button } from "../ui/button";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,42 +16,59 @@ export const Navbar = () => {
   return (
     <div className="flex justify-between items-center border-b-2 border-gray-500 p-4">
       <div className="hidden lg:flex gap-4">
-        <NavLink
+        <Button cl>
+            <NavLink
           to="/maintenance-archive"
           className={({ isActive }) =>
-            isActive
-              ? "text-white text-xl bg-blue-900 rounded-md p-2"
-              : "text-white text-xl rounded-md p-2"
-          }>
+            isActive ? 'text-xl font-bold duration-500' :'font-medium text-md'
+          } 
+        >
           ارشيف الصيانة
         </NavLink>
-        <NavLink
+        </Button>
+        <Button>
+          <NavLink
           to="/ready-for-delivery"
           className={({ isActive }) =>
-            isActive
-              ? "text-white text-xl bg-blue-900 rounded-md p-2"
-              : "text-white text-xl rounded-md p-2"
-          }>
+            isActive ? 'text-xl font-bold duration-500' :'font-medium text-md'
+          } 
+        >
           جاهز للتسليم
         </NavLink>
-        <NavLink
+        </Button>
+      
+        <Button>
+          <NavLink
           to="/maintenance-operations"
           className={({ isActive }) =>
-            isActive
-              ? "text-white text-xl bg-blue-900 rounded-md p-2"
-              : "text-white text-xl rounded-md p-2"
-          }>
+             isActive ? 'text-xl font-bold duration-500' :'font-medium text-md'
+          } 
+         >
           عمليات الصيانة
         </NavLink>
-        <NavLink
+        </Button>
+
+        <Button   >
+          <NavLink
           to="/alldevices"
           className={({ isActive }) =>
-            isActive
-              ? "text-white text-xl bg-blue-900 rounded-md p-2"
-              : "text-white text-xl rounded-md p-2"
-          }>
+             isActive ? 'text-xl font-bold duration-500' :'font-medium text-md'
+          } 
+       
+        >
           كل الاجهزة
         </NavLink>
+        </Button>
+
+        <Button>
+          <NavLink to='/addDevice' 
+            className={({ isActive }) =>
+               isActive ? 'text-xl font-bold duration-500' :'font-medium text-md'
+            } >
+              اضافة جهاز
+          </NavLink>
+        </Button>
+        
       </div>
 
       <div className="lg:hidden">
@@ -59,45 +78,56 @@ export const Navbar = () => {
       </div>
 
       {isMenuOpen && (
-        <div className="flex flex-col absolute top-16 left-0 w-full bg-gray-800 text-white lg:hidden p-4 z-10">
-          <NavLink
+        <div className="flex flex-col justify-center h-80 space-y-3 absolute top-16 left-0 w-full bg-gray-800 text-white lg:hidden p-4 z-10">
+          <Button>
+              <NavLink
             to="/alldevices"
-            className={({ isActive }) =>
-              isActive ? "text-blue-500 py-4 text-center text-lg" : "py-4 text-center text-lg"
-            }
+           
             onClick={toggleMenu}>
             كل الاجهزة
           </NavLink>
-          <NavLink
+          </Button>
+        
+        <Button>
+           <NavLink
             to="/maintenance-operations"
-            className={({ isActive }) =>
-              isActive ? "text-blue-500 py-4 text-center text-lg" : "py-4 text-center text-lg"
-            }
+            
             onClick={toggleMenu}>
             عمليات الصيانة
           </NavLink>
+        </Button>
+         
+         <Button >
           <NavLink
             to="/ready-for-delivery"
-            className={({ isActive }) =>
-              isActive ? "text-blue-500 py-4 text-center text-lg" : "py-4 text-center text-lg"
-            }
+            
             onClick={toggleMenu}>
             جاهز للتسليم
           </NavLink>
+         </Button>
+
+         <Button>
+
           <NavLink
             to="/maintenance-archive"
-            className={({ isActive }) =>
-              isActive ? "text-blue-500 py-4 text-center text-lg" : "py-4 text-center text-lg"
-            }
+            
             onClick={toggleMenu}>
             ارشيف الصيانة
           </NavLink>
+         </Button>
+          
         </div>
       )}
+      <Darkmode/>
 
-      <div className={`flex justify-center items-center ${classes.right_nav_position}`}>
-        <h2 className="text-white lg:text-3xl md:text-lg">Maintenance</h2>
-        <img src={navImage} alt="nav" />
+
+      <div className={`flex justify-center items-center  ${classes.right_nav_position}`}>
+        
+            <h2 className="dark:text-white lg:text-3xl md:text-lg">Maintenance</h2>
+        <img className='w-12 ' src={navImage} alt="nav" />
+       
+
+      
       </div>
     </div>
   );
