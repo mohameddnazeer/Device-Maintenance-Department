@@ -5,6 +5,7 @@ import { loginSchema } from "../validations/loginValidation"; // Ensure your sch
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export const Login = () => {
 
         <form className="m-auto" onSubmit={handleSubmit(onSubmit)}>
           <label
-            className="block text-right mt-4 text-white lg:mr-12 md:mr-0 sm:mr-0"
+            className="block text-right mt-4 dark:text-white lg:mr-12 md:mr-0 sm:mr-0"
             htmlFor="username"
           >
             اسم المستخدم
@@ -51,7 +52,7 @@ export const Login = () => {
                 id="username"
                 type="text"
                 placeholder="ادخل اسم المستخدم"
-                className={`input w-96 max-w-full h-14 p-4 bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
+                className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
                   errors.username
                     ? "border-red-500 border-2"
                     : "border-gray-300"
@@ -67,7 +68,7 @@ export const Login = () => {
           )}
 
           <label
-            className="block text-right text-white lg:mr-12 md:mr-0 sm:mr-0 mt-3"
+            className="block text-right dark:text-white lg:mr-12 md:mr-0 sm:mr-0 mt-3"
             htmlFor="password"
           >
             كلمة المرور
@@ -80,7 +81,7 @@ export const Login = () => {
                 id="password"
                 type="password"
                 placeholder="ادخل كلمة المرور"
-                className={`input w-96 max-w-full h-14 p-4 bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
+                className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
                   errors.password
                     ? "border-red-500 border-2"
                     : "border-gray-300"
@@ -95,8 +96,11 @@ export const Login = () => {
             </span>
           )}
 
-          <button className="w-96 max-w-full h-12 mt-8 bg-blue-400 text-white rounded-md hover:bg-blue-700 transition duration-200 m-auto block">
-            تسجيل الدخول
+              <Button className="w-96 mx-auto max-w-full h-12 mt-8 my-12   text-white dark:text-black rounded-md  transition duration-200 block">
+                            تسجيل الدخول
+
+              </Button>
+          <button >
           </button>
         </form>
       </div>
