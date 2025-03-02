@@ -10,11 +10,13 @@ import AddDevice from "../pages/AddDevice";
 import AllDevices from "../pages/AllDevices";
 import { MaintenanceOperations } from "../pages/MaintenanceOperations";
 import { ReadyForDelivery } from "../pages/ReadyForDelivery";
+import { Register } from "@/pages/Register";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
       <Route path="/" element={<Login />} />
       {/* <Route path="/" element={<MainLayout />} /> */}
       <Route path="/alldevices" element={<AllDevices />} />

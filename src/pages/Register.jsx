@@ -3,24 +3,23 @@ import classes from "../assets/css/login.module.css";
 import maintenanceImage from "../assets/images/loginImage.svg";
  // Ensure your schema is defined here
 import * as Yup from "yup";
-import { toast } from "react-toastify";
+
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useFormik } from "formik";
 
 
-export const Login = () => {
+export const Register = () => {
   const navigate = useNavigate();
 
   const onSubmitFunction = (data) => {
     console.log(data);
     navigate("/home");
-    toast.success("مرحبا بك في منظومة الصيانة")
   };
 
   let validate = Yup.object().shape({
     name: Yup.string().required("تواضع واكتب اسمك "),
-
+    email: Yup.string().email("اكتب الايميل بتاعك ياعم صح ").required("انت نسيتني انا يعم "),
     password: Yup.string()
       // .matches(/^[A-Z][a-z0-9]{5,10}$/, "password must be uppercase")
       .required("اكتب الباسورد صح يا صاحبي"),
@@ -29,6 +28,7 @@ export const Login = () => {
   const {handleSubmit,handleBlur,handleChange ,errors,touched,values} = useFormik({
     initialValues:{
       name:'',
+      email:'',
       password:''
     },
     validationSchema:validate,
@@ -96,6 +96,40 @@ export const Login = () => {
             {errors.name && touched.name && (
                    <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
                     {errors.name}
+</div>
+        )}
+
+
+<label
+            className="block text-right mt-4 dark:text-white lg:mr-12 md:mr-0 sm:mr-0"
+            htmlFor="username"
+          >
+            البريد الالكتروني
+          </label>
+         
+            
+            
+           
+              <input
+                id="email"
+                name="email"
+                type="email"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
+                
+                placeholder="ادخل اسم المستخدم"
+                className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
+                  errors.email
+                    ? "border-red-500 border-2"
+                    : "border-gray-300"
+                } focus:border-blue-500`}
+               
+              />
+   
+            {errors.email && touched.email && (
+                   <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    {errors.email}
 </div>
         )}
           <label
