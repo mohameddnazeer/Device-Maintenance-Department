@@ -51,126 +51,224 @@ export const Register = () => {
  
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row items-center justify-around">
-      <div className={`${classes.left_section}`}>
-        <img src={maintenanceImage} alt="Maintenance System Illustration" />
+//     <div className="min-h-screen flex flex-col md:flex-row items-center justify-around">
+//       <div className={`${classes.left_section}`}>
+//         <img src={maintenanceImage} alt="Maintenance System Illustration" />
+//       </div>
+//       <div
+//         className={`${classes.right_section} p-6 bg-white rounded-lg shadow-lg`}
+//       >
+//         <p className={`${classes.heading_text} text-2xl font-bold mb-4`}>
+//           Login into
+//         </p>
+//         <p className={`${classes.heading_text} text-2xl font-bold`}>
+//           Maintenance System
+//         </p>
+
+//         <form className="m-auto" method="post" onSubmit={handleSubmit}>
+//           <label
+//             className="block text-right mt-4 dark:text-white lg:mr-12 md:mr-0 sm:mr-0"
+//             htmlFor="username"
+//           >
+//             اسم المستخدم
+//           </label>
+         
+            
+            
+           
+//               <input
+//                 id="name"
+//                 name="name"
+//                 type="text"
+//                 onChange={handleChange}
+//                 onBlur={handleBlur}
+//                 value={values.name}
+                
+//                 placeholder="ادخل اسم المستخدم"
+//                 className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
+//                   errors.name
+//                     ? "border-red-500 border-2"
+//                     : "border-gray-300"
+//                 } focus:border-blue-500`}
+               
+//               />
+   
+//             {errors.name && touched.name && (
+//                    <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+//                     {errors.name}
+// </div>
+//         )}
+
+
+// <label
+//             className="block text-right mt-4 dark:text-white lg:mr-12 md:mr-0 sm:mr-0"
+//             htmlFor="username"
+//           >
+//             البريد الالكتروني
+//           </label>
+         
+            
+            
+           
+//               <input
+//                 id="email"
+//                 name="email"
+//                 type="email"
+//                 onChange={handleChange}
+//                 onBlur={handleBlur}
+//                 value={values.email}
+                
+//                 placeholder="ادخل اسم المستخدم"
+//                 className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
+//                   errors.email
+//                     ? "border-red-500 border-2"
+//                     : "border-gray-300"
+//                 } focus:border-blue-500`}
+               
+//               />
+   
+//             {errors.email && touched.email && (
+//                    <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+//                     {errors.email}
+// </div>
+//         )}
+//           <label
+//             className="block text-right dark:text-white lg:mr-12 md:mr-0 sm:mr-0 mt-3"
+//             htmlFor="password"
+//           >
+//             كلمة المرور
+//           </label>
+          
+           
+//               <input
+//                 id="password"
+//                 type="password"
+//                 name="password"
+//                 onChange={handleChange}
+//                 onBlur={handleBlur}
+//                 value={values.username}
+//                 placeholder="ادخل كلمة المرور"
+//                 className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
+//                   errors.password
+//                     ? "border-red-500 border-2"
+//                     : "border-gray-300"
+//                 } focus:border-blue-500`}
+               
+//               />
+          
+          
+//           {errors.password && touched.password && (
+//                    <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+//                     {errors.password}
+// </div>
+//         )}
+
+//               <Button className="w-96 mx-auto max-w-full h-12 mt-8 my-12   text-white dark:text-black rounded-md  transition duration-200 block">
+//                             تسجيل الدخول
+
+//               </Button>
+//           <button >
+//           </button>
+//         </form>
+//       </div>
+//     </div>
+<div className="min-h-screen flex flex-col md:flex-row items-center justify-around p-4  ">
+  {/* Left Section - Image */}
+  <div className=" hidden w-full md:w-1/2 md:flex items-center justify-center p-4">
+    <img
+      src={maintenanceImage}
+      alt="Maintenance System Illustration"
+      className="w-full max-w-md md:max-w-lg"
+    />
+  </div>
+
+  {/* Right Section - Login Form */}
+  <div className="w-full md:w-1/2 p-6 dark:bg-[#18181B] rounded-lg shadow-lg max-w-md">
+    <p className="text-2xl font-bold mb-4 text-center md:text-right">Register into</p>
+    <p className="text-2xl font-bold text-center md:text-right">Maintenance System</p>
+
+    <form className="mt-6" method="post" onSubmit={handleSubmit}>
+      {/* Username Field */}
+      <div className="mb-4">
+        <label className="block text-right text-gray-700 dark:text-gray-200" htmlFor="username">
+          اسم المستخدم
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.name}
+          placeholder="ادخل اسم المستخدم"
+          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
+            errors.name ? "border-red-500 border-2" : "border-gray-300"
+          } focus:border-blue-500 dark:text-[#18181B]`}
+        />
+        {errors.name && touched.name && (
+          <div className="mt-2 p-2 text-sm text-red-600 bg-red-50 rounded-lg dark:bg-[#18181B] dark:text-red-400">
+            {errors.name}
+          </div>
+        )}
       </div>
-      <div
-        className={`${classes.right_section} p-6 bg-white rounded-lg shadow-lg`}
+
+      {/* Email Field */}
+      <div className="mb-4">
+        <label className="block text-right text-gray-700 dark:text-gray-200" htmlFor="email">
+          البريد الالكتروني
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.email}
+          placeholder="ادخل البريد الالكتروني"
+          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
+            errors.email ? "border-red-500 border-2" : "border-gray-300"
+          } focus:border-blue-500 dark:text-[#18181B]`}
+        />
+        {errors.email && touched.email && (
+          <div className="mt-2 p-2 text-sm text-red-600 bg-red-50 rounded-lg dark:bg-[#18181B] dark:text-red-400">
+            {errors.email}
+          </div>
+        )}
+      </div>
+
+      {/* Password Field */}
+      <div className="mb-4">
+        <label className="block text-right text-gray-700 dark:text-gray-200" htmlFor="password">
+          كلمة المرور
+        </label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          onChange={handleChange}
+          onBlur={handleBlur}
+          value={values.password}
+          placeholder="ادخل كلمة المرور"
+          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
+            errors.password ? "border-red-500 border-2" : "border-gray-300"
+          } focus:border-blue-500  dark:text-[#18181B]`}
+        />
+        {errors.password && touched.password && (
+          <div className="mt-2 p-2 text-sm text-red-600 bg-red-50 rounded-lg dark:bg-[#18181B] dark:text-red-400">
+            {errors.password}
+          </div>
+        )}
+      </div>
+
+      {/* Submit Button */}
+      <Button
+        type="submit"
+        className="w-full h-12 mt-8   rounded-md transition duration-200"
       >
-        <p className={`${classes.heading_text} text-2xl font-bold mb-4`}>
-          Login into
-        </p>
-        <p className={`${classes.heading_text} text-2xl font-bold`}>
-          Maintenance System
-        </p>
-
-        <form className="m-auto" method="post" onSubmit={handleSubmit}>
-          <label
-            className="block text-right mt-4 dark:text-white lg:mr-12 md:mr-0 sm:mr-0"
-            htmlFor="username"
-          >
-            اسم المستخدم
-          </label>
-         
-            
-            
-           
-              <input
-                id="name"
-                name="name"
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.name}
-                
-                placeholder="ادخل اسم المستخدم"
-                className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
-                  errors.name
-                    ? "border-red-500 border-2"
-                    : "border-gray-300"
-                } focus:border-blue-500`}
-               
-              />
-   
-            {errors.name && touched.name && (
-                   <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                    {errors.name}
+        تسجيل الدخول
+      </Button>
+    </form>
+  </div>
 </div>
-        )}
-
-
-<label
-            className="block text-right mt-4 dark:text-white lg:mr-12 md:mr-0 sm:mr-0"
-            htmlFor="username"
-          >
-            البريد الالكتروني
-          </label>
-         
-            
-            
-           
-              <input
-                id="email"
-                name="email"
-                type="email"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.email}
-                
-                placeholder="ادخل اسم المستخدم"
-                className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
-                  errors.email
-                    ? "border-red-500 border-2"
-                    : "border-gray-300"
-                } focus:border-blue-500`}
-               
-              />
-   
-            {errors.email && touched.email && (
-                   <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                    {errors.email}
-</div>
-        )}
-          <label
-            className="block text-right dark:text-white lg:mr-12 md:mr-0 sm:mr-0 mt-3"
-            htmlFor="password"
-          >
-            كلمة المرور
-          </label>
-          
-           
-              <input
-                id="password"
-                type="password"
-                name="password"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.username}
-                placeholder="ادخل كلمة المرور"
-                className={`input w-96 max-w-full h-14 p-4 dark:bg-custom-gray block m-auto mt-1 rounded-md text-right outline-none border ${
-                  errors.password
-                    ? "border-red-500 border-2"
-                    : "border-gray-300"
-                } focus:border-blue-500`}
-               
-              />
-          
-          
-          {errors.password && touched.password && (
-                   <div class="p-4  w-96 max-w-full mx-auto text-center my-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                    {errors.password}
-</div>
-        )}
-
-              <Button className="w-96 mx-auto max-w-full h-12 mt-8 my-12   text-white dark:text-black rounded-md  transition duration-200 block">
-                            تسجيل الدخول
-
-              </Button>
-          <button >
-          </button>
-        </form>
-      </div>
-    </div>
   );
 };

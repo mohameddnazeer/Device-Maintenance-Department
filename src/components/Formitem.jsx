@@ -15,9 +15,9 @@ export default function Formitem({title,control,placeholder,name,className,label
     name={name}
     render={({ field }) => (
       <FormItem>
-        <FormLabel className={label}>{title}</FormLabel>
+        <FormLabel dir='rtl' className={label}>{title}</FormLabel>
         <FormControl>
-          <Input className={className} placeholder={placeholder} {...field} />
+          <Input dir='rtl' className={className} placeholder={placeholder} {...field} />
         </FormControl>
         
         

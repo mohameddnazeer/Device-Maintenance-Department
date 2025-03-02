@@ -5,8 +5,6 @@ import SelectInput from "../components/utils/SelectInput";
 import TextInput from "@/components/utils/TextInput";
 import ProfileForm from "@/components/ProfileForm";
 
-
-
 const AddDevice = () => {
   const { control, handleSubmit } = useForm();
 
@@ -84,9 +82,7 @@ const AddDevice = () => {
           </button>
         </div>
       </form> */}
-      <ProfileForm/>
-      
-      
+      <ProfileForm />
     </div>
   );
 };
@@ -103,18 +99,13 @@ const hardwareAttrs = [
         selectName="أختر النوع "
         {...field}
       />
-    )
+    ),
   },
   {
     name: "cpuModel",
     render: ({ field }) => (
-      <TextInput
-        labelName="موديل CPU"
-        type="text"
-        placeholder="ادخل النوع"
-        {...field}
-      />
-    )
+      <TextInput labelName="موديل CPU" type="text" placeholder="ادخل النوع" {...field} />
+    ),
   },
   {
     name: "cpuGeneration",
@@ -125,40 +116,25 @@ const hardwareAttrs = [
         selectName="أختر الجيل"
         {...field}
       />
-    )
+    ),
   },
   {
     name: "gpuType",
     render: ({ field }) => (
-      <TextInput
-        labelName="نوع GPU"
-        type="text"
-        placeholder="ادخل النوع"
-        {...field}
-      />
-    )
+      <TextInput labelName="نوع GPU" type="text" placeholder="ادخل النوع" {...field} />
+    ),
   },
   {
     name: "gpuModel",
     render: ({ field }) => (
-      <TextInput
-        labelName="موديل GPU"
-        type="text"
-        placeholder="ادخل النوع"
-        {...field}
-      />
-    )
+      <TextInput labelName="موديل GPU" type="text" placeholder="ادخل النوع" {...field} />
+    ),
   },
   {
     name: "gpuSize",
     render: ({ field }) => (
-      <TextInput
-        labelName="حجم GPU"
-        type="text"
-        placeholder="ادخل الحجم"
-        {...field}
-      />
-    )
+      <TextInput labelName="حجم GPU" type="text" placeholder="ادخل الحجم" {...field} />
+    ),
   },
   {
     name: "ramSize",
@@ -169,7 +145,7 @@ const hardwareAttrs = [
         selectName="أختر الحجم "
         {...field}
       />
-    )
+    ),
   },
   {
     name: "ramType",
@@ -180,7 +156,7 @@ const hardwareAttrs = [
         selectName="أختر النوع "
         {...field}
       />
-    )
+    ),
   },
   {
     name: "romSize",
@@ -191,7 +167,7 @@ const hardwareAttrs = [
         selectName="أختر الحجم "
         {...field}
       />
-    )
+    ),
   },
   {
     name: "romType",
@@ -202,9 +178,9 @@ const hardwareAttrs = [
         selectName="أختر النوع "
         {...field}
       />
-    )
+    ),
   },
-]
+];
 
 const DetailsAttrs = [
   {
@@ -216,7 +192,7 @@ const DetailsAttrs = [
         selectName="أختر القطاع"
         {...field}
       />
-    )
+    ),
   },
   {
     name: "department",
@@ -227,72 +203,42 @@ const DetailsAttrs = [
         selectName="أختر الادارة"
         {...field}
       />
-    )
+    ),
   },
   {
     name: "office",
     render: ({ field }) => (
-      <TextInput
-        labelName="المكتب"
-        type="text"
-        placeholder="أدخل المكتب"
-        {...field}
-      />
-    )
+      <TextInput labelName="المكتب" type="text" placeholder="أدخل المكتب" {...field} />
+    ),
   },
   {
     name: "deviceNumber",
     render: ({ field }) => (
-      <TextInput
-        labelName="رقم الجهاز"
-        type="number"
-        placeholder="أدخل الرقم"
-        {...field}
-      />
-    )
+      <TextInput labelName="رقم الجهاز" type="number" placeholder="أدخل الرقم" {...field} />
+    ),
   },
   {
     name: "deviceType",
     render: ({ field }) => (
-      <TextInput
-        labelName="نوع الجهاز"
-        type="text"
-        placeholder="أدخل النوع"
-        {...field}
-      />
-    )
+      <TextInput labelName="نوع الجهاز" type="text" placeholder="أدخل النوع" {...field} />
+    ),
   },
   {
     name: "macAddress",
     render: ({ field }) => (
-      <TextInput
-        labelName="عنوان MAC"
-        type="text"
-        placeholder="أدخل MAC"
-        {...field}
-      />
-    )
+      <TextInput labelName="عنوان MAC" type="text" placeholder="أدخل MAC" {...field} />
+    ),
   },
   {
     name: "ownerName",
     render: ({ field }) => (
-      <TextInput
-        labelName="اسم المالك"
-        type="text"
-        placeholder="أدخل الاسم"
-        {...field}
-      />
-    )
+      <TextInput labelName="اسم المالك" type="text" placeholder="أدخل الاسم" {...field} />
+    ),
   },
   {
     name: "ownerNumber",
     render: ({ field }) => (
-      <TextInput
-        labelName="رقم المالك"
-        type="number"
-        placeholder="أدخل الرقم"
-        {...field}
-      />
-    )
+      <TextInput labelName="رقم المالك" type="number" placeholder="أدخل الرقم" {...field} />
+    ),
   },
-]
+];
