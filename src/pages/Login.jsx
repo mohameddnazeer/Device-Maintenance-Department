@@ -139,7 +139,7 @@ export const Login = () => {
 //       </div>
 //     </div>
 <div className="min-h-screen flex flex-col md:flex-row items-center justify-around p-4  ">
-  {/* Left Section - Image */}
+
   <div className=" hidden w-full md:w-1/2 md:flex items-center justify-center p-4">
     <img
       src={maintenanceImage}
@@ -148,13 +148,13 @@ export const Login = () => {
     />
   </div>
 
-  {/* Right Section - Login Form */}
+ 
   <div className="w-full md:w-1/2 p-6 dark:bg-[#18181B] rounded-lg shadow-lg max-w-md">
     <p className="text-2xl font-bold mb-4 text-center md:text-right">Login into</p>
     <p className="text-2xl font-bold text-center md:text-right">Maintenance System</p>
 
     <form className="mt-6" method="post" onSubmit={handleSubmit}>
-      {/* Username Field */}
+      
       <div className="mb-4">
         <label className="block text-right text-gray-700 dark:text-gray-200" htmlFor="username">
           اسم المستخدم
@@ -180,7 +180,7 @@ export const Login = () => {
 
    
 
-      {/* Password Field */}
+      
       <div className="mb-4">
         <label className="block text-right text-gray-700 dark:text-gray-200" htmlFor="password">
           كلمة المرور
@@ -204,7 +204,7 @@ export const Login = () => {
         )}
       </div>
 
-      {/* Submit Button */}
+      
       <Button
         type="submit"
         className="w-full h-12 mt-8   rounded-md transition duration-200"
