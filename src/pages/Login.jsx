@@ -58,11 +58,11 @@ export const Login = () => {
       <div
         className={`${classes.right_section} p-6 bg-white rounded-lg shadow-lg`}
       >
-        <p className={`${classes.heading_text} text-2xl font-bold mb-4`}>
-          Login into
+        <p className={`${classes.heading_text} text-3xl font-bold mb-4`}>
+            تسجيل الدخول الي
         </p>
-        <p className={`${classes.heading_text} text-2xl font-bold`}>
-          Maintenance System
+        <p className={`${classes.heading_text} text-xl font-medium`}>
+          منظومة الصيانة
         </p>
 
         <form className="m-auto" method="post" onSubmit={handleSubmit}>

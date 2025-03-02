@@ -3,6 +3,9 @@ import { useForm, Controller } from "react-hook-form";
 import { Navbar } from "../components/utils/Navbar";
 import SelectInput from "../components/utils/SelectInput";
 import TextInput from "@/components/utils/TextInput";
+import ProfileForm from "@/components/ProfileForm";
+
+
 
 const AddDevice = () => {
   const { control, handleSubmit } = useForm();
@@ -14,12 +17,12 @@ const AddDevice = () => {
   return (
     <div>
       <Navbar />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <div
           dir="rtl"
           className="flex flex-col lg:flex-row items-start justify-around w-full px-4 lg:px-0"
         >
-          {/* Details Section */}
+          
           <div className="w-full lg:w-6/12 mt-8 lg:mt-0 lg:mr-10">
             <h3 className="text-white text-right my-8 text-xl sm:text-2xl">
               تفاصيل
@@ -36,7 +39,7 @@ const AddDevice = () => {
             </div>
           </div>
 
-          {/* Hardware Section */}
+          
           <div className="w-full lg:w-6/12 mt-8 lg:mt-0 lg:mr-10">
             <h3 className="text-white text-right my-8 text-xl sm:text-2xl">
               الهاردوير
@@ -80,7 +83,10 @@ const AddDevice = () => {
             حفظ
           </button>
         </div>
-      </form>
+      </form> */}
+      <ProfileForm/>
+      
+      
     </div>
   );
 };
