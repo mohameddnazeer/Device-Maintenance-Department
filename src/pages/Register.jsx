@@ -4,7 +4,7 @@ import maintenanceImage from "../assets/images/loginImage.svg";
  // Ensure your schema is defined here
 import * as Yup from "yup";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useFormik } from "formik";
 
@@ -184,8 +184,8 @@ export const Register = () => {
 
  
   <div className="w-full md:w-1/2 p-6 dark:bg-[#18181B] rounded-lg shadow-lg max-w-md">
-    <p className="text-2xl font-bold mb-4 text-center md:text-right">Register into</p>
-    <p className="text-2xl font-bold text-center md:text-right">Maintenance System</p>
+    <p className="text-2xl font-bold mb-4 text-center">Register into</p>
+    <p className="text-2xl font-bold text-center ">Maintenance System</p>
 
     <form className="mt-6" method="post" onSubmit={handleSubmit}>
       
@@ -268,6 +268,19 @@ export const Register = () => {
         تسجيل الدخول
       </Button>
     </form>
+    <p className="text-center flex flex-row-reverse items-center justify-between max-w-[500px] mx-auto mt-10">
+            هل لديك حساب لدينا ؟{" "}
+              <Link
+                className=" ml-2 link link-hover capitalize link-primary "
+                to="/login"
+              >
+                <Button>
+                   تسجيل دخول
+                </Button>
+                
+               
+              </Link>
+            </p>
   </div>
 </div>
   );

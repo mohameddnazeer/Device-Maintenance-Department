@@ -16,7 +16,7 @@ export const Navbar = () => {
   return (
     <div className="flex justify-between items-center border-b-2 border-gray-500 p-4">
       <div className="hidden lg:flex gap-4">
-        <Button cl>
+        {/* <Button cl>
             <NavLink
           to="/maintenance-archive"
           className={({ isActive }) =>
@@ -25,7 +25,7 @@ export const Navbar = () => {
         >
           ارشيف الصيانة
         </NavLink>
-        </Button>
+        </Button> */}
         <Button>
           <NavLink
           to="/ready-for-delivery"

@@ -8,7 +8,7 @@ import {
     FormMessage,
   } from "@/components/ui/form"
   import { Input } from "@/components/ui/input"
-export default function Formitem({title,control,placeholder,name,className,label}) {
+export default function Formitem({title,control,placeholder,name,className,label ,}) {
   return (
     <FormField
     control={control}
@@ -19,6 +19,7 @@ export default function Formitem({title,control,placeholder,name,className,label
         <FormControl>
           <Input dir='rtl' className={className} placeholder={placeholder} {...field} />
         </FormControl>
+        
         
         
       </FormItem>
