@@ -72,19 +72,28 @@ export const Navbar = () => {
       </div>
 
       <div className="lg:hidden">
-        <button onClick={toggleMenu} className="text-white text-3xl">
+        <Button onClick={toggleMenu} className=" text-3xl">
           <FaBars />
-        </button>
+        </Button>
       </div>
 
       {isMenuOpen && (
-        <div className="flex flex-col justify-center h-80 space-y-3 absolute top-16 left-0 w-full bg-gray-800 text-white lg:hidden p-4 z-10">
+        <div className="flex flex-col justify-center h-80 space-y-3 absolute top-16 left-0 w-full bg-black text-white lg:hidden p-4 z-10">
+
           <Button>
               <NavLink
             to="/alldevices"
            
             onClick={toggleMenu}>
             كل الاجهزة
+          </NavLink>
+          </Button>
+          <Button>
+              <NavLink
+            to="/addDevice"
+           
+            onClick={toggleMenu}>
+            اضافة جهاز
           </NavLink>
           </Button>
         
@@ -106,6 +115,7 @@ export const Navbar = () => {
           </NavLink>
          </Button>
 
+{/* 
          <Button>
 
           <NavLink
@@ -114,7 +124,7 @@ export const Navbar = () => {
             onClick={toggleMenu}>
             ارشيف الصيانة
           </NavLink>
-         </Button>
+         </Button> */}
           
         </div>
       )}

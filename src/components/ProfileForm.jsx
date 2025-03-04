@@ -8,6 +8,7 @@ import {
 
 } from "@/components/ui/form";
 import Formitem from "./Formitem";
+import CustomSelect from "./CustomSelect";
 
 const formSchema = z.object({
   id: z.string().min(1, { message: "ID is required." }),
@@ -78,13 +79,17 @@ function ProfileForm() {
                 label="block text-sm font-medium"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
               />
-              <Formitem
+            <CustomSelect
                 title="المنطقة"
                 control={form.control}
-                placeholder="ادخل المنطقة"
                 name="region"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                label="القطاع"
+                options={[
+                  { value: "الضبعه", label: "الضبعه" },
+                  { value: "اللاهون", label: "اللاهون" },
+                  { value: "العياط", label: "العياط" },
+                ]}
+                placeholder="اختر المنطقة"
               />
               <Formitem
                 title="البوابة"
