@@ -201,7 +201,7 @@ export const Register = () => {
           onBlur={handleBlur}
           value={values.name}
           placeholder="ادخل اسم المستخدم"
-          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
+          className={`w-full h-14 p-4 mt-1 dark:text-white rounded-md text-right outline-none border ${
             errors.name ? "border-red-500 border-2" : "border-gray-300"
           } focus:border-blue-500 dark:text-[#18181B]`}
         />
@@ -214,7 +214,7 @@ export const Register = () => {
 
       
       <div className="mb-4">
-        <label className="block text-right text-gray-700 dark:text-gray-200" htmlFor="email">
+        <label className="block text-right  text-gray-700 dark:text-gray-200" htmlFor="email">
           البريد الالكتروني
         </label>
         <input
@@ -225,7 +225,7 @@ export const Register = () => {
           onBlur={handleBlur}
           value={values.email}
           placeholder="ادخل البريد الالكتروني"
-          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
+          className={`w-full h-14 p-4 mt-1 dark:text-white rounded-md text-right outline-none border ${
             errors.email ? "border-red-500 border-2" : "border-gray-300"
           } focus:border-blue-500 dark:text-[#18181B]`}
         />
@@ -249,7 +249,7 @@ export const Register = () => {
           onBlur={handleBlur}
           value={values.password}
           placeholder="ادخل كلمة المرور"
-          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
+          className={`w-full h-14 p-4 mt-1 dark:text-white rounded-md text-right outline-none border ${
             errors.password ? "border-red-500 border-2" : "border-gray-300"
           } focus:border-blue-500  dark:text-[#18181B]`}
         />

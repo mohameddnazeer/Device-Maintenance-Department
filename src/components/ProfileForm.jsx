@@ -46,9 +46,9 @@ function ProfileForm() {
       macAddress: "",
       ownerName: "",
       ownerNumber: "",
-      cpuType: "",
+      // cpuType: "",
       cpuModel: "",
-      cpuGeneration: "",
+      // cpuGeneration: "",
       // gpuType: "",
       gpuModel: "",
       // gpuSize: "",
@@ -171,15 +171,15 @@ function ProfileForm() {
                 label="block text-sm font-medium"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
               /> */}
-              <Formitem
+              {/* <Formitem
                 title="نوع GPU"
                 control={form.control}
                 placeholder="ادخل نوع GPU"
                 name="gpuType"
                 label="block text-sm font-medium"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              {/* <Formitem
+              /> */}
+              <Formitem
                 title="موديل GPU"
                 control={form.control}
                 placeholder="ادخل موديل GPU"
@@ -187,7 +187,7 @@ function ProfileForm() {
                 label="block text-sm font-medium"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
               />
-              <Formitem
+              {/* <Formitem
                 title="حجم GPU"
                 control={form.control}
                 placeholder="ادخل حجم GPU"

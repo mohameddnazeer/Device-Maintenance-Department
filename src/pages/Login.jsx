@@ -167,9 +167,9 @@ export const Login = () => {
           onBlur={handleBlur}
           value={values.name}
           placeholder="ادخل اسم المستخدم"
-          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
-            errors.name ? "border-red-500 border-2" : "border-gray-300"
-          } focus:border-blue-500 dark:text-[#18181B]`}
+          className={`w-full h-14 p-4 mt-1 rounded-md dark:text-white text-right outline-none border ${
+            errors.password ? "border-red-500 border-2" : "border-gray-300"
+          } focus:border-blue-500  dark:text-[#18181B]`}
         />
         {errors.name && touched.name && (
           <div className="mt-2 p-2 text-sm text-red-600 bg-red-50 rounded-lg dark:bg-[#18181B] dark:text-red-400">
@@ -193,7 +193,7 @@ export const Login = () => {
           onBlur={handleBlur}
           value={values.password}
           placeholder="ادخل كلمة المرور"
-          className={`w-full h-14 p-4 mt-1 rounded-md text-right outline-none border ${
+          className={`w-full h-14 p-4 mt-1 rounded-md dark:text-white text-right outline-none border ${
             errors.password ? "border-red-500 border-2" : "border-gray-300"
           } focus:border-blue-500  dark:text-[#18181B]`}
         />
