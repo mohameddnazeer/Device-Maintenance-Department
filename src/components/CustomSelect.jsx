@@ -19,7 +19,7 @@ const CustomSelect = ({ name, control, label, options, placeholder }) => {
         <div>
           <label dir="rtl" className="block text-sm font-medium">{label}</label>
           <Select onValueChange={field.onChange} value={field.value} >
-            <SelectTrigger className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none">
+            <SelectTrigger className="mt-1 text-right block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none">
               <SelectValue placeholder={placeholder} />
             </SelectTrigger>
             <SelectContent>

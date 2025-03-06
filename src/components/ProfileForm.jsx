@@ -72,9 +72,9 @@ function ProfileForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Formitem
-                title="المعرف"
+                title="رقم الجهاز"
                 control={form.control}
-                placeholder="ادخل المعرف"
+                placeholder="ادخل رقم الجهاز"
                 name="id"
                 label="block text-sm font-medium"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
@@ -89,7 +89,7 @@ function ProfileForm() {
                   { value: "اللاهون", label: "اللاهون" },
                   { value: "العياط", label: "العياط" },
                 ]}
-                placeholder="اختر المنطقة"
+                placeholder="اختر القطاع"
               />
               <Formitem
                 title="البوابة"
@@ -126,7 +126,7 @@ function ProfileForm() {
               <Formitem
                 title="عنوان MAC"
                 control={form.control}
-                placeholder="ادخل عنوان MAC"
+                placeholder="ادخل   MAC"
                 name="macAddress"
                 label="block text-sm font-medium"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"

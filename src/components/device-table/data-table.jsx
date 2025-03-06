@@ -71,60 +71,61 @@ export function DataTable({ columns, data }) {
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />
-      <Table className="">
-        <TableHeader className="sticky top-0 z-20">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              // group/tr outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 cursor-default
-              className="group/tr border-none cursor-default">
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead
-                    className="group/th px-3 h-10 bg-accent whitespace-nowrap font-semibold first:rounded-s-lg last:rounded-e-lg"
-                    key={header.id}
-                    colSpan={header.colSpan}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody className="">
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, rowIndex) => (
+      <div className="overflow-x-auto">
+        <Table className="min-w-full">
+          <TableHeader className="sticky top-0 z-20">
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow
-                key={row.id}
-                className={`group/tr border-none cursor-default ${
-                  rowIndex % 2 === 0 ? "bg-background" : ""
-                }`}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={`relative text-start ${
-                      rowIndex === 0 ? "first:rounded-ss-lg last:rounded-se-lg" : ""
-                    } ${
-                      rowIndex === table.getRowModel().rows.length - 1
-                        ? "first:rounded-es-lg last:rounded-ee-lg"
-                        : ""
-                    }`}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
+                key={headerGroup.id}
+                className="group/tr border-none cursor-default">
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      className="group/th px-3 h-10 bg-accent whitespace-nowrap font-semibold first:rounded-s-lg last:rounded-e-lg"
+                      key={header.id}
+                      colSpan={header.colSpan}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                لا يوجد بيانات
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row, rowIndex) => (
+                <TableRow
+                  key={row.id}
+                  className={`group/tr border-none cursor-default ${
+                    rowIndex % 2 === 0 ? "bg-background" : ""
+                  }`}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={`relative text-start ${
+                        rowIndex === 0 ? "first:rounded-ss-lg last:rounded-se-lg" : ""
+                      } ${
+                        rowIndex === table.getRowModel().rows.length - 1
+                          ? "first:rounded-es-lg last:rounded-ee-lg"
+                          : ""
+                      }`}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  لا يوجد بيانات
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
       <DataTablePagination table={table} />
     </div>
   );

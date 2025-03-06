@@ -5,7 +5,7 @@ export default function Table() {
   const data = getData();
 
   return (
-    <div dir="rtl" className="container mx-auto py-10">
+    <div dir="rtl" className="container mx-auto py-10 px-4">
       <DataTable data={data} columns={columns} />
     </div>
   );
