@@ -176,8 +176,8 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <div className="flex justify-between items-center border-b-2 border-gray-500 p-4 relative">
-      <div className="hidden lg:flex gap-4">
+    <div className="flex flex-row-reverse justify-between items-center border-b-2 border-gray-500 p-4 relative">
+      <div className="hidden lg:flex gap-4 ">
         <Button>
           <NavLink
             to="/ready-for-delivery"
@@ -221,6 +221,7 @@ export const Navbar = () => {
             اضافة جهاز
           </NavLink>
         </Button>
+        <Darkmode />
       </div>
 
       <div className="lg:hidden dark:text-white  text-3xl">
@@ -268,9 +269,9 @@ export const Navbar = () => {
         </Button>
       </div>
 
-      <Darkmode />
+      
 
-      <div className={`flex justify-center items-center ${classes.right_nav_position}`}>
+      <div className={`flex justify-center flex-row-reverse items-center ${classes.right_nav_position}`}>
         <h2 className="dark:text-white lg:text-3xl md:text-lg">Maintenance</h2>
         <img className='w-12' src={navImage} alt="nav" />
       </div>
