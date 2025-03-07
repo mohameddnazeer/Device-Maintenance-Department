@@ -15,7 +15,7 @@ export const Login = () => {
   const onSubmitFunction = (data) => {
     console.log(data);
     navigate("/home");
-    toast.success("مرحبا بك في منظومة الصيانة")
+    // toast.success("مرحبا بك في منظومة الصيانة")
   };
 
   let validate = Yup.object().shape({
