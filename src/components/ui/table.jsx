@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef(({ className, ...props }, ref) => (
   // p-4 z-0 flex flex-col relative justify-between gap-4 bg-content1 overflow-auto rounded-large shadow-small w-full max-h-[382px]
-  <div className="z-0 flex flex-col relative w-full overflow-auto max-h-[40rem] bg-light-background rounded-lg border scrollbar-hide shadow-sm">
+  <div className="z-0 flex flex-col relative w-full overflow-auto max-h-[38rem] bg-light-background rounded-lg border scrollbar-hide shadow-sm">
     <table ref={ref} className={cn("w-full caption-bottom", className)} {...props} />
   </div>
 ));

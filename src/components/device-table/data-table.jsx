@@ -4,13 +4,8 @@ import {
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import * as React from "react";
 
 import {
   Table,
@@ -21,15 +16,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import { objectToSearchParamsStr } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { taskSchema } from "./schema";
 
 export function DataTable({ columns, data }) {
+  const [URLSearchParams, setURLSearchParams] = useSearchParams();
   const initialVisibility = Object.keys(taskSchema.shape)
     .map((key) => ({ [key]: false }))
     .reduce((acc, curr) => ({ ...acc, ...curr }), {});
-  const [columnVisibility, setColumnVisibility] = React.useState({
+  const storedVisibility = JSON.parse(sessionStorage.getItem("columnVisibility")) || {};
+  const [columnVisibility, setColumnVisibility] = useState({
     ...initialVisibility,
     id: true,
     macAddress: true,
@@ -38,33 +39,62 @@ export function DataTable({ columns, data }) {
     department: true,
     office: true,
     ownerName: true,
+    ...storedVisibility,
   });
-  // const [columnFilters, setColumnFilters] = React.useState([]);
-  const [globalFilter, setGlobalFilter] = React.useState([]);
-  const [sorting, setSorting] = React.useState([{ id: "createdAt", desc: true }]);
+
+  useEffect(() => {
+    sessionStorage.setItem("columnVisibility", JSON.stringify(columnVisibility));
+  }, [columnVisibility]);
+
+  const [sorting, setSorting] = useState(() => {
+    const sort = URLSearchParams.get("_sort");
+
+    return sort
+      ? [
+          {
+            id: sort.startsWith("-") ? sort.slice(1) : sort,
+            desc: sort.startsWith("-") ? true : false,
+          },
+        ]
+      : [{ id: "createdAt", desc: true }];
+  });
+  const queryClient = useQueryClient();
+  const res = queryClient.getQueryData(["table", "devices"]);
+  const currentPage = URLSearchParams.get("_page") || 1;
+  const pageSize = URLSearchParams.get("_per_page") || 10;
 
   const table = useReactTable({
     columns,
     data,
-    state: {
-      sorting,
-      columnVisibility,
-      globalFilter,
-      // columnFilters,
+    state: { sorting, columnVisibility },
+    initialState: { pagination: { pageIndex: currentPage - 1, pageSize } },
+    manualPagination: true,
+    manualFiltering: true,
+    manualSorting: true,
+    pageCount: res.pages,
+    onSortingChange: (updaterOrValue) => {
+      const sort = updaterOrValue();
+      const newParams = objectToSearchParamsStr(
+        { _sort: `${sort[0].desc ? "-" : ""}${sort[0].id}` },
+        URLSearchParams
+      );
+      setURLSearchParams(newParams);
+      setSorting(sort);
     },
-    // enableRowSelection: false,
-    // onRowSelectionChange: setRowSelection,
-    // globalFilterFn: "includesString",
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter,
-    // onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    onColumnVisibilityChange: (updaterOrValue) => {
+      const colVisibility = updaterOrValue();
+      setColumnVisibility((colvis) => {
+        return { ...colvis, ...colVisibility };
+      });
+    },
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedUniqueValues: (table, columnId) => () => {
+      const res = queryClient.getQueryData(["table", columnId]);
+      const uniqueValueMap = new Map();
+      res && Array.isArray(res) && res.forEach((item) => uniqueValueMap.set(item.id, item.number));
+      return uniqueValueMap;
+    },
   });
 
   table.getAllColumns();
@@ -74,10 +104,7 @@ export function DataTable({ columns, data }) {
       <Table>
         <TableHeader className="sticky top-0 z-20">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow
-              key={headerGroup.id}
-              // group/tr outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 cursor-default
-              className="group/tr border-none cursor-default">
+            <TableRow key={headerGroup.id} className="group/tr border-none cursor-default">
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead

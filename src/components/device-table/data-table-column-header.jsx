@@ -11,9 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export function DataTableColumnHeader({ column, title, className }) {
-  if (!column.getCanSort()) {
-    return <div className={cn(className)}>{title}</div>;
-  }
+  if (!column.getCanSort()) <div className={cn(className)}>{title}</div>;
 
   return (
     <div className={cn("flex items-center gap-x-2", className)}>

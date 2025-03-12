@@ -13,11 +13,31 @@ import {
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { cn, objectToSearchParamsStr } from "@/lib/utils";
+import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 export function DataTableFacetedFilter({ column, title, options }) {
+  const [URLSearchParams, setURLSearchParams] = useSearchParams();
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue());
+  const [selectedValues, setSelectedValues] = useState(() => {
+    const newSet = new Set();
+    const selected = URLSearchParams.get(column.id);
+    if (selected) selected.split(",").forEach((value) => newSet.add(value));
+    return newSet;
+  });
+  const updateURLSearchParams = (selectedValues) => {
+    const searchParams = objectToSearchParamsStr(
+      { [column.id]: selectedValues.size ? Array.from(selectedValues) : undefined },
+      URLSearchParams
+    );
+    setURLSearchParams(searchParams);
+  };
+
+  const resetFilter = () => {
+    setSelectedValues(new Set());
+    updateURLSearchParams(new Set());
+  };
 
   return (
     <Popover>
@@ -65,8 +85,19 @@ export function DataTableFacetedFilter({ column, title, options }) {
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
-                      if (isSelected) selectedValues.delete(option.value);
-                      else selectedValues.add(option.value);
+                      if (isSelected) {
+                        setSelectedValues((selectedValues) => {
+                          selectedValues.delete(option.value);
+                          return selectedValues;
+                        });
+                        updateURLSearchParams(selectedValues);
+                      } else {
+                        setSelectedValues((selectedValues) => {
+                          selectedValues.add(option.value);
+                          return selectedValues;
+                        });
+                        updateURLSearchParams(selectedValues);
+                      }
 
                       const filterValues = Array.from(selectedValues);
                       column?.setFilterValue(filterValues.length ? filterValues : undefined);
@@ -95,9 +126,7 @@ export function DataTableFacetedFilter({ column, title, options }) {
               <>
                 <CommandSeparator />
                 <CommandGroup>
-                  <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
-                    className="justify-center text-center">
+                  <CommandItem onSelect={resetFilter} className="justify-center text-center">
                     حذف
                   </CommandItem>
                 </CommandGroup>

@@ -1,7 +1,10 @@
 {
   "restoreTerminals.terminals": [
     {
-      "splitTerminals": [{ "name": "client", "commands": ["npm run start"] }, { "name": "install" }]
+      "splitTerminals": [
+        { "name": "server", "commands": ["npx json-server src/db.json -p 5000"] },
+        { "name": "client", "commands": ["npm run start"] }
+      ]
     }
   ]
 }
