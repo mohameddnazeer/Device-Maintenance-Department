@@ -1,5 +1,5 @@
+import ProfileForm from "@/components/AddDeviceForm";
 import Table from "@/components/device-table/table";
-import ProfileForm from "@/components/ProfileForm";
 import { Input } from "@/components/ui/input";
 import { objectToSearchParamsStr } from "@/lib/utils";
 import { Button } from "@heroui/button";
