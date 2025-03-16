@@ -1,188 +1,284 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import Formitem from "./Formitem";
-import CustomSelect from "./CustomSelect";
+import { fetchData } from "@/lib/utils";
+import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { Form } from "@heroui/form";
+import { Input } from "@heroui/input";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-const formSchema = z.object({
-  id: z.string().min(1, { message: "ID is required." }),
-  region: z.string().min(1, { message: "Region is required." }),
-  gate: z.string().min(1, { message: "Gate is required." }),
-  department: z.string().min(1, { message: "Department is required." }),
-  office: z.string().min(1, { message: "Office is required." }),
-  deviceType: z.string().min(1, { message: "Device type is required." }),
-  macAddress: z.string().min(1, { message: "MAC address is required." }),
-  ownerName: z.string().min(1, { message: "Owner name is required." }),
-  ownerNumber: z.string().min(1, { message: "Owner number is required." }),
-  cpuType: z.string().min(1, { message: "CPU type is required." }),
-  cpuModel: z.string().min(1, { message: "CPU model is required." }),
-  cpuGeneration: z.string().min(1, { message: "CPU generation is required." }),
-  gpuType: z.string().min(1, { message: "GPU type is required." }),
-  gpuModel: z.string().min(1, { message: "GPU model is required." }),
-  gpuSize: z.string().min(1, { message: "GPU size is required." }),
-  ramSize: z.string().min(1, { message: "RAM size is required." }),
-  ramType: z.string().min(1, { message: "RAM type is required." }),
-  romSize: z.string().min(1, { message: "ROM size is required." }),
-  romType: z.string().min(1, { message: "ROM type is required." }),
-  createdAt: z.string().min(1, { message: "Creation date is required." }),
-});
+function ProfileForm({ onClose }) {
+  const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
+  const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
+  const [departmentState, setDepartmentState] = useState({
+    selectedKey: null,
+    inputValue: "",
+    items: [],
+  });
+  const [officeState, setOfficeState] = useState({ selectedKey: null, inputValue: "", items: [] });
 
-function ProfileForm() {
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      id: "",
-      region: "",
-      gate: "",
-      department: "",
-      office: "",
-      deviceType: "",
-      macAddress: "",
-      ownerName: "",
-      ownerNumber: "",
-      cpuType: "",
-      cpuModel: "",
-      cpuGeneration: "",
-      gpuType: "",
-      gpuModel: "",
-      gpuSize: "",
-      ramSize: "",
-      ramType: "",
-      romSize: "",
-      romType: "",
-      createdAt: "",
+  const regionRes = useQuery({
+    queryKey: ["addDevice", "region"],
+    queryFn: async () => fetchData("regions"),
+  });
+  const regionData = regionRes.data ? [{ id: "null", label: "بدون" }, ...regionRes.data] : [];
+
+  const gateRes = useQuery({
+    queryKey: ["addDevice", "gate", regionState.selectedKey],
+    queryFn: async () => {
+      const query = new URLSearchParams();
+      if (regionState.selectedKey && regionState.selectedKey === "null")
+        query.set("region", "null");
+      else if (regionState.selectedKey) query.set("region", regionState.selectedKey);
+      return fetchData("gates?" + query.toString());
     },
+    enabled: !!regionState.selectedKey,
+  });
+  const gateData = gateRes.data ? [{ id: "null", label: "بدون" }, ...gateRes.data] : [];
+
+  const departmentRes = useQuery({
+    queryKey: ["addDevice", "department", regionState.selectedKey, gateState.selectedKey],
+    queryFn: async () => {
+      const query = new URLSearchParams();
+      if (regionState.selectedKey && regionState.selectedKey === "null")
+        query.set("region", "null");
+      else if (regionState.selectedKey) query.set("region", regionState.selectedKey);
+      if (gateState.selectedKey && gateState.selectedKey === "null") query.set("gate", "null");
+      else if (gateState.selectedKey) query.set("gate", gateState.selectedKey);
+      return fetchData("departments?" + query.toString());
+    },
+    enabled: !!gateState.selectedKey,
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const officeRes = useQuery({
+    queryKey: [
+      "addDevice",
+      "office",
+      regionState.selectedKey,
+      gateState.selectedKey,
+      departmentState.selectedKey,
+    ],
+    queryFn: async () => {
+      const query = new URLSearchParams();
+      if (regionState.selectedKey && regionState.selectedKey === "null")
+        query.set("region", "null");
+      else if (regionState.selectedKey) query.set("region", regionState.selectedKey);
+      if (gateState.selectedKey && gateState.selectedKey === "null") query.set("gate", "null");
+      else if (gateState.selectedKey) query.set("gate", gateState.selectedKey);
+      if (departmentState.selectedKey) query.set("department", departmentState.selectedKey);
+      return fetchData("offices?" + query.toString());
+    },
+    enabled: !!departmentState.selectedKey,
+  });
+
+  useEffect(() => {
+    regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionData }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [regionRes.data]);
+  useEffect(() => {
+    gateRes.data && setGateState(prevState => ({ ...prevState, items: gateData }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gateRes.data]);
+  useEffect(() => {
+    departmentRes.data &&
+      setDepartmentState(prevState => ({ ...prevState, items: departmentRes.data }));
+  }, [departmentRes.data]);
+  useEffect(() => {
+    officeRes.data && setOfficeState(prevState => ({ ...prevState, items: officeRes.data }));
+  }, [officeRes.data]);
+
+  const onSelectionChange = (key, setState, data) => {
+    setState(prevState => {
+      let selectedItem = prevState.items.find(option => option.id === key);
+      return { inputValue: selectedItem?.label || "", selectedKey: key, items: data };
+    });
   };
 
+  const onInputChange = (value, setState, data) => {
+    setState(state => ({
+      ...state,
+      inputValue: value,
+      items: data.filter(item => item.label.includes(value)),
+    }));
+  };
+
+  const { mutateAsync } = useMutation({
+    mutationFn: variables =>
+      fetchData("devices", { method: "POST", body: JSON.stringify(variables) }),
+  });
+
+  const onSubmit = async event => {
+    event.preventDefault();
+    // Get form data as an object.
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+
+    const res = mutateAsync(data);
+    toast.promise(res, {
+      loading: <p>جاري الإضافة</p>,
+      // eslint-disable-next-line no-unused-vars
+      success: data => {
+        console.log("🚀 ", data);
+        onClose();
+        return "تم الإضافة";
+      },
+      error: { message: "حدث خطأ ما" },
+    });
+  };
+
+  const elList = [
+    // name, placeholder, title, label, state, setState, disabled, data
+    {
+      isRequired: false,
+      title: "رقم الجهاز",
+      placeholder: "ادخل رقم الجهاز",
+      name: "id",
+      errorMsg: "رقم الجهاز مطلوب",
+    },
+    {
+      isRequired: true,
+      title: "المنطقة",
+      name: "region",
+      label: "القطاع",
+      state: regionState,
+      setState: setRegionState,
+      data: regionData,
+      placeholder: "اختر القطاع",
+      errorMsg: "القطاع مطلوب",
+    },
+    {
+      isRequired: true,
+      disabled: !regionState.selectedKey,
+      title: "البوابة",
+      name: "gate",
+      label: "البوابة",
+      state: gateState,
+      setState: setGateState,
+      data: gateData,
+      placeholder: "اختر البوابة",
+      errorMsg: "البوابة مطلوبة",
+    },
+    {
+      isRequired: true,
+      disabled: !gateState.selectedKey,
+      title: "الإدارة",
+      name: "department",
+      label: "الإدارة",
+      state: departmentState,
+      setState: setDepartmentState,
+      data: departmentRes.data,
+      placeholder: "اختر الإدارة",
+      errorMsg: "الإدارة مطلوبة",
+    },
+    {
+      isRequired: true,
+      disabled: !departmentState.selectedKey,
+      title: "المكتب",
+      name: "office",
+      label: "المكتب",
+      state: officeState,
+      setState: setOfficeState,
+      data: officeRes.data,
+      placeholder: "اختر المكتب",
+      errorMsg: "المكتب مطلوب",
+    },
+    {
+      isRequired: true,
+      title: "اسم المسؤول عن الجهاز",
+      placeholder: "ادخل الاسم ",
+      name: "ownerName",
+      errorMsg: "اسم المسؤول مطلوب",
+    },
+    {
+      isRequired: true,
+      title: "رقم المسؤول عن الجهاز",
+      placeholder: "ادخل الرقم ",
+      name: "ownerNumber",
+      errorMsg: "رقم المسؤول مطلوب",
+    },
+    {
+      isRequired: true,
+      title: "نوع الجهاز",
+      placeholder: "ادخل نوع الجهاز",
+      name: "deviceType",
+      errorMsg: "نوع الجهاز مطلوب",
+    },
+    {
+      isRequired: true,
+      title: "عنوان MAC",
+      placeholder: "ادخل  MAC",
+      name: "macAddress",
+      errorMsg: "عنوان MAC مطلوب",
+    },
+    { isRequired: false, title: "موديل CPU", placeholder: "ادخل موديل CPU", name: "cpuModel" },
+    { isRequired: false, title: "موديل GPU", placeholder: "ادخل موديل GPU", name: "gpuModel" },
+    { isRequired: false, title: "حجم RAM", placeholder: "ادخل حجم RAM", name: "ramSize" },
+  ];
+
   return (
-    <Form {...form}>
-      <div className="min-h-screen p-8" dir="rtl">
-        <div className="max-w-6xl mx-auto p-8 dark:bg-black/20 rounded-lg shadow-xl">
-          <h1 className="font-bold text-5xl text-center mb-8">اضافة جهاز</h1>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="col-span-1 md:col-span-2 lg:col-span-3">
-                <h2 className="font-bold text-2xl mb-4">معلومات المالك</h2>
-              </div>
-              <Formitem
-                title="رقم الجهاز"
-                control={form.control}
-                placeholder="ادخل رقم الجهاز"
-                name="id"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+    <Form
+      dir="rtl"
+      id="add-device-form"
+      onSubmit={onSubmit}
+      className="w-full flex flex-col items-center justify-center"
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {elList.map(
+          ({
+            name,
+            placeholder,
+            title,
+            label,
+            state,
+            setState,
+            disabled,
+            data,
+            isRequired,
+            errorMsg,
+          }) => {
+            if (label)
+              return (
+                <Autocomplete
+                  isRequired={isRequired}
+                  key={name}
+                  isDisabled={disabled}
+                  className="max-w-xs"
+                  size="lg"
+                  inputValue={state.inputValue}
+                  items={state.items}
+                  label={label || title}
+                  labelPlacement="outside"
+                  placeholder={placeholder}
+                  selectedKey={state.selectedKey}
+                  onInputChange={value => onInputChange(value, setState, data)}
+                  onSelectionChange={key => onSelectionChange(key, setState, data)}
+                  errorMessage={errorMsg}
+                >
+                  {item => (
+                    <AutocompleteItem dir="rtl" key={item.id} className="text-right">
+                      {item.label}
+                    </AutocompleteItem>
+                  )}
+                </Autocomplete>
+              );
+            return (
+              <Input
+                isRequired={isRequired}
+                key={name}
+                label={label || title}
+                labelPlacement="outside"
+                size="lg"
+                name={name}
+                placeholder={placeholder}
+                errorMessage={errorMsg}
               />
-              <CustomSelect
-                title="المنطقة"
-                control={form.control}
-                name="region"
-                label="القطاع"
-                options={[
-                  { value: "الضبعه", label: "الضبعه" },
-                  { value: "اللاهون", label: "اللاهون" },
-                  { value: "العياط", label: "العياط" },
-                ]}
-                placeholder="اختر القطاع"
-              />
-              <Formitem
-                title="البوابة"
-                control={form.control}
-                placeholder="ادخل البوابة"
-                name="gate"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="الإدارة"
-                control={form.control}
-                placeholder="ادخل الإدارة"
-                name="department"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="المكتب"
-                control={form.control}
-                placeholder="ادخل المكتب"
-                name="office"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="اسم المسؤول عن الجهاز"
-                control={form.control}
-                placeholder="ادخل الاسم "
-                name="ownerName"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="رقم المسؤول عن الجهاز"
-                control={form.control}
-                placeholder="ادخل الرقم "
-                name="ownerNumber"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <div className="col-span-1 md:col-span-2 lg:col-span-3">
-                <h2 className="font-bold text-2xl mb-4">معلومات الجهاز</h2>
-              </div>
-              <Formitem
-                title="نوع الجهاز"
-                control={form.control}
-                placeholder="ادخل نوع الجهاز"
-                name="deviceType"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="عنوان MAC"
-                control={form.control}
-                placeholder="ادخل   MAC"
-                name="macAddress"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="موديل CPU"
-                control={form.control}
-                placeholder="ادخل موديل CPU"
-                name="cpuModel"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="موديل GPU"
-                control={form.control}
-                placeholder="ادخل موديل GPU"
-                name="gpuModel"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-              <Formitem
-                title="حجم RAM"
-                control={form.control}
-                placeholder="ادخل حجم RAM"
-                name="ramSize"
-                label="block text-sm font-medium"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              />
-            </div>
-            <div className="flex justify-center mt-8">
-              <Button className="w-96 py-2 px-4 rounded-md" type="submit">
-                اضافة
-              </Button>
-            </div>
-          </form>
-        </div>
+            );
+          }
+        )}
       </div>
+      {/* <div className="flex justify-center mt-8">
+        <Button variant="secondary" className="w-96 py-2 px-4 rounded-md" type="submit">
+          اضافة
+        </Button>
+      </div> */}
     </Form>
   );
 }

@@ -1,7 +1,5 @@
 import FormDelivery from "@/components/FormDelivery";
 import { Navbar } from "../components/utils/Navbar";
-import ReadyForDeliveryCard from "../components/utils/ReadyForDeliveryCard";
-import { SearchInput } from "../components/utils/SearchInput";
 
 export const ReadyForDelivery = () => {
   return (

@@ -1,21 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
-import AppRouter from "./routers/AppRouter";
-// import { ThemeProvider } from 'next-themes'
 import Provider from "./Provider";
+import AppRouter from "./routers/AppRouter";
+import ThemeProvider from "./ThemeProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    {/* <ThemeProvider enableSystem defaultTheme="dark" attribute="class"> */}
-    <Provider>
-      <ToastContainer position="top-center" />
-      <AppRouter />
-    </Provider>
-
-    {/* </ThemeProvider> */}
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+      <Provider>
+        <div className="min-h-screen">
+          <AppRouter />
+        </div>
+      </Provider>
+    </ThemeProvider>
   </React.StrictMode>
 );

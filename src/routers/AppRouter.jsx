@@ -5,7 +5,6 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Login } from "../pages/Login";
-// import MainLayout from "../layouts/MainLayout";
 import AddDevice from "../pages/AddDevice";
 import AllDevices from "../pages/AllDevices";
 import { MaintenanceOperations } from "../pages/MaintenanceOperations";

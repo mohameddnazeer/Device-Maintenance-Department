@@ -1,8 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import classes from "../../assets/css/nav.module.css";
-import { IoMdClose } from "react-icons/io";
 import lightImage from "../../assets/web-main.png";
 import darkImage from "../../assets/web-maintenance.png";
 import Darkmode from "../Darkmode";
@@ -30,103 +28,85 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <div className="flex flex-row-reverse justify-between items-center border-b-2 border-gray-500 p-4 relative">
-      <div className="hidden lg:flex gap-4 ">
-        <Button>
+    <div className="flex justify-between items-center p-4 relative shadow-md">
+      <div className="flex gap-x-4">
+        <div className="lg:hidden text-3xl">
+          <Button size="icon" variant="secondary" onClick={toggleMenu}>
+            <FaBars />
+          </Button>
+        </div>
+        <Darkmode />
+        <div className="hidden lg:flex lg:items-center gap-4 text-muted-foreground">
           <NavLink
             to="/ready-for-delivery"
             className={({ isActive }) =>
-              isActive ? 'text-xl font-bold duration-500' : 'font-medium text-md'
-            }
-          >
+              `text-xl ${
+                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
+              }`
+            }>
             جاهز للتسليم
           </NavLink>
-        </Button>
-
-        <Button>
           <NavLink
             to="/maintenance-operations"
             className={({ isActive }) =>
-              isActive ? 'text-xl font-bold duration-500' : 'font-medium text-md'
-            }
-          >
+              `text-xl ${
+                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
+              }`
+            }>
             عمليات الصيانة
           </NavLink>
-        </Button>
-
-        <Button>
           <NavLink
             to="/alldevices"
             className={({ isActive }) =>
-              isActive ? 'text-xl font-bold duration-500' : 'font-medium text-md'
-            }
-          >
+              `text-xl ${
+                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
+              }`
+            }>
             كل الاجهزة
           </NavLink>
-        </Button>
-
-        <Button>
           <NavLink
-            to='/addDevice'
+            to="/addDevice"
             className={({ isActive }) =>
-              isActive ? 'text-xl font-bold duration-500' : 'font-medium text-md'
-            }
-          >
+              `text-xl ${
+                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
+              }`
+            }>
             اضافة جهاز
           </NavLink>
-        </Button>
-        <Darkmode />
-      </div>
-
-      <div className="lg:hidden dark:text-white text-3xl">
-        <Button onClick={toggleMenu} className=" ">
-          <FaBars />
-        </Button>
+        </div>
       </div>
 
       <div
         ref={menuRef}
-        className={`flex flex-col h-80 justify-center space-y-3 absolute top-0 left-0 w-full bg-black text-white lg:hidden p-4 z-40 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-full'}`}
-      >
-        <Button>
-          <NavLink
-            to="/alldevices"
-            onClick={toggleMenu}
-          >
+        className={`flex flex-col h-80 justify-center space-y-3 absolute top-0 left-0 w-full bg-light-background text-foreground lg:hidden p-4 z-40 transition-transform duration-500 ${
+          isMenuOpen ? "translate-y-0" : "-translate-y-full"
+        }`}>
+        <Button variant="secondary">
+          <NavLink to="/alldevices" onClick={toggleMenu}>
             كل الاجهزة
           </NavLink>
         </Button>
-        <Button>
-          <NavLink
-            to="/addDevice"
-            className="dark:bg-white"
-            onClick={toggleMenu}
-          >
+        <Button variant="secondary">
+          <NavLink to="/addDevice" onClick={toggleMenu}>
             اضافة جهاز
           </NavLink>
         </Button>
-        <Button>
-          <NavLink
-            to="/maintenance-operations"
-            onClick={toggleMenu}
-          >
+        <Button variant="secondary">
+          <NavLink to="/maintenance-operations" onClick={toggleMenu}>
             عمليات الصيانة
           </NavLink>
         </Button>
-        <Button>
-          <NavLink
-            to="/ready-for-delivery"
-            onClick={toggleMenu}
-          >
+        <Button variant="secondary">
+          <NavLink to="/ready-for-delivery" onClick={toggleMenu}>
             جاهز للتسليم
           </NavLink>
         </Button>
       </div>
 
-      <div className={`flex justify-center flex-row-reverse items-center ${classes.right_nav_position}`}>
-        <h2 className="dark:text-white lg:text-3xl md:text-lg">Maintenance</h2>
-        <img className='w-10 dark:hidden' src={darkImage} alt="nav" />
-        <img className='w-10 hidden dark:block' src={lightImage} alt="nav" />
+      <div className="flex justify-center items-center gap-x-2">
+        <h2 className="lg:text-3xl md:text-lg">Maintenance</h2>
+        <img className="w-10 dark:hidden" src={darkImage} alt="nav" />
+        <img className="w-10 hidden dark:block" src={lightImage} alt="nav" />
       </div>
     </div>
   );

@@ -28,7 +28,7 @@ function FormDelivery() {
 
   return (
     <Form {...form}>
-      <div className="min-h-screen p-8" dir="rtl">
+      <div className="p-8" dir="rtl">
         <div className="max-w-6xl mx-auto p-8 dark:bg-black/20 rounded-lg shadow-xl">
           <h1 className="font-bold text-5xl text-center mb-8">جاهز للتسليم</h1>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
