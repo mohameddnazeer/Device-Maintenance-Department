@@ -22,7 +22,7 @@ import { taskSchema } from "./schema";
 export function DataTable({ columns, data }) {
   const [URLSearchParams, setURLSearchParams] = useSearchParams();
   const initialVisibility = Object.keys(taskSchema.shape)
-    .map((key) => ({ [key]: false }))
+    .map(key => ({ [key]: false }))
     .reduce((acc, curr) => ({ ...acc, ...curr }), {});
   const storedVisibility = JSON.parse(sessionStorage.getItem("op-columnVisibility")) || {};
   const [columnVisibility, setColumnVisibility] = useState({
@@ -69,29 +69,20 @@ export function DataTable({ columns, data }) {
     manualFiltering: true,
     manualSorting: true,
     pageCount: res.pages,
-    onSortingChange: (updaterOrValue) => {
+    onSortingChange: updaterOrValue => {
       const sort = updaterOrValue();
       const newParams = objectToSearchParamsStr(
         { _sort: `${sort[0].desc ? "-" : ""}${sort[0].id}` },
         URLSearchParams
       );
-      setURLSearchParams(newParams);
+      setURLSearchParams(newParams, { replace: true });
       setSorting(sort);
     },
-    onColumnVisibilityChange: (updaterOrValue) => {
+    onColumnVisibilityChange: updaterOrValue => {
       const colVisibility = updaterOrValue();
-      setColumnVisibility((colvis) => {
-        return { ...colvis, ...colVisibility };
-      });
+      setColumnVisibility(colvis => ({ ...colvis, ...colVisibility }));
     },
     getCoreRowModel: getCoreRowModel(),
-    // getFacetedRowModel: getFacetedRowModel(),
-    // getFacetedUniqueValues: (table, columnId) => () => {
-    //   const res = queryClient.getQueryData(["op-table", columnId]);
-    //   const uniqueValueMap = new Map();
-    //   res && Array.isArray(res) && res.forEach((item) => uniqueValueMap.set(item.id, item.number));
-    //   return uniqueValueMap;
-    // },
   });
 
   table.getAllColumns();
@@ -100,14 +91,15 @@ export function DataTable({ columns, data }) {
       <DataTableToolbar table={table} />
       <Table>
         <TableHeader className="sticky top-0 z-20">
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id} className="group/tr border-none cursor-default">
-              {headerGroup.headers.map((header) => {
+              {headerGroup.headers.map(header => {
                 return (
                   <TableHead
                     className="group/th px-3 bg-accent whitespace-nowrap font-semibold"
                     key={header.id}
-                    colSpan={header.colSpan}>
+                    colSpan={header.colSpan}
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -124,8 +116,9 @@ export function DataTable({ columns, data }) {
                 key={row.id}
                 className={`group/tr border-none cursor-default ${
                   rowIndex % 2 === 0 ? "bg-background" : ""
-                }`}>
-                {row.getVisibleCells().map((cell) => (
+                }`}
+              >
+                {row.getVisibleCells().map(cell => (
                   <TableCell
                     key={cell.id}
                     className={`relative text-start ${
@@ -134,7 +127,8 @@ export function DataTable({ columns, data }) {
                       rowIndex === table.getRowModel().rows.length - 1
                         ? "first:rounded-es-lg last:rounded-ee-lg"
                         : ""
-                    }`}>
+                    }`}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

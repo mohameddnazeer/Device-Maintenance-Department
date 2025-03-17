@@ -5,7 +5,7 @@ module.exports = {
   darkMode: "class",
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/@heroui/theme/dist/components/(autocomplete|button|chip|form|input|modal|ripple|spinner|listbox|divider|popover|scroll-shadow).js"
+    "./node_modules/@heroui/theme/dist/components/(autocomplete|button|chip|form|input|modal|ripple|spinner|listbox|divider|popover|scroll-shadow).js",
   ],
 
   theme: {
@@ -54,6 +54,13 @@ module.exports = {
       },
       screens: {
         xs: "300px",
+      },
+      fontSize: {
+        tiny: "0.875rem",
+        small: "1rem",
+        medium: "1.125rem",
+        large: "1.25rem",
+        DEFAULT: "1.125rem",
       },
     },
   },
@@ -134,9 +141,16 @@ module.exports = {
       layout: {
         disabledOpacity: "0.5",
         radius: {
-          small: "0.25rem",
-          medium: "0.5rem",
-          large: "0.75rem",
+          small: "0.1rem",
+          medium: "0.3rem",
+          large: "0.5rem",
+        },
+        fontSize: {
+          tiny: "0.875rem",
+          small: "1rem",
+          medium: "1.125rem",
+          large: "1.25rem",
+          DEFAULT: "1.125rem",
         },
       },
     }),

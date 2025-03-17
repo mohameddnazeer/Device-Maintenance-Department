@@ -3,7 +3,7 @@ import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 function ProfileForm({ onClose }) {
@@ -20,7 +20,10 @@ function ProfileForm({ onClose }) {
     queryKey: ["addDevice", "region"],
     queryFn: async () => fetchData("regions"),
   });
-  const regionData = regionRes.data ? [{ id: "null", label: "بدون" }, ...regionRes.data] : [];
+  const regionData = useMemo(
+    () => (regionRes.data ? [{ id: "null", label: "بدون" }, ...regionRes.data] : []),
+    [regionRes.data]
+  );
 
   const gateRes = useQuery({
     queryKey: ["addDevice", "gate", regionState.selectedKey],
@@ -33,7 +36,10 @@ function ProfileForm({ onClose }) {
     },
     enabled: !!regionState.selectedKey,
   });
-  const gateData = gateRes.data ? [{ id: "null", label: "بدون" }, ...gateRes.data] : [];
+  const gateData = useMemo(
+    () => (gateRes.data ? [{ id: "null", label: "بدون" }, ...gateRes.data] : []),
+    [gateRes.data]
+  );
 
   const departmentRes = useQuery({
     queryKey: ["addDevice", "department", regionState.selectedKey, gateState.selectedKey],
@@ -86,11 +92,27 @@ function ProfileForm({ onClose }) {
     officeRes.data && setOfficeState(prevState => ({ ...prevState, items: officeRes.data }));
   }, [officeRes.data]);
 
-  const onSelectionChange = (key, setState, data) => {
+  const onSelectionChange = (key, setState, data, name) => {
     setState(prevState => {
       let selectedItem = prevState.items.find(option => option.id === key);
       return { inputValue: selectedItem?.label || "", selectedKey: key, items: data };
     });
+    switch (name) {
+      case "region":
+        setGateState(prevState => ({ ...prevState, selectedKey: null, inputValue: "" }));
+        setDepartmentState(prevState => ({ ...prevState, selectedKey: null, inputValue: "" }));
+        setOfficeState(prevState => ({ ...prevState, selectedKey: null, inputValue: "" }));
+        break;
+      case "gate":
+        setDepartmentState(prevState => ({ ...prevState, selectedKey: null, inputValue: "" }));
+        setOfficeState(prevState => ({ ...prevState, selectedKey: null, inputValue: "" }));
+        break;
+      case "department":
+        setOfficeState(prevState => ({ ...prevState, selectedKey: null, inputValue: "" }));
+        break;
+      default:
+        break;
+    }
   };
 
   const onInputChange = (value, setState, data) => {
@@ -124,94 +146,105 @@ function ProfileForm({ onClose }) {
     });
   };
 
-  const elList = [
-    // name, placeholder, title, label, state, setState, disabled, data
-    {
-      isRequired: false,
-      title: "رقم الجهاز",
-      placeholder: "ادخل رقم الجهاز",
-      name: "id",
-      errorMsg: "رقم الجهاز مطلوب",
-    },
-    {
-      isRequired: true,
-      title: "المنطقة",
-      name: "region",
-      label: "القطاع",
-      state: regionState,
-      setState: setRegionState,
-      data: regionData,
-      placeholder: "اختر القطاع",
-      errorMsg: "القطاع مطلوب",
-    },
-    {
-      isRequired: true,
-      disabled: !regionState.selectedKey,
-      title: "البوابة",
-      name: "gate",
-      label: "البوابة",
-      state: gateState,
-      setState: setGateState,
-      data: gateData,
-      placeholder: "اختر البوابة",
-      errorMsg: "البوابة مطلوبة",
-    },
-    {
-      isRequired: true,
-      disabled: !gateState.selectedKey,
-      title: "الإدارة",
-      name: "department",
-      label: "الإدارة",
-      state: departmentState,
-      setState: setDepartmentState,
-      data: departmentRes.data,
-      placeholder: "اختر الإدارة",
-      errorMsg: "الإدارة مطلوبة",
-    },
-    {
-      isRequired: true,
-      disabled: !departmentState.selectedKey,
-      title: "المكتب",
-      name: "office",
-      label: "المكتب",
-      state: officeState,
-      setState: setOfficeState,
-      data: officeRes.data,
-      placeholder: "اختر المكتب",
-      errorMsg: "المكتب مطلوب",
-    },
-    {
-      isRequired: true,
-      title: "اسم المسؤول عن الجهاز",
-      placeholder: "ادخل الاسم ",
-      name: "ownerName",
-      errorMsg: "اسم المسؤول مطلوب",
-    },
-    {
-      isRequired: true,
-      title: "رقم المسؤول عن الجهاز",
-      placeholder: "ادخل الرقم ",
-      name: "ownerNumber",
-      errorMsg: "رقم المسؤول مطلوب",
-    },
-    {
-      isRequired: true,
-      title: "نوع الجهاز",
-      placeholder: "ادخل نوع الجهاز",
-      name: "deviceType",
-      errorMsg: "نوع الجهاز مطلوب",
-    },
-    {
-      isRequired: true,
-      title: "عنوان MAC",
-      placeholder: "ادخل  MAC",
-      name: "macAddress",
-      errorMsg: "عنوان MAC مطلوب",
-    },
-    { isRequired: false, title: "موديل CPU", placeholder: "ادخل موديل CPU", name: "cpuModel" },
-    { isRequired: false, title: "موديل GPU", placeholder: "ادخل موديل GPU", name: "gpuModel" },
-    { isRequired: false, title: "حجم RAM", placeholder: "ادخل حجم RAM", name: "ramSize" },
-  ];
+  const elList = useMemo(
+    () => [
+      {
+        isRequired: false,
+        title: "رقم الجهاز",
+        placeholder: "ادخل رقم الجهاز",
+        name: "id",
+        errorMsg: "رقم الجهاز مطلوب",
+      },
+      {
+        isRequired: true,
+        title: "المنطقة",
+        name: "region",
+        label: "القطاع",
+        state: regionState,
+        setState: setRegionState,
+        data: regionData,
+        placeholder: "اختر القطاع",
+        errorMsg: "القطاع مطلوب",
+      },
+      {
+        isRequired: true,
+        disabled: !regionState.selectedKey,
+        title: "البوابة",
+        name: "gate",
+        label: "البوابة",
+        state: gateState,
+        setState: setGateState,
+        data: gateData,
+        placeholder: "اختر البوابة",
+        errorMsg: "البوابة مطلوبة",
+      },
+      {
+        isRequired: true,
+        disabled: !gateState.selectedKey,
+        title: "الإدارة",
+        name: "department",
+        label: "الإدارة",
+        state: departmentState,
+        setState: setDepartmentState,
+        data: departmentRes.data,
+        placeholder: "اختر الإدارة",
+        errorMsg: "الإدارة مطلوبة",
+      },
+      {
+        isRequired: true,
+        disabled: !departmentState.selectedKey,
+        title: "المكتب",
+        name: "office",
+        label: "المكتب",
+        state: officeState,
+        setState: setOfficeState,
+        data: officeRes.data,
+        placeholder: "اختر المكتب",
+        errorMsg: "المكتب مطلوب",
+      },
+      {
+        isRequired: true,
+        title: "اسم المسؤول عن الجهاز",
+        placeholder: "ادخل الاسم ",
+        name: "ownerName",
+        errorMsg: "اسم المسؤول مطلوب",
+      },
+      {
+        isRequired: true,
+        title: "رقم المسؤول عن الجهاز",
+        placeholder: "ادخل الرقم ",
+        name: "ownerNumber",
+        errorMsg: "رقم المسؤول مطلوب",
+      },
+      {
+        isRequired: true,
+        title: "نوع الجهاز",
+        placeholder: "ادخل نوع الجهاز",
+        name: "deviceType",
+        errorMsg: "نوع الجهاز مطلوب",
+      },
+      {
+        isRequired: true,
+        title: "عنوان MAC",
+        placeholder: "ادخل  MAC",
+        name: "macAddress",
+        errorMsg: "عنوان MAC مطلوب",
+      },
+      { isRequired: false, title: "موديل CPU", placeholder: "ادخل موديل CPU", name: "cpuModel" },
+      { isRequired: false, title: "موديل GPU", placeholder: "ادخل موديل GPU", name: "gpuModel" },
+      { isRequired: false, title: "حجم RAM", placeholder: "ادخل حجم RAM", name: "ramSize" },
+    ],
+    [
+      regionState,
+      gateState,
+      departmentState,
+      officeState,
+      regionData,
+      gateData,
+      departmentRes.data,
+      officeRes.data,
+    ]
+  );
 
   return (
     <Form
@@ -220,7 +253,7 @@ function ProfileForm({ onClose }) {
       onSubmit={onSubmit}
       className="w-full flex flex-col items-center justify-center"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto max-h-[65vh] scrollbar-hide">
         {elList.map(
           ({
             name,
@@ -240,7 +273,6 @@ function ProfileForm({ onClose }) {
                   isRequired={isRequired}
                   key={name}
                   isDisabled={disabled}
-                  className="max-w-xs"
                   size="lg"
                   inputValue={state.inputValue}
                   items={state.items}
@@ -249,7 +281,7 @@ function ProfileForm({ onClose }) {
                   placeholder={placeholder}
                   selectedKey={state.selectedKey}
                   onInputChange={value => onInputChange(value, setState, data)}
-                  onSelectionChange={key => onSelectionChange(key, setState, data)}
+                  onSelectionChange={key => onSelectionChange(key, setState, data, name)}
                   errorMessage={errorMsg}
                 >
                   {item => (
@@ -274,11 +306,6 @@ function ProfileForm({ onClose }) {
           }
         )}
       </div>
-      {/* <div className="flex justify-center mt-8">
-        <Button variant="secondary" className="w-96 py-2 px-4 rounded-md" type="submit">
-          اضافة
-        </Button>
-      </div> */}
     </Form>
   );
 }

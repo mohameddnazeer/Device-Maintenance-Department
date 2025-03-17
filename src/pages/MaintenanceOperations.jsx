@@ -1,21 +1,20 @@
 import OpModal from "@/components/op-table/op-modal";
 import Table from "@/components/op-table/table";
-import { Modal } from "@/components/ui/animated-modal";
 import { Input } from "@/components/ui/input";
 import { objectToSearchParamsStr } from "@/lib/utils";
+import { Button } from "@heroui/button";
+import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Navbar } from "../components/utils/Navbar";
 
 export const MaintenanceOperations = () => {
   const [URLSearchParams, setURLSearchParams] = useSearchParams();
-  const [search, setSearch] = useState(() => {
-    const search = URLSearchParams.get("_q");
-    return search || "";
-  });
+  const [search, setSearch] = useState(() => URLSearchParams.get("_q") || "");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
-    setURLSearchParams(objectToSearchParamsStr({ _q: search }, URLSearchParams));
+    setURLSearchParams(objectToSearchParamsStr({ _q: search }, URLSearchParams), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
@@ -31,9 +30,11 @@ export const MaintenanceOperations = () => {
               onChange={e => setSearch(e.target.value)}
               className="dark:bg-light-background md:text-xl h-12 w-2/3"
             />
-            <Modal>
-              <OpModal />
-            </Modal>
+
+            <Button onPress={onOpen} color="success">
+              إضافة عملية صيانة
+            </Button>
+            <OpModal isOpen={isOpen} onOpenChange={onOpenChange} />
           </div>
           <Table />
         </div>

@@ -78,7 +78,7 @@ export function DataTable({ columns, data }) {
         { _sort: `${sort[0].desc ? "-" : ""}${sort[0].id}` },
         URLSearchParams
       );
-      setURLSearchParams(newParams);
+      setURLSearchParams(newParams, { replace: true });
       setSorting(sort);
     },
     onColumnVisibilityChange: (updaterOrValue) => {

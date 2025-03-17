@@ -8,9 +8,9 @@ import {
   useDraggable,
 } from "@heroui/modal";
 import { useRef } from "react";
-import { OPForm } from "./new-op-form";
+import ProfileForm from "./AddDeviceForm";
 
-function OpModal({ isOpen, onOpenChange }) {
+const AddDeviceModal = ({ isOpen, onOpenChange }) => {
   const targetRef = useRef(null);
 
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
@@ -21,12 +21,12 @@ function OpModal({ isOpen, onOpenChange }) {
         {onClose => (
           <>
             <ModalHeader {...moveProps} className="flex flex-col gap-1">
-              <h2 className="text-xl">استلام جهاز</h2>
+              <h2 className="text-xl">اضافة جهاز</h2>
               <p className="text-sm text-muted-foreground">يرجى ادخال المعلومات الخاصة بالجهاز</p>
             </ModalHeader>
             <ModalBody>
               <div className="overflow-auto scrollbar-hide">
-                <OPForm onClose={onClose} />
+                <ProfileForm onClose={onClose} />
               </div>
             </ModalBody>
             <ModalFooter>
@@ -48,6 +48,6 @@ function OpModal({ isOpen, onOpenChange }) {
       </ModalContent>
     </Modal>
   );
-}
+};
 
-export default OpModal;
+export default AddDeviceModal;

@@ -52,7 +52,7 @@ export function DataTableToolbar({ table }) {
   const resetFilters = () => {
     setFilters(new Set());
     const searchParams = deleteKeysFromSearchParams(facetedColumns, URLSearchParams);
-    setURLSearchParams(searchParams);
+    setURLSearchParams(searchParams, { replace: true });
   };
 
   return (

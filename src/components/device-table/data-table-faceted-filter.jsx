@@ -23,15 +23,15 @@ export function DataTableFacetedFilter({ column, title, options }) {
   const [selectedValues, setSelectedValues] = useState(() => {
     const newSet = new Set();
     const selected = URLSearchParams.get(column.id);
-    if (selected) selected.split(",").forEach((value) => newSet.add(value));
+    if (selected) selected.split(",").forEach(value => newSet.add(value));
     return newSet;
   });
-  const updateURLSearchParams = (selectedValues) => {
+  const updateURLSearchParams = selectedValues => {
     const searchParams = objectToSearchParamsStr(
       { [column.id]: selectedValues.size ? Array.from(selectedValues) : undefined },
       URLSearchParams
     );
-    setURLSearchParams(searchParams);
+    setURLSearchParams(searchParams, { replace: true });
   };
 
   const resetFilter = () => {
@@ -58,12 +58,13 @@ export function DataTableFacetedFilter({ column, title, options }) {
                   </Badge>
                 ) : (
                   options
-                    .filter((option) => selectedValues.has(option.value))
-                    .map((option) => (
+                    .filter(option => selectedValues.has(option.value))
+                    .map(option => (
                       <Badge
                         variant="secondary"
                         key={option.value}
-                        className="rounded-sm px-1 font-normal">
+                        className="rounded-sm px-1 font-normal"
+                      >
                         {option.label}
                       </Badge>
                     ))
@@ -79,20 +80,20 @@ export function DataTableFacetedFilter({ column, title, options }) {
           <CommandList>
             <CommandEmpty>لا يوجد بيانات</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => {
+              {options.map(option => {
                 const isSelected = selectedValues.has(option.value);
                 return (
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
                       if (isSelected) {
-                        setSelectedValues((selectedValues) => {
+                        setSelectedValues(selectedValues => {
                           selectedValues.delete(option.value);
                           return selectedValues;
                         });
                         updateURLSearchParams(selectedValues);
                       } else {
-                        setSelectedValues((selectedValues) => {
+                        setSelectedValues(selectedValues => {
                           selectedValues.add(option.value);
                           return selectedValues;
                         });
@@ -101,14 +102,16 @@ export function DataTableFacetedFilter({ column, title, options }) {
 
                       const filterValues = Array.from(selectedValues);
                       column?.setFilterValue(filterValues.length ? filterValues : undefined);
-                    }}>
+                    }}
+                  >
                     <div
                       className={cn(
                         "ml-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
                         isSelected
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible"
-                      )}>
+                      )}
+                    >
                       <Check />
                     </div>
                     {option.icon && <option.icon className="ml-2 h-4 w-4 text-muted-foreground" />}
