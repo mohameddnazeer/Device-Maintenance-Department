@@ -14,7 +14,7 @@ export const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleClickOutside = (event) => {
+  const handleClickOutside = event => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
       setIsMenuOpen(false);
     }
@@ -43,7 +43,8 @@ export const Navbar = () => {
               `text-xl ${
                 isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
               }`
-            }>
+            }
+          >
             جاهز للتسليم
           </NavLink>
           <NavLink
@@ -52,7 +53,8 @@ export const Navbar = () => {
               `text-xl ${
                 isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
               }`
-            }>
+            }
+          >
             عمليات الصيانة
           </NavLink>
           <NavLink
@@ -61,17 +63,9 @@ export const Navbar = () => {
               `text-xl ${
                 isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
               }`
-            }>
+            }
+          >
             كل الاجهزة
-          </NavLink>
-          <NavLink
-            to="/addDevice"
-            className={({ isActive }) =>
-              `text-xl ${
-                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
-              }`
-            }>
-            اضافة جهاز
           </NavLink>
         </div>
       </div>
@@ -80,7 +74,8 @@ export const Navbar = () => {
         ref={menuRef}
         className={`flex flex-col h-80 justify-center space-y-3 absolute top-0 left-0 w-full bg-light-background text-foreground lg:hidden p-4 z-40 transition-transform duration-500 ${
           isMenuOpen ? "translate-y-0" : "-translate-y-full"
-        }`}>
+        }`}
+      >
         <Button variant="secondary">
           <NavLink to="/alldevices" onClick={toggleMenu}>
             كل الاجهزة

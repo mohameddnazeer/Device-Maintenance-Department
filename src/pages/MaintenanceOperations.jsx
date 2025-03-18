@@ -31,7 +31,7 @@ export const MaintenanceOperations = () => {
               className="dark:bg-light-background md:text-xl h-12 w-2/3"
             />
 
-            <Button onPress={onOpen} color="success">
+            <Button type="button" onPress={onOpen} color="success">
               إضافة عملية صيانة
             </Button>
             <OpModal isOpen={isOpen} onOpenChange={onOpenChange} />

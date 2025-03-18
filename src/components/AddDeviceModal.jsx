@@ -8,7 +8,7 @@ import {
   useDraggable,
 } from "@heroui/modal";
 import { useRef } from "react";
-import ProfileForm from "./AddDeviceForm";
+import AddDeviceForm from "./AddDeviceForm";
 
 const AddDeviceModal = ({ isOpen, onOpenChange }) => {
   const targetRef = useRef(null);
@@ -26,7 +26,7 @@ const AddDeviceModal = ({ isOpen, onOpenChange }) => {
             </ModalHeader>
             <ModalBody>
               <div className="overflow-auto scrollbar-hide">
-                <ProfileForm onClose={onClose} />
+                <AddDeviceForm onClose={onClose} />
               </div>
             </ModalBody>
             <ModalFooter>

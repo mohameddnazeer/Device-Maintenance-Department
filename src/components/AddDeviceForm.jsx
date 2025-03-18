@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-function ProfileForm({ onClose }) {
+function AddDeviceForm({ onSuccess }) {
   const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [departmentState, setDepartmentState] = useState({
@@ -139,7 +139,8 @@ function ProfileForm({ onClose }) {
       // eslint-disable-next-line no-unused-vars
       success: data => {
         console.log("🚀 ", data);
-        onClose();
+        // onClose();
+        onSuccess?.();
         return "تم الإضافة";
       },
       error: { message: "حدث خطأ ما" },
@@ -251,9 +252,9 @@ function ProfileForm({ onClose }) {
       dir="rtl"
       id="add-device-form"
       onSubmit={onSubmit}
-      className="w-full flex flex-col items-center justify-center"
+      className="w-full flex flex-col items-center justify-center p-2"
     >
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto max-h-[65vh] scrollbar-hide">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
         {elList.map(
           ({
             name,
@@ -310,4 +311,4 @@ function ProfileForm({ onClose }) {
   );
 }
 
-export default ProfileForm;
+export default AddDeviceForm;
