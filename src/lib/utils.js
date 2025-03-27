@@ -24,7 +24,7 @@ export function searchParamsToObject(searchParams) {
 // delete keys from search params
 export function deleteKeysFromSearchParams(keys, prevParams) {
   const searchParams = new URLSearchParams(prevParams);
-  keys.forEach((key) => searchParams.delete(key));
+  keys.forEach(key => searchParams.delete(key));
   return searchParams;
 }
 
@@ -48,7 +48,7 @@ export function objectToSearchParams(obj, prevParams) {
   const searchParams = new URLSearchParams(prevParams);
   for (const key in obj) {
     if (Array.isArray(obj[key])) {
-      obj[key].forEach((value) => searchParams.append(key, value));
+      obj[key].forEach(value => searchParams.append(key, value));
     } else {
       searchParams.set(key, obj[key]);
     }
@@ -56,12 +56,21 @@ export function objectToSearchParams(obj, prevParams) {
   return searchParams;
 }
 
-export const fetchData = async (endpoint) => {
+export const fetchData = async endpoint => {
+  const accessToken = window.localStorage.getItem("accessToken");
+  const url = getUrl() + endpoint;
+
+  const res = accessToken
+    ? await fetch(url, { headers: { Authorization: `bearer ${accessToken}` } })
+    : await fetch(url);
+  if (res.ok) return await res.json();
+  return res;
+};
+
+export const getUrl = () => {
   if (!process.env.REACT_APP_API_URL)
     throw new Error("Please set REACT_APP_API_URL Environment Variable");
-  const url = process.env.REACT_APP_API_URL.concat(endpoint);
-  const res = await fetch(url);
-  return await res.json();
+  return new URL(process.env.REACT_APP_API_URL);
 };
 
 export const getFacetedUniqueValues = () => {

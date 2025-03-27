@@ -12,5 +12,5 @@ export const taskSchema = z.object({
   error: z.any(),
   notes: z.any(),
   solved: z.any(),
-  createdAt: z.any(),
+  createdDate: z.any(),
 });

@@ -14,7 +14,9 @@ export const MaintenanceOperations = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
-    setURLSearchParams(objectToSearchParamsStr({ _q: search }, URLSearchParams), { replace: true });
+    setURLSearchParams(objectToSearchParamsStr({ searchTerm: search }, URLSearchParams), {
+      replace: true,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 

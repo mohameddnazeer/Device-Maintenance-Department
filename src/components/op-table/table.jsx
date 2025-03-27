@@ -11,7 +11,7 @@ export default function Table() {
 
   const { error, data, isFetching, refetch } = useQuery({
     queryKey: ["op-table", "maintenance-operations"],
-    queryFn: async () => fetchData(`maintenance-operations?${URLSearchParams.toString()}`),
+    queryFn: async () => fetchData(`api/maintenance?${URLSearchParams.toString()}`),
   });
 
   useEffect(() => {

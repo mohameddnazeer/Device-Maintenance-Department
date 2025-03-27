@@ -4,12 +4,13 @@
     {
       "splitTerminals": [
         {
-          "name": "server",
-          "commands": ["npx json-server src/db.json -p 5000"]
-        },
-        {
           "name": "client",
           "commands": ["npm run start"]
+        },
+        {
+          "name": "install",
+          "commands": ["npm install"],
+          "shouldRunCommands": false
         }
       ]
     }

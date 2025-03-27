@@ -16,12 +16,12 @@ export function DataTablePagination({ table }) {
   const [_URLSearchParams, setURLSearchParams] = useSearchParams();
 
   const handlePageSizeChange = pageSize => {
-    const newParams = objectToSearchParams({ _per_page: pageSize }, _URLSearchParams);
+    const newParams = objectToSearchParams({ pageSize }, _URLSearchParams);
     setURLSearchParams(newParams, { replace: true });
   };
 
   const handlePageChange = page => {
-    const newParams = objectToSearchParams({ _page: page }, _URLSearchParams);
+    const newParams = objectToSearchParams({ pageNumber: page }, _URLSearchParams);
     setURLSearchParams(newParams, { replace: true });
   };
 

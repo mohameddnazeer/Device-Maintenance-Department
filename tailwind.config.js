@@ -5,7 +5,7 @@ module.exports = {
   darkMode: "class",
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/@heroui/theme/dist/components/(autocomplete|button|chip|form|input|modal|ripple|spinner|listbox|divider|popover|scroll-shadow).js",
+    "./node_modules/@heroui/theme/dist/components/(autocomplete|button|chip|dropdown|form|input|modal|ripple|spinner|listbox|divider|popover|scroll-shadow|menu).js"
   ],
 
   theme: {

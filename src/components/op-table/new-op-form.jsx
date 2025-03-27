@@ -16,13 +16,15 @@ export function OPForm() {
   const { data: idData } = useQuery({
     queryKey: ["op-table", "devices-id", idState.inputValue],
     queryFn: async () =>
-      fetchData("devices" + (idState.inputValue ? "?id=" + idState.inputValue : "")),
+      fetchData(
+        "api/devices" + (idState.inputValue ? "?domainIDIfExists=" + idState.inputValue : "")
+      ),
   });
 
   const { data: macData } = useQuery({
     queryKey: ["op-table", "devices-macAddress", macState.inputValue],
     queryFn: async () =>
-      fetchData("devices" + (macState.inputValue ? "?macAddress=" + macState.inputValue : "")),
+      fetchData("api/devices" + (macState.inputValue ? "?macAddress=" + macState.inputValue : "")),
   });
 
   useEffect(() => {

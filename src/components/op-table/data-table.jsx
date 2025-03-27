@@ -53,12 +53,12 @@ export function DataTable({ columns, data }) {
             desc: sort.startsWith("-") ? true : false,
           },
         ]
-      : [{ id: "createdAt", desc: true }];
+      : [{ id: "createdDate", desc: true }];
   });
   const queryClient = useQueryClient();
   const res = queryClient.getQueryData(["op-table", "maintenance-operations"]);
-  const currentPage = URLSearchParams.get("_page") || 1;
-  const pageSize = URLSearchParams.get("_per_page") || 10;
+  const currentPage = URLSearchParams.get("pageNumber") || 1;
+  const pageSize = URLSearchParams.get("pageSize") || 10;
 
   const table = useReactTable({
     columns,

@@ -1,14 +1,26 @@
+import { Button } from "@heroui/button";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
+import { useDisclosure } from "@heroui/modal";
+import { PlusCircleIcon, PlusIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import lightImage from "../../assets/web-main.png";
 import darkImage from "../../assets/web-maintenance.png";
 import Darkmode from "../Darkmode";
-import { Button } from "../ui/button";
+import DepartmentModal from "../op-table/department-modal";
+import GateModal from "../op-table/gate-modal";
+import OfficeModal from "../op-table/office-modal";
+import RegionModal from "../op-table/region-modal";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const regionState = useDisclosure();
+  const gateState = useDisclosure();
+  const departmentState = useDisclosure();
+  const officeState = useDisclosure();
+  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -27,15 +39,60 @@ export const Navbar = () => {
     };
   }, []);
 
+  const onAction = key => {
+    switch (key) {
+      case "add-region":
+        regionState.onOpen();
+        break;
+      case "add-gate":
+        gateState.onOpen();
+        break;
+      case "add-department":
+        departmentState.onOpen();
+        break;
+      case "add-office":
+        officeState.onOpen();
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <div className="flex justify-between items-center p-4 relative shadow-md">
       <div className="flex gap-x-4">
         <div className="lg:hidden text-3xl">
-          <Button size="icon" variant="secondary" onClick={toggleMenu}>
+          <Button size="icon" variant="solid" onPress={toggleMenu}>
             <FaBars />
           </Button>
         </div>
         <Darkmode />
+
+        <Dropdown dir="rtl">
+          <DropdownTrigger>
+            <Button isIconOnly variant="solid" radius="lg">
+              <PlusCircleIcon />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Dropdown menu with description"
+            variant="faded"
+            onAction={onAction}
+          >
+            <DropdownItem key="add-region" endContent={<PlusIcon className={iconClasses} />}>
+              اضافة قطاع
+            </DropdownItem>
+            <DropdownItem key="add-gate" endContent={<PlusIcon className={iconClasses} />}>
+              اضافة بوابة
+            </DropdownItem>
+            <DropdownItem key="add-department" endContent={<PlusIcon className={iconClasses} />}>
+              اضافة إدارة
+            </DropdownItem>
+            <DropdownItem key="add-office" endContent={<PlusIcon className={iconClasses} />}>
+              اضافة مكتب
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         <div className="hidden lg:flex lg:items-center gap-4 text-muted-foreground">
           <NavLink
             to="/ready-for-delivery"
@@ -103,6 +160,13 @@ export const Navbar = () => {
         <img className="w-10 dark:hidden" src={darkImage} alt="nav" />
         <img className="w-10 hidden dark:block" src={lightImage} alt="nav" />
       </div>
+      <RegionModal isOpen={regionState.isOpen} onOpenChange={regionState.onOpenChange} />
+      <GateModal isOpen={gateState.isOpen} onOpenChange={gateState.onOpenChange} />
+      <DepartmentModal
+        isOpen={departmentState.isOpen}
+        onOpenChange={departmentState.onOpenChange}
+      />
+      <OfficeModal isOpen={officeState.isOpen} onOpenChange={officeState.onOpenChange} />
     </div>
   );
 };

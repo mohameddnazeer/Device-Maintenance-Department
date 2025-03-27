@@ -1,9 +1,9 @@
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons";
-import { fetchData } from "@/lib/utils";
+import { getUrl } from "@/lib/utils";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
-import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -15,26 +15,29 @@ export const Login = () => {
 
   const toggleVisibility = () => setIsVisible(!isVisible);
 
-  const { mutateAsync } = useMutation({
-    mutationFn: variables =>
-      fetchData("login", { method: "POST", body: JSON.stringify(variables) }),
-  });
-
-  const onSubmit = event => {
+  const onSubmit = async event => {
     event.preventDefault();
     // Get form data as an object.
-    const data = Object.fromEntries(new FormData(event.currentTarget));
+    const data = JSON.stringify(Object.fromEntries(new FormData(event.currentTarget)));
+    let config = {
+      method: "post",
+      url: getUrl() + "api/users/login",
+      headers: { "Content-Type": "application/json" },
+      data,
+    };
 
-    const res = mutateAsync(data);
-    toast.promise(res, {
+    toast.promise(axios.request(config), {
       loading: <p>جاري تسجيل الدخول</p>,
-      // eslint-disable-next-line no-unused-vars
-      success: data => {
-        console.log("🚀 ", data);
+      success: ({ data }) => {
+        window.localStorage.setItem("accessToken", data.accessToken);
+        window.localStorage.setItem("refreshToken", data.refreshToken);
         navigate("/home");
         return "تم تسجيل الدخول بنجاح";
       },
-      error: { message: "حدث خطأ ما" },
+      error: err => {
+        console.log(err);
+        return "حدث خطأ اثناء تسجيل الدخول";
+      },
     });
   };
 

@@ -2,68 +2,68 @@
   "offices": [
     {
       "id": "deps",
-      "label": "مكتب الايجارات",
+      "name": "مكتب الايجارات",
       "number": "21"
     },
     {
       "id": "abstracts",
-      "label": "المستخلصات",
+      "name": "المستخلصات",
       "number": "24"
     },
     {
       "id": "area",
-      "label": "المساحة",
+      "name": "المساحة",
       "number": "45"
     }
   ],
   "departments": [
     {
       "id": "nozm",
-      "label": "فرع نظم المعلومات",
+      "name": "فرع نظم المعلومات",
       "number": "12"
     },
     {
       "id": "eng",
-      "label": "الادارة الهندسية",
+      "name": "الادارة الهندسية",
       "number": "42"
     },
     {
       "id": "money",
-      "label": "الادارة المالية",
+      "name": "الادارة المالية",
       "number": "22"
     }
   ],
   "gates": [
     {
       "id": "saudiGate",
-      "label": "بوابة السعودية",
+      "name": "بوابة السعودية",
       "number": "21"
     },
     {
       "id": "emaratGate",
-      "label": "بوابة الامارات",
+      "name": "بوابة الامارات",
       "number": "41"
     },
     {
       "id": "iraqGate",
-      "label": "بوابة العراق",
+      "name": "بوابة العراق",
       "number": "61"
     }
   ],
   "regions": [
     {
       "id": "dabaa",
-      "label": "قطاع الضبعة",
+      "name": "قطاع الضبعة",
       "number": "45"
     },
     {
       "id": "east",
-      "label": "اللاهون",
+      "name": "اللاهون",
       "number": "35"
     },
     {
       "id": "lahoon",
-      "label": "غرب",
+      "name": "غرب",
       "number": "25"
     }
   ],
