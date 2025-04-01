@@ -11,10 +11,7 @@ import { Navbar } from "../components/utils/Navbar";
 const AllDevices = () => {
   const navigate = useNavigate();
   const [QueryParams, setQueryParams] = useSearchParams();
-  const [search, setSearch] = useState(() => {
-    const search = QueryParams.get("SearchTerm");
-    return search || "";
-  });
+  const [search, setSearch] = useState(() => QueryParams.get("SearchTerm") || "");
   const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [departmentState, setDepartmentState] = useState({
@@ -117,21 +114,6 @@ const AllDevices = () => {
         return { ...prevState, items: officeRes.data, inputValue: selectedItem?.name || "" };
       });
   }, [officeRes.data]);
-
-  // const [filters, setFilters] = useState(() => {
-  //   const newSet = new Set();
-  //   facetedColumns.forEach(id => {
-  //     const selected = QueryParams.get(id);
-  //     if (selected) selected.split(",").forEach(value => newSet.add(value));
-  //   });
-  //   return newSet;
-  // });
-
-  // const resetFilters = () => {
-  //   setFilters(new Set());
-  //   const searchParams = deleteKeysFromSearchParams(facetedColumns, QueryParams);
-  //   setQueryParams(searchParams, { replace: true });
-  // };
 
   const filterEls = useMemo(
     () => [
@@ -284,7 +266,6 @@ const AllDevices = () => {
             )}
           </div>
           <Table />
-          {/* <AddDeviceModal isOpen={isOpen} onOpenChange={onOpenChange} /> */}
         </div>
       </div>
     </>

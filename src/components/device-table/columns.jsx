@@ -1,4 +1,6 @@
+import { Chip } from "@heroui/chip";
 import { capitalize } from "lodash";
+import { Clock } from "lucide-react";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 
@@ -90,7 +92,29 @@ export const columns = [
         </div>
       );
     },
-    filterFn: (row, id, value) => value.includes(row.getValue(id)),
+  },
+  {
+    accessorKey: "deviceStatus",
+    label: "حالة الجهاز",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="text-right text-nowrap"
+        column={column}
+        title={column.columnDef.label || capitalize(column.id)}
+      />
+    ),
+    cell: ({ row }) => {
+      switch (row.getValue("deviceStatus")) {
+        case "InMaintain":
+          return (
+            <Chip color="warning" startContent={<Clock size={18} />}>
+              تحت الصيانة
+            </Chip>
+          );
+        default:
+          return <Chip>مع المالك</Chip>;
+      }
+    },
   },
   {
     accessorKey: "type",
@@ -107,7 +131,6 @@ export const columns = [
         <span className="max-w-[500px] truncate font-medium">{row.getValue("type")}</span>
       </div>
     ),
-    enableGlobalFilter: false,
   },
   {
     accessorKey: "mac",
@@ -124,7 +147,6 @@ export const columns = [
         <span className="max-w-[500px] truncate font-medium">{row.getValue("mac")}</span>
       </div>
     ),
-    filterFn: "includesString",
   },
   {
     accessorKey: "owner",
@@ -141,7 +163,6 @@ export const columns = [
         <span className="max-w-[500px] truncate font-medium">{row.getValue("owner")}</span>
       </div>
     ),
-    filterFn: "includesString",
   },
   {
     accessorKey: "phoneNmber",
@@ -158,7 +179,6 @@ export const columns = [
         <span className="max-w-[500px] truncate font-medium">{row.getValue("phoneNmber")}</span>
       </div>
     ),
-    enableGlobalFilter: false,
   },
   {
     accessorKey: "cpu",
@@ -175,7 +195,6 @@ export const columns = [
         <span className="max-w-[500px] truncate font-medium">{row.getValue("cpu")}</span>
       </div>
     ),
-    enableGlobalFilter: false,
   },
   {
     accessorKey: "gpu",
@@ -192,10 +211,9 @@ export const columns = [
         <span className="max-w-[500px] truncate font-medium">{row.getValue("gpu")}</span>
       </div>
     ),
-    enableGlobalFilter: false,
   },
   {
-    accessorKey: "ram",
+    accessorKey: "ramTotal",
     label: "حجم RAM",
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -206,10 +224,9 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">
-        <span className="max-w-[500px] truncate font-medium">{row.getValue("ram")}</span>
+        <span className="max-w-[500px] truncate font-medium">{row.getValue("deviceStatus")}</span>
       </div>
     ),
-    enableGlobalFilter: false,
   },
   {
     accessorKey: "createdDate",
@@ -235,8 +252,6 @@ export const columns = [
     },
     enableSorting: true,
     enableHiding: true,
-    enableGlobalFilter: false,
-    // filterFn: "includesString",
   },
   {
     id: "actions",
@@ -245,6 +260,5 @@ export const columns = [
         <DataTableRowActions row={row} />
       </div>
     ),
-    enableGlobalFilter: false,
   },
 ];

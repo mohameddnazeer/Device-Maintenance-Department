@@ -1,13 +1,13 @@
 import { Chip } from "@heroui/chip";
 import { capitalize } from "lodash";
-import { CheckCircleIcon, XCircle } from "lucide-react";
+import { CheckCircleIcon, Clock, HomeIcon, SettingsIcon, XCircle } from "lucide-react";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 
 export const columns = [
   {
     accessorKey: "deviceId",
-    label: "رقم الجهاز",
+    label: "الجهاز",
     header: ({ column }) => (
       <DataTableColumnHeader
         className="text-right"
@@ -18,25 +18,7 @@ export const columns = [
     cell: ({ row }) => <div className="w-[80px] text-center">{row.getValue("deviceId")}</div>,
     enableSorting: true,
     enableHiding: true,
-    // filterFn: "includesString",
   },
-  // {
-  //   accessorKey: "macAddress",
-  //   label: "عنوان MAC",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader
-  //       className="text-right text-nowrap"
-  //       column={column}
-  //       title={column.columnDef.label || capitalize(column.id)}
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="flex space-x-2">
-  //       <span className="max-w-[200px] truncate font-medium">{row.getValue("macAddress")}</span>
-  //     </div>
-  //   ),
-  //   // filterFn: "includesString",
-  // },
   {
     accessorKey: "delievry",
     label: "مسلّم الجهاز",
@@ -109,7 +91,7 @@ export const columns = [
   },
   {
     accessorKey: "state",
-    label: "تم الحل",
+    label: "الحالة",
     header: ({ column }) => (
       <DataTableColumnHeader
         className="text-right text-nowrap"
@@ -117,35 +99,82 @@ export const columns = [
         title={column.columnDef.label || capitalize(column.id)}
       />
     ),
-    cell: ({ row }) => (
-      <div className="flex space-x-2">
-        <span>
-          {row.getValue("state") ? (
-            <Chip
-              color="success"
-              startContent={<CheckCircleIcon size={18} />}
-              variant="flat"
-              classNames={{ content: "text-sm" }}
-            >
+    cell: ({ row }) => {
+      switch (row.getValue("state")) {
+        case "Done":
+          return (
+            <Chip color="success" startContent={<CheckCircleIcon size={18} />}>
               تم الحل
             </Chip>
-          ) : (
-            <Chip
-              color="danger"
-              startContent={<XCircle size={18} />}
-              variant="flat"
-              classNames={{ content: "text-sm" }}
-            >
-              لم يتم الحل
+          );
+        case "WorkingOnIt":
+          return (
+            <Chip color="warning" startContent={<Clock size={18} />}>
+              قيد العمل
             </Chip>
-          )}
-        </span>
-      </div>
-    ),
-    filterFn: "includesString",
+          );
+        case "Canceled":
+          return (
+            <Chip color="danger" startContent={<XCircle size={18} />}>
+              تم إلغاء العملية
+            </Chip>
+          );
+        default:
+          return <Chip color="default">غير محدد</Chip>;
+      }
+    },
   },
   {
-    accessorKey: "error",
+    accessorKey: "maintainLocation",
+    label: "مكان الصيانة",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="text-right text-nowrap"
+        column={column}
+        title={column.columnDef.label || capitalize(column.id)}
+      />
+    ),
+    cell: ({ row }) => {
+      switch (row.getValue("maintainLocation")) {
+        case "InOurBranch":
+          return <Chip startContent={<SettingsIcon size={18} />}>داخل فرع النظم</Chip>;
+        case "InDeviceOwnerOffice":
+          return <Chip startContent={<HomeIcon size={18} />}>مع المالك</Chip>;
+        default:
+          return <Chip>{row.getValue("maintainLocation")}</Chip>;
+      }
+    },
+  },
+  {
+    // TODO: add this in the backend
+    accessorKey: "delivered",
+    label: "تم التسليم",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        className="text-right text-nowrap"
+        column={column}
+        title={column.columnDef.label || capitalize(column.id)}
+      />
+    ),
+    cell: ({ row }) => {
+      switch (row.getValue("delivered")) {
+        case "Delivered":
+          return (
+            <Chip color="success" startContent={<CheckCircleIcon size={18} />}>
+              تم التسليم
+            </Chip>
+          );
+        default:
+          return (
+            <Chip color="default" startContent={<XCircle size={18} />}>
+              لم يتم التسليم
+            </Chip>
+          );
+      }
+    },
+  },
+  {
+    accessorKey: "failureMaintains",
     label: "العطل",
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -156,10 +185,16 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">
-        <span className="max-w-[300px] truncate font-medium">{row.getValue("error")}</span>
+        <span className="max-w-[300px] truncate font-medium">
+          {row.getValue("failureMaintains")?.map((item, index) => (
+            <span key={index} className="text-right text-sm font-normal">
+              {item.name}
+              {index !== row.getValue("failureMaintains").length - 1 && " -"}
+            </span>
+          ))}
+        </span>
       </div>
     ),
-    filterFn: "includesString",
   },
   {
     accessorKey: "notes",

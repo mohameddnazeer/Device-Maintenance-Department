@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { objectToSearchParamsStr } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
 import { flexRender, getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -25,13 +24,13 @@ export function DataTable({ columns, data }) {
   const storedVisibility = JSON.parse(sessionStorage.getItem("columnVisibility")) || {};
   const [columnVisibility, setColumnVisibility] = useState({
     ...initialVisibility,
-    id: true,
-    macAddress: true,
-    region: true,
+    domainIDIfExists: true,
+    // region: true,
     // gate: true,
     department: true,
     office: true,
-    ownerName: true,
+    owner: true,
+    deviceStatus: true,
     ...storedVisibility,
   });
 
@@ -51,20 +50,18 @@ export function DataTable({ columns, data }) {
         ]
       : [{ id: "createdDate", desc: true }];
   });
-  const queryClient = useQueryClient();
-  const res = queryClient.getQueryData(["table", "devices"]);
   const currentPage = URLSearchParams.get("pageNumber") || 1;
   const pageSize = URLSearchParams.get("pageSize") || 10;
 
   const table = useReactTable({
     columns,
-    data,
+    data: data.data,
     state: { sorting, columnVisibility },
     initialState: { pagination: { pageIndex: currentPage - 1, pageSize } },
     manualPagination: true,
     manualFiltering: true,
     manualSorting: true,
-    pageCount: res.pages,
+    pageCount: data.pagination.totalPages,
     onSortingChange: updaterOrValue => {
       const sort = updaterOrValue();
       const newParams = objectToSearchParamsStr(

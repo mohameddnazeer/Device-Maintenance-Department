@@ -8,6 +8,7 @@ import { NavLink } from "react-router-dom";
 import lightImage from "../../assets/web-main.png";
 import darkImage from "../../assets/web-maintenance.png";
 import Darkmode from "../Darkmode";
+import FailureModal from "../failure-modal";
 import DepartmentModal from "../op-table/department-modal";
 import GateModal from "../op-table/gate-modal";
 import OfficeModal from "../op-table/office-modal";
@@ -20,6 +21,7 @@ export const Navbar = () => {
   const gateState = useDisclosure();
   const departmentState = useDisclosure();
   const officeState = useDisclosure();
+  const failureState = useDisclosure();
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   const toggleMenu = () => {
@@ -52,6 +54,9 @@ export const Navbar = () => {
         break;
       case "add-office":
         officeState.onOpen();
+        break;
+      case "add-failure":
+        failureState.onOpen();
         break;
       default:
         break;
@@ -91,10 +96,13 @@ export const Navbar = () => {
             <DropdownItem key="add-office" endContent={<PlusIcon className={iconClasses} />}>
               اضافة مكتب
             </DropdownItem>
+            <DropdownItem key="add-failure" endContent={<PlusIcon className={iconClasses} />}>
+              اضافة عطل
+            </DropdownItem>
           </DropdownMenu>
         </Dropdown>
         <div className="hidden lg:flex lg:items-center gap-4 text-muted-foreground">
-          <NavLink
+          {/* <NavLink
             to="/ready-for-delivery"
             className={({ isActive }) =>
               `text-xl ${
@@ -103,9 +111,9 @@ export const Navbar = () => {
             }
           >
             جاهز للتسليم
-          </NavLink>
+          </NavLink> */}
           <NavLink
-            to="/maintenance-operations"
+            to="/maintenance"
             className={({ isActive }) =>
               `text-xl ${
                 isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
@@ -139,20 +147,15 @@ export const Navbar = () => {
           </NavLink>
         </Button>
         <Button variant="secondary">
-          <NavLink to="/addDevice" onClick={toggleMenu}>
-            اضافة جهاز
-          </NavLink>
-        </Button>
-        <Button variant="secondary">
-          <NavLink to="/maintenance-operations" onClick={toggleMenu}>
+          <NavLink to="/maintenance" onClick={toggleMenu}>
             عمليات الصيانة
           </NavLink>
         </Button>
-        <Button variant="secondary">
+        {/* <Button variant="secondary">
           <NavLink to="/ready-for-delivery" onClick={toggleMenu}>
             جاهز للتسليم
           </NavLink>
-        </Button>
+        </Button> */}
       </div>
 
       <div className="flex justify-center items-center gap-x-2">
@@ -160,6 +163,7 @@ export const Navbar = () => {
         <img className="w-10 dark:hidden" src={darkImage} alt="nav" />
         <img className="w-10 hidden dark:block" src={lightImage} alt="nav" />
       </div>
+      <FailureModal isOpen={failureState.isOpen} onOpenChange={failureState.onOpenChange} />
       <RegionModal isOpen={regionState.isOpen} onOpenChange={regionState.onOpenChange} />
       <GateModal isOpen={gateState.isOpen} onOpenChange={gateState.onOpenChange} />
       <DepartmentModal

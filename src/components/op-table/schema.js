@@ -3,14 +3,15 @@ import { z } from "zod";
 // We're keeping a simple non-relational schema here.
 // IRL, you will have a schema for your data models.
 export const taskSchema = z.object({
-  id: z.any(),
-  macAddress: z.any(),
-  soldierName: z.any(),
-  soldierNumber: z.any(),
-  nozomSoldierName: z.any(),
-  maintenanceSoldier: z.any(),
-  error: z.any(),
+  deviceId: z.any(),
+  delievry: z.any(),
+  delievryPhoneNumber: z.any(),
+  receiverID: z.any(),
+  maintainerId: z.any(),
+  failureMaintains: z.any(),
   notes: z.any(),
-  solved: z.any(),
+  state: z.any(),
+  maintainLocation: z.any(),
+  delivered: z.any(),
   createdDate: z.any(),
 });

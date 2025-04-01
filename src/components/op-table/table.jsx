@@ -1,24 +1,24 @@
-import { fetchData } from "@/lib/utils";
+import { customFetch } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
+import Loader from "../loader";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import TableLoader from "./loader";
 
 export default function Table() {
   const [URLSearchParams] = useSearchParams();
-
   const { error, data, isFetching, refetch } = useQuery({
-    queryKey: ["op-table", "maintenance-operations"],
-    queryFn: async () => fetchData(`api/maintenance?${URLSearchParams.toString()}`),
+    select: data => data.data,
+    queryKey: ["op-table", "maintenance"],
+    queryFn: async () => customFetch(`api/maintenance?${URLSearchParams.toString()}`),
   });
 
   useEffect(() => {
     refetch();
   }, [URLSearchParams, refetch]);
 
-  if (isFetching) return <TableLoader />;
+  if (isFetching) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
-  return <DataTable data={data.data || data} columns={columns} />;
+  return <DataTable data={data} columns={columns} />;
 }

@@ -13,7 +13,7 @@ export function DataTableViewOptions({ table }) {
   return (
     <DropdownMenu dir="rtl">
       <DropdownMenuTrigger asChild>
-        <Button variant="secondary" className="ml-auto hidden lg:flex">
+        <Button variant="secondary" className="hidden lg:flex">
           <Settings2 />
           عرض
         </Button>
@@ -21,14 +21,15 @@ export function DataTableViewOptions({ table }) {
       <DropdownMenuContent align="end" className="w-[150px]">
         {table
           .getAllColumns()
-          .filter((column) => typeof column.accessorFn !== "undefined" && column.getCanHide())
-          .map((column) => {
+          .filter(column => typeof column.accessorFn !== "undefined" && column.getCanHide())
+          .map(column => {
             return (
               <DropdownMenuCheckboxItem
                 key={column.id}
                 className="capitalize"
                 checked={column.getIsVisible()}
-                onCheckedChange={(value) => column.toggleVisibility(!!value)}>
+                onCheckedChange={value => column.toggleVisibility(!!value)}
+              >
                 {column.columnDef.label || capitalize(column.id)}
               </DropdownMenuCheckboxItem>
             );

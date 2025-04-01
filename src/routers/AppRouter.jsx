@@ -8,11 +8,12 @@ import { Login } from "../pages/Login";
 // import AddDevice from "../pages/AddDevice";
 import { getUrl } from "@/lib/utils";
 import AddDevice from "@/pages/AddDevice";
+import DeviceDetailsPage from "@/pages/DeviceDetailsPage";
 import axios from "axios";
 import { useInterval } from "usehooks-ts";
 import AllDevices from "../pages/AllDevices";
 import { MaintenanceOperations } from "../pages/MaintenanceOperations";
-import { ReadyForDelivery } from "../pages/ReadyForDelivery";
+// import { ReadyForDelivery } from "../pages/ReadyForDelivery";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,8 +25,13 @@ const router = createBrowserRouter(
       <Route path="/alldevices" element={<AllDevices />} />
       <Route path="/home" element={<AllDevices />} />
       <Route path="/addDevice" element={<AddDevice />} />
-      <Route path="/maintenance-operations" element={<MaintenanceOperations />} />
-      <Route path="/ready-for-delivery" element={<ReadyForDelivery />} />
+      <Route path="/maintenance" element={<MaintenanceOperations />} />
+      {/* <Route path="/ready-for-delivery" element={<ReadyForDelivery />} /> */}
+      {/* <Route path="/maintenance/:id" element={<MaintenanceDetailsPage />} /> */}
+      <Route
+        path="/regions/:regionId/gates/:gateId/departments/:deptId/offices/:officeId/devices/:id"
+        element={<DeviceDetailsPage />}
+      />
     </>
   )
 );
@@ -40,14 +46,24 @@ const AppRouter = () => {
       data: { accessToken, refreshToken },
     };
     if (accessToken && refreshToken) {
-      const {
-        data: { accessToken, refreshToken },
-      } = await axios.request(config);
-      window.localStorage.setItem("accessToken", accessToken);
-      window.localStorage.setItem("refreshToken", refreshToken);
+      try {
+        const {
+          data: { accessToken, refreshToken },
+        } = await axios.request(config);
+        window.localStorage.setItem("accessToken", accessToken);
+        window.localStorage.setItem("refreshToken", refreshToken);
+      } catch (error) {
+        window.localStorage.removeItem("accessToken");
+        window.localStorage.removeItem("refreshToken");
+        window.location.href = "/login";
+      }
     }
   }, 1 * 60 * 1000);
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
 };
 
 export default AppRouter;

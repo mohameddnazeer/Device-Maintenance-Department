@@ -13,8 +13,7 @@ export function DataTableToolbar({ table }) {
   };
 
   return (
-    <div className="flex items-center gap-x-2">
-      {/* <div className="flex flex-1 items-center gap-x-2"></div> */}
+    <div className="flex items-center justify-between w-full gap-x-2">
       <Button size="icon" variant="secondary" onClick={handleRefetch}>
         <RefreshCwIcon />
       </Button>

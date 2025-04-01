@@ -31,7 +31,7 @@ function OpModal({ isOpen, onOpenChange }) {
             </ModalBody>
             <ModalFooter>
               <Button
-                form="add-device-form"
+                form="add-op-form"
                 type="reset"
                 color="danger"
                 variant="light"
@@ -39,7 +39,7 @@ function OpModal({ isOpen, onOpenChange }) {
               >
                 إلغاء
               </Button>
-              <Button form="add-device-form" type="submit" color="success">
+              <Button form="add-op-form" type="submit" color="success">
                 إضافة
               </Button>
             </ModalFooter>

@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/table";
 
 import { objectToSearchParamsStr } from "@/lib/utils";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { DataTablePagination } from "./data-table-pagination";
@@ -27,15 +26,17 @@ export function DataTable({ columns, data }) {
   const storedVisibility = JSON.parse(sessionStorage.getItem("op-columnVisibility")) || {};
   const [columnVisibility, setColumnVisibility] = useState({
     ...initialVisibility,
-    id: true,
-    // macAddress: true,
-    soldierName: true,
-    soldierNumber: true,
-    nozomSoldierName: true,
-    maintenanceSoldier: true,
-    solved: true,
-    error: true,
+    deviceId: true,
+    delievry: true,
+    delievryPhoneNumber: true,
+    // receiverID: true,
+    // maintainerId: true,
+    failureMaintains: true,
     notes: true,
+    state: true,
+    // maintainLocation: true,
+    delivered: true,
+    // createdDate: true,
     ...storedVisibility,
   });
 
@@ -44,35 +45,34 @@ export function DataTable({ columns, data }) {
   }, [columnVisibility]);
 
   const [sorting, setSorting] = useState(() => {
-    const sort = URLSearchParams.get("_sort");
+    const sort = URLSearchParams.get("OrderBy");
 
     return sort
       ? [
           {
-            id: sort.startsWith("-") ? sort.slice(1) : sort,
-            desc: sort.startsWith("-") ? true : false,
+            id: sort.includes("desc") ? sort.replace(" desc", "") : sort,
+            desc: sort.includes("desc") ? true : false,
           },
         ]
       : [{ id: "createdDate", desc: true }];
   });
-  const queryClient = useQueryClient();
-  const res = queryClient.getQueryData(["op-table", "maintenance-operations"]);
+
   const currentPage = URLSearchParams.get("pageNumber") || 1;
   const pageSize = URLSearchParams.get("pageSize") || 10;
 
   const table = useReactTable({
     columns,
-    data,
+    data: data.data,
     state: { sorting, columnVisibility },
     initialState: { pagination: { pageIndex: currentPage - 1, pageSize } },
     manualPagination: true,
     manualFiltering: true,
     manualSorting: true,
-    pageCount: res.pages,
+    pageCount: data.pagination.totalPages,
     onSortingChange: updaterOrValue => {
       const sort = updaterOrValue();
       const newParams = objectToSearchParamsStr(
-        { _sort: `${sort[0].desc ? "-" : ""}${sort[0].id}` },
+        { OrderBy: `${sort[0].id}${sort[0].desc ? " desc" : ""}` },
         URLSearchParams
       );
       setURLSearchParams(newParams, { replace: true });
@@ -94,6 +94,8 @@ export function DataTable({ columns, data }) {
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id} className="group/tr border-none cursor-default">
               {headerGroup.headers.map(header => {
+                (header.id === "actions" || header.id === "id") && console.log(header);
+
                 return (
                   <TableHead
                     className="group/th px-3 bg-accent whitespace-nowrap font-semibold"

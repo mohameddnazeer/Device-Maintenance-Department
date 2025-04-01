@@ -1,3 +1,4 @@
+import axios from "axios";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -65,6 +66,16 @@ export const fetchData = async endpoint => {
     : await fetch(url);
   if (res.ok) return await res.json();
   return res;
+};
+
+export const customFetch = async endpoint => {
+  const accessToken = window.localStorage.getItem("accessToken");
+  const config = {
+    url: getUrl() + endpoint,
+    method: "GET",
+    headers: { Authorization: accessToken ? `Bearer ${accessToken}` : "" },
+  };
+  return await axios(config);
 };
 
 export const getUrl = () => {
