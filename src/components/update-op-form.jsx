@@ -8,7 +8,7 @@ import { parseInt } from "lodash";
 import { SearchIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Loader from "../loader";
+import Loader from "./loader";
 
 export function UpdateOpForm() {
   const [submitted, setSubmitted] = useState(null);

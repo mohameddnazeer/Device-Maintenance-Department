@@ -2,7 +2,7 @@ import { Form } from "@heroui/form";
 import { Select, SelectItem } from "@heroui/select";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import Loader from "../loader";
+import Loader from "./loader";
 
 const states = [
   { id: 1, name: "CancelledDeviceNotNeedIt", label: "تم الإلغاء لعدم الحاجة" },

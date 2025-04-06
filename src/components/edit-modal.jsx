@@ -9,7 +9,7 @@ import {
 } from "@heroui/modal";
 import { useRef } from "react";
 
-function UpdateModal({ title, desc, isOpen, onOpenChange, form, name, buttonText }) {
+function UpdateModal({ title, desc, isOpen, onOpenChange, form, name, buttonText, children }) {
   const targetRef = useRef(null);
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
 
@@ -22,7 +22,7 @@ function UpdateModal({ title, desc, isOpen, onOpenChange, form, name, buttonText
               <h2 className="text-xl">{title}</h2>
               <p className="text-muted-foreground">{desc}</p>
             </ModalHeader>
-            <ModalBody>{form}</ModalBody>
+            <ModalBody>{form ?? children}</ModalBody>
             <ModalFooter>
               <Button form={name} type="reset" color="danger" variant="light" onPress={onClose}>
                 إلغاء

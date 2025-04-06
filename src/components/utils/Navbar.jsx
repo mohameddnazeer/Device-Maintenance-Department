@@ -8,11 +8,11 @@ import { NavLink } from "react-router-dom";
 import lightImage from "../../assets/web-main.png";
 import darkImage from "../../assets/web-maintenance.png";
 import Darkmode from "../Darkmode";
+import DepartmentModal from "../department-modal";
 import FailureModal from "../failure-modal";
-import DepartmentModal from "../op-table/department-modal";
-import GateModal from "../op-table/gate-modal";
-import OfficeModal from "../op-table/office-modal";
-import RegionModal from "../op-table/region-modal";
+import GateModal from "../gate-modal";
+import OfficeModal from "../office-modal";
+import RegionModal from "../region-modal";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

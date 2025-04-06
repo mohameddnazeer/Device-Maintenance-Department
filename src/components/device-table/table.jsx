@@ -5,10 +5,10 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import UpdateModal from "../edit-modal";
+import Loader from "../loader";
 import UpdateDeviceForm from "../UpdateDeviceForm";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
-import TableLoader from "./loader";
 
 export default function Table() {
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ export default function Table() {
     refetch();
   }, [QueryParams, refetch]);
 
-  if (isFetching) return <TableLoader />;
+  if (isFetching) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
   return (
     <>

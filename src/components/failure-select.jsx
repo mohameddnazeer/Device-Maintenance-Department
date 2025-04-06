@@ -13,7 +13,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 
 const FailureSelect = ({ title, options, selectedValues, setSelectedValues, resetFilter }) => {
   console.log(title, options, selectedValues);

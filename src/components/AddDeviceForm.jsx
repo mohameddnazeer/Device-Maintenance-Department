@@ -28,7 +28,6 @@ function AddDeviceForm({ onSuccess }) {
     () => (Array.isArray(regionRes?.data) ? regionRes.data : []),
     [regionRes.data]
   );
-
   const gateRes = useQuery({
     queryKey: ["addDevice", "gate", regionState.selectedKey],
     queryFn: async () => {

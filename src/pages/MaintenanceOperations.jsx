@@ -1,10 +1,10 @@
-import UpdateModal from "@/components/op-table/edit-modal";
-import OpModal from "@/components/op-table/op-modal";
+import UpdateModal from "@/components/edit-modal";
 import Table from "@/components/op-table/table";
-import { UpdateOpForm } from "@/components/op-table/update-op-form";
-import { UpdateStatusForm } from "@/components/op-table/update-status-form";
 import { ReceiveOpForm } from "@/components/receive-op-form";
 import { Input } from "@/components/ui/input";
+import { UpdateOpForm } from "@/components/update-op-form";
+import UpdateOPModal from "@/components/update-op-modal";
+import { UpdateStatusForm } from "@/components/update-status-form";
 import { objectToSearchParamsStr } from "@/lib/utils";
 import { closeModal as closeReceive } from "@/store/receiveModalSlice";
 import { closeModal } from "@/store/updateModalSlice";
@@ -48,7 +48,8 @@ export const MaintenanceOperations = () => {
             <Button type="button" onPress={onOpen} color="success">
               إضافة عملية صيانة
             </Button>
-            <OpModal isOpen={isOpen} onOpenChange={onOpenChange} />
+            {/* <OpModal isOpen={isOpen} onOpenChange={onOpenChange} /> */}
+            <UpdateOPModal isOpen={isOpen} onOpenChange={onOpenChange} />
           </div>
           <Table />
         </div>
