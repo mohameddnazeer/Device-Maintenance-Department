@@ -33,7 +33,10 @@ export const Register = () => {
         navigate("/home");
         return "تم تسجيل الدخول بنجاح";
       },
-      error: { message: "حدث خطأ ما" },
+      error: err => {
+        console.log(err);
+        return err.response.data.message || "حدث خطأ اثناء تسجيل الدخول";
+      },
     });
   };
 

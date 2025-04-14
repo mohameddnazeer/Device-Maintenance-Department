@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Loader from "./loader";
+import { pick } from "lodash";
 
 const columns = [{ key: "key" }, { key: "value" }];
 const locale = {
@@ -22,9 +23,7 @@ const locale = {
   gate: "البوابة",
   region: "القطاع",
   deviceStatus: "حالة الجهاز",
-  createdByUserId: "منشئ الجهاز",
   createdDate: "تاريخ الانشاء",
-  lastModifiedUserId: "اخر من عدل",
   lastModifiedDate: "تاريخ اخر تعديل",
 };
 const deviceStatus = {
@@ -109,7 +108,9 @@ const DeviceDetails = () => {
   if (isFetching) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
   if (!device) return <div>لا يوجد بيانات</div>;
-  const rows = Object.keys(device).map(key => !["id"].includes(key) && { key, value: key });
+  const rows = Object.keys(device)
+    .map(key => ({ key, value: key }))
+    .filter(({ key }) => !["id", "createdByUserId", "lastModifiedUserId"].includes(key));
 
   return (
     <Table

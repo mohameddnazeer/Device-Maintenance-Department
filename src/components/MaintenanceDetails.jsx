@@ -2,23 +2,24 @@ import { customFetch } from "@/lib/utils";
 import { Chip } from "@heroui/chip";
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/table";
 import { useQuery } from "@tanstack/react-query";
+import _ from "lodash";
 import { useCallback } from "react";
 import Loader from "./loader";
 
 const columns = [{ key: "key" }, { key: "value" }];
 const locale = {
   deviceId: "الجهاز",
-  receiverID: "المستلم",
+  receiverName: "المستلم",
   failureMaintains: "الاعطال",
-  delievry: "المسلّم",
+  delievry: "العميل",
   delievryPhoneNumber: "رقم الهاتف",
   notes: "ملاحظات",
-  maintainerId: "القائم بالصيانة",
+  maintainerName: "القائم بالصيانة",
   createdByUserId: "تمت الإضافة بواسطة",
   createdDate: "تاريخ الإضافة",
   lastModifiedUserId: "تم التعديل بواسطة",
   lastModifiedDate: "تاريخ التعديل",
-  isDeleted: "تم الحذف",
+  isDelivered: "تم التسليم",
   maintainLocation: "موقع الصيانة",
   state: "الحالة",
 };
@@ -45,12 +46,31 @@ const MaintenanceDetails = ({ id, rowData }) => {
     queryFn: () => customFetch(`api/maintenance/${id}`),
     enabled: !rowData,
   });
+  const d = _.pick(rowData || data, [
+    "deviceId",
+    "receiverName",
+    "failureMaintains",
+    "delievry",
+    "delievryPhoneNumber",
+    "notes",
+    "maintainerName",
+    // "createdByUserId",
+    // "createdDate",
+    // "lastModifiedUserId",
+    // "lastModifiedDate",
+    "isDelivered",
+    "maintainLocation",
+    "state",
+  ]);
+  console.log(d);
+
   const renderCell = useCallback(
     (device, columnKey) => {
-      const d = rowData || data;
       const cellValue = device[columnKey];
-      if (columnKey === "key")
+      if (columnKey === "key") {
+        // if (["receiverID", "lastModifiedUserId"].includes(cellValue)) return null;
         return <div className="!text-lg">{locale[cellValue] || cellValue}</div>;
+      }
       switch (cellValue) {
         case "failureMaintains":
           return (
@@ -104,19 +124,31 @@ const MaintenanceDetails = ({ id, rowData }) => {
               {maintainLocations[d.maintainLocation].text}
             </Chip>
           );
+        case "isDelivered":
+          if (!d.isDelivered)
+            return (
+              <Chip className="!mr-2" color="default">
+                لم يتم التسليم
+              </Chip>
+            );
+          return (
+            <Chip className="!mr-2" color="success">
+              تم التسليم
+            </Chip>
+          );
         default:
           if (!d[cellValue]) return <div className="!text-lg">لا يوجد</div>;
           return <div className="!text-lg">{d[cellValue]}</div>;
       }
     },
-    [data, rowData]
+    [d]
   );
 
   if (!rowData && isFetching) return <Loader />;
   if (!rowData && error) return <div>Error: {error.message}</div>;
   if (!rowData && !data) return <div>No data found</div>;
   if (rowData || data) {
-    const d = rowData || data;
+    // const d = rowData || data;
     const rows = Object.keys(d).map(key => !["id"].includes(key) && { key, value: key });
 
     return (

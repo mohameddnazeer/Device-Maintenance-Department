@@ -1,4 +1,5 @@
 import { getUrl } from "@/lib/utils";
+import { closeModal } from "@/store/failureModalSlice";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
@@ -10,16 +11,19 @@ import {
   ModalHeader,
   useDraggable,
 } from "@heroui/modal";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function FailureModal({ isOpen, onOpenChange }) {
   const targetRef = useRef(null);
-
+  const dispatch = useDispatch();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const onSubmit = e => {
     // Prevent default browser page refresh.
@@ -41,12 +45,13 @@ function FailureModal({ isOpen, onOpenChange }) {
     toast.promise(axios.request(config), {
       loading: <p>جاري اضافة العطل</p>,
       success: () => {
-        window.location.reload();
+        dispatch(closeModal());
+        queryClient.refetchQueries({ type: "active" });
         return "تم اضافة العطل بنجاح";
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء اضافة العطل";
+        return err.response.data.message || "حدث خطأ اثناء اضافة العطل";
       },
     });
   };
@@ -66,7 +71,7 @@ function FailureModal({ isOpen, onOpenChange }) {
                 onSubmit={onSubmit}
                 className="w-full flex flex-col items-center justify-center"
               >
-                <div className="w-full overflow-auto max-h-[65vh] scrollbar-hide p-2">
+                <div className="w-full overflow-auto max-h-[65vh] scrollbar-hide p-2 space-y-4">
                   <Input
                     size="lg"
                     isRequired

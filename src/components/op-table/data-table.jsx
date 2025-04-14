@@ -29,13 +29,13 @@ export function DataTable({ columns, data }) {
     deviceId: true,
     delievry: true,
     delievryPhoneNumber: true,
-    // receiverID: true,
-    // maintainerId: true,
+    // receiverName: true,
+    maintainerName: true,
     failureMaintains: true,
     notes: true,
     state: true,
     // maintainLocation: true,
-    delivered: true,
+    isDelivered: true,
     // createdDate: true,
     ...storedVisibility,
   });
@@ -94,7 +94,7 @@ export function DataTable({ columns, data }) {
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id} className="group/tr border-none cursor-default">
               {headerGroup.headers.map(header => {
-                (header.id === "actions" || header.id === "id") && console.log(header);
+                // (header.id === "actions" || header.id === "id") && console.log(header);
 
                 return (
                   <TableHead

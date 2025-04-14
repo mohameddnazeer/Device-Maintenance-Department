@@ -1,11 +1,7 @@
-import React from "react";
-
 const Footer = () => {
   return (
-    <div className="p-2 bg-gray-200 w-full text-center">
-      <p className="text-white">
-        جهاز مستقبل مصر للتنمية المستدامة - فرع نظم المعلومات © | 2024
-      </p>
+    <div className="flex flex-col items-center justify-center py-4 gap-y-2">
+      <p className="text-white">جهاز مستقبل مصر للتنمية المستدامة - فرع نظم المعلومات © | 2025</p>
     </div>
   );
 };

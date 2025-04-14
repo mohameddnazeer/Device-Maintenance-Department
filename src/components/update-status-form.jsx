@@ -1,7 +1,13 @@
+import { getUrl } from "@/lib/utils";
+import { setRefetchOp } from "@/store/refetchOpSlice";
+import { closeStatus } from "@/store/updateStatusSlice";
 import { Form } from "@heroui/form";
 import { Select, SelectItem } from "@heroui/select";
+import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Loader from "./loader";
 
 const states = [
@@ -12,11 +18,12 @@ const states = [
 ];
 
 export function UpdateStatusForm() {
-  // const [submitted, setSubmitted] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [failures, setFailures] = useState(new Set([]));
 
   const rowData = useSelector(state => state.updateStatus.rowData); // Access row data from Redux store
-  console.log("🚀 :", rowData);
+  // console.log("🚀 :", rowData);
 
   useEffect(() => {
     if (rowData) setFailures(rowData.failureMaintains);
@@ -25,39 +32,38 @@ export function UpdateStatusForm() {
   const onSubmit = e => {
     // Prevent default browser page refresh.
     e.preventDefault();
+    const accessToken = window.localStorage.getItem("accessToken");
+    if (!accessToken) return navigate("/login");
 
-    // {
-    //   "id": 0,
-    //   "deviceId": 0,
-    //   "receiverID": "string",
-    //   "receiverName": "string",
-    //   "failureMaintains": [
-    //     {
-    //       "id": 0,
-    //       "name": "string",
-    //       "state": "Solved"
-    //     }
-    //   ],
-    //   "delievry": "string",
-    //   "delievryPhoneNumber": "string",
-    //   "notes": "string",
-    //   "maintainerId": "string",
-    //   "maintainerName": "string",
-    //   "createdByUserId": "string",
-    //   "createdDate": "2025-03-31T18:31:54.614Z",
-    //   "lastModifiedUserId": "string",
-    //   "lastModifiedDate": "2025-03-31T18:31:54.614Z",
-    //   "isDeleted": true,
-    //   "maintainLocation": "InOurBranch",
-    //   "state": "WorkingOnIt"
-    // }
     // Get form data as an object.
     const data = Object.fromEntries(new FormData(e.currentTarget));
-    data.failureMaintains = Array.from(failures);
-    console.log("🚀  :", data);
 
-    // Submit data to your backend API.
-    // setSubmitted(data);
+    let configs = [];
+    Object.entries(data).forEach(([key, value]) => {
+      if (rowData[key] !== value && key !== "solution") {
+        configs.push({
+          method: "put",
+          headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
+          url:
+            getUrl() +
+            `api/maintenance/ChangeFailureStatus?MaintainId=${rowData.id}&FailureId=${key}&status=${value}`,
+        });
+      }
+    });
+
+    toast.promise(Promise.all(configs.map(config => axios.request(config))), {
+      loading: "جاري تحديث الحالة",
+      success: res => {
+        console.log("🚀 1", res);
+        dispatch(closeStatus());
+        dispatch(setRefetchOp());
+        return "تم تحديث الحالة بنجاح";
+      },
+      error: err => {
+        console.log(err);
+        return err.response.data.message || "حدث خطأ أثناء تحديث الحالة";
+      },
+    });
   };
 
   if (!rowData) return <Loader />;
@@ -68,12 +74,11 @@ export function UpdateStatusForm() {
       className="w-full flex flex-col items-center justify-center"
     >
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto max-h-[65vh] scrollbar-hide p-2">
-        {Array.from(failures).map(({ name, state }, idx) => {
-          console.log(name, state);
+        {Array.from(failures).map(({ id, name, state }) => {
           return (
             <Select
-              key={idx}
-              name={idx}
+              key={id}
+              name={id}
               label={name}
               size="lg"
               labelPlacement="outside"

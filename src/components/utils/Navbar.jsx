@@ -1,13 +1,21 @@
+import { closeModal, openModal } from "@/store/failureModalSlice";
 import { Button } from "@heroui/button";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { useDisclosure } from "@heroui/modal";
-import { PlusCircleIcon, PlusIcon } from "lucide-react";
+import { PlusCircleIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
 import lightImage from "../../assets/web-main.png";
 import darkImage from "../../assets/web-maintenance.png";
 import Darkmode from "../Darkmode";
+import DelDepartmentModal from "../del-department-modal";
+import DelFailureModal from "../del-failure-modal";
+import DelGateModal from "../del-gate-modal";
+import DelOfficeModal from "../del-office-modal";
+import DelRegionModal from "../del-region-modal";
+import DelUserModal from "../del-user-modal";
 import DepartmentModal from "../department-modal";
 import FailureModal from "../failure-modal";
 import GateModal from "../gate-modal";
@@ -15,14 +23,24 @@ import OfficeModal from "../office-modal";
 import RegionModal from "../region-modal";
 
 export const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const menuRef = useRef(null);
   const regionState = useDisclosure();
   const gateState = useDisclosure();
   const departmentState = useDisclosure();
   const officeState = useDisclosure();
-  const failureState = useDisclosure();
+  const delFailureState = useDisclosure();
+  const delRegionState = useDisclosure();
+  const delGateState = useDisclosure();
+  const delDepartmentState = useDisclosure();
+  const delOfficeState = useDisclosure();
+  const delUserState = useDisclosure();
+  // const failureState = useDisclosure();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
+  const isOpen = useSelector(state => state.failureModal.isOpen);
+  // const isDelFailureOpen = useSelector(state => state.delFailureModal.isOpen);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -56,7 +74,35 @@ export const Navbar = () => {
         officeState.onOpen();
         break;
       case "add-failure":
-        failureState.onOpen();
+        dispatch(openModal());
+        break;
+      case "add-user":
+        navigate("/addUser");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const onDelete = key => {
+    switch (key) {
+      case "delete-region":
+        delRegionState.onOpen();
+        break;
+      case "delete-gate":
+        delGateState.onOpen();
+        break;
+      case "delete-department":
+        delDepartmentState.onOpen();
+        break;
+      case "delete-office":
+        delOfficeState.onOpen();
+        break;
+      case "delete-failure":
+        delFailureState.onOpen();
+        break;
+      case "delete-user":
+        delUserState.onOpen();
         break;
       default:
         break;
@@ -72,6 +118,38 @@ export const Navbar = () => {
           </Button>
         </div>
         <Darkmode />
+
+        <Dropdown dir="rtl">
+          <DropdownTrigger>
+            <Button isIconOnly variant="solid" radius="lg">
+              <Trash2Icon />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="Dropdown menu with description"
+            variant="faded"
+            onAction={onDelete}
+          >
+            <DropdownItem key="delete-region" endContent={<PlusIcon className={iconClasses} />}>
+              حذف قطاع
+            </DropdownItem>
+            <DropdownItem key="delete-gate" endContent={<PlusIcon className={iconClasses} />}>
+              حذف بوابة
+            </DropdownItem>
+            <DropdownItem key="delete-department" endContent={<PlusIcon className={iconClasses} />}>
+              حذف إدارة
+            </DropdownItem>
+            <DropdownItem key="delete-office" endContent={<PlusIcon className={iconClasses} />}>
+              حذف مكتب
+            </DropdownItem>
+            <DropdownItem key="delete-failure" endContent={<PlusIcon className={iconClasses} />}>
+              حذف عطل
+            </DropdownItem>
+            <DropdownItem key="delete-user" endContent={<PlusIcon className={iconClasses} />}>
+              حذف مستخدم
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
 
         <Dropdown dir="rtl">
           <DropdownTrigger>
@@ -98,6 +176,9 @@ export const Navbar = () => {
             </DropdownItem>
             <DropdownItem key="add-failure" endContent={<PlusIcon className={iconClasses} />}>
               اضافة عطل
+            </DropdownItem>
+            <DropdownItem key="add-user" endContent={<PlusIcon className={iconClasses} />}>
+              اضافة مستخدم
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -163,14 +244,58 @@ export const Navbar = () => {
         <img className="w-10 dark:hidden" src={darkImage} alt="nav" />
         <img className="w-10 hidden dark:block" src={lightImage} alt="nav" />
       </div>
-      <FailureModal isOpen={failureState.isOpen} onOpenChange={failureState.onOpenChange} />
-      <RegionModal isOpen={regionState.isOpen} onOpenChange={regionState.onOpenChange} />
-      <GateModal isOpen={gateState.isOpen} onOpenChange={gateState.onOpenChange} />
+
+      <FailureModal isOpen={isOpen} onOpenChange={() => dispatch(closeModal())} />
+      <DelFailureModal
+        isOpen={delFailureState.isOpen}
+        onOpenChange={delFailureState.onOpenChange}
+        onClose={delFailureState.onClose}
+      />
+      <DelRegionModal
+        isOpen={delRegionState.isOpen}
+        onOpenChange={delRegionState.onOpenChange}
+        onClose={delRegionState.onClose}
+      />
+      <DelGateModal
+        isOpen={delGateState.isOpen}
+        onOpenChange={delGateState.onOpenChange}
+        onClose={delGateState.onClose}
+      />
+      <DelDepartmentModal
+        isOpen={delDepartmentState.isOpen}
+        onOpenChange={delDepartmentState.onOpenChange}
+        onClose={delDepartmentState.onClose}
+      />
+      <DelOfficeModal
+        isOpen={delOfficeState.isOpen}
+        onOpenChange={delOfficeState.onOpenChange}
+        onClose={delOfficeState.onClose}
+      />
+      <DelUserModal
+        isOpen={delUserState.isOpen}
+        onOpenChange={delUserState.onOpenChange}
+        onClose={delUserState.onClose}
+      />
+      <RegionModal
+        isOpen={regionState.isOpen}
+        onOpenChange={regionState.onOpenChange}
+        onClose={regionState.onClose}
+      />
+      <GateModal
+        isOpen={gateState.isOpen}
+        onOpenChange={gateState.onOpenChange}
+        onClose={gateState.onClose}
+      />
       <DepartmentModal
         isOpen={departmentState.isOpen}
         onOpenChange={departmentState.onOpenChange}
+        onClose={departmentState.onClose}
       />
-      <OfficeModal isOpen={officeState.isOpen} onOpenChange={officeState.onOpenChange} />
+      <OfficeModal
+        isOpen={officeState.isOpen}
+        onOpenChange={officeState.onOpenChange}
+        onClose={officeState.onClose}
+      />
     </div>
   );
 };

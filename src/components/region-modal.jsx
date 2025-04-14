@@ -10,14 +10,15 @@ import {
   ModalHeader,
   useDraggable,
 } from "@heroui/modal";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-function RegionModal({ isOpen, onOpenChange }) {
+function RegionModal({ onClose, isOpen, onOpenChange }) {
   const targetRef = useRef(null);
-
+  const queryClient = useQueryClient();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
   const navigate = useNavigate();
 
@@ -41,12 +42,13 @@ function RegionModal({ isOpen, onOpenChange }) {
     toast.promise(axios.request(config), {
       loading: <p>جاري اضافة القطاع</p>,
       success: () => {
-        window.location.reload();
+        onClose();
+        queryClient.refetchQueries({ type: "active" });
         return "تم اضافة القطاع بنجاح";
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء اضافة القطاع";
+        return err.response.data.message || "حدث خطأ اثناء اضافة القطاع";
       },
     });
   };

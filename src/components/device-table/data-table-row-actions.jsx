@@ -45,7 +45,7 @@ export function DataTableRowActions({ row }) {
           },
           error: err => {
             console.log(err);
-            return "حدث خطأ اثناء حذف الجهاز";
+            return err.response.data.message || "حدث خطأ اثناء حذف الجهاز";
           },
         });
         console.log("delete", row.original);

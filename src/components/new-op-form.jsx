@@ -1,4 +1,6 @@
 import { fetchData, getUrl } from "@/lib/utils";
+import { openModal } from "@/store/failureModalSlice";
+import { setRefetchOp } from "@/store/refetchOpSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
@@ -9,36 +11,43 @@ import axios from "axios";
 import { parseInt } from "lodash";
 import { SearchIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export function OPForm({ onClose }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [idState, setIdState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [macState, setMacState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [failures, setFailures] = useState(new Set([]));
+  const [receiverID, setReceiverID] = useState(null);
 
   const { data: users } = useQuery({
-    queryKey: ["update-op-form", "users"],
+    queryKey: ["new-op", "users"],
     queryFn: async () => fetchData("api/users"),
   });
   const { data: idData } = useQuery({
-    select: data => data.data,
-    queryKey: ["op-table", "devices-id", idState.inputValue],
+    select: data => data.data.filter(item => item.domainIDIfExists),
+    queryKey: ["new-op", "devices-id", idState.inputValue],
     queryFn: async () =>
       fetchData(
-        "api/devices" + (idState.inputValue ? "?domainIDIfExists=" + idState.inputValue : "")
+        "api/devices" +
+          (idState.inputValue ? `?SearchTerm=${idState.inputValue}&SearchOptions=domain` : "")
       ),
   });
   const { data: macData } = useQuery({
-    select: data => data.data,
-    queryKey: ["op-table", "devices-mac", macState.inputValue],
+    select: data => data.data.filter(item => item.mac),
+    queryKey: ["new-op", "devices-mac", macState.inputValue],
     queryFn: async () =>
-      fetchData("api/devices" + (macState.inputValue ? "?mac=" + macState.inputValue : "")),
+      fetchData(
+        "api/devices" +
+          (macState.inputValue ? `?SearchTerm=${macState.inputValue}&SearchOptions=mac` : "")
+      ),
   });
 
   const { data: failureData } = useQuery({
-    queryKey: ["update-op-form", "failures"],
+    queryKey: ["new-op", "failures"],
     queryFn: async () => fetchData("api/failures"),
   });
 
@@ -60,10 +69,15 @@ export function OPForm({ onClose }) {
     setState(state => ({ ...state, inputValue: value }));
   };
 
+  const onAddFailure = () => {
+    dispatch(openModal());
+  };
+
   const onSubmit = e => {
     // Prevent default browser page refresh.
     e.preventDefault();
-    if (!idState.selectedKey && !macState.selectedKey) return;
+    if (!idState.selectedKey && !macState.selectedKey)
+      return toast.warning("من فضلك اختر جهاز (رقم الجهاز أو عنوان MAC)");
     const accessToken = window.localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
     // Get form data as an object.
@@ -72,23 +86,24 @@ export function OPForm({ onClose }) {
       ? parseInt(idState.selectedKey)
       : parseInt(macState.selectedKey);
     data.failureIds = Array.from(failures);
-    console.log("🚀 ~ OPForm ~ data:", data);
+    data.receiverID = receiverID;
     let config = {
       method: "post",
       url: getUrl() + "api/maintenance",
       headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
-      data,
+      data: JSON.stringify(data),
     };
 
     toast.promise(axios.request(config), {
       loading: <p>جاري اضافة عملية الصيانة</p>,
       success: () => {
         onClose?.();
+        dispatch(setRefetchOp());
         return "تم اضافة عملية الصيانة بنجاح";
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء اضافة عملية الصيانة";
+        return err.response.data.message || "حدث خطأ اثناء اضافة عملية الصيانة";
       },
     });
   };
@@ -151,20 +166,20 @@ export function OPForm({ onClose }) {
         <Input
           size="lg"
           isRequired
-          errorMessage="من فضلك ادخل اسم المسلّم"
-          label="اسم المسلّم"
+          errorMessage="من فضلك ادخل اسم العميل"
+          label="اسم العميل"
           labelPlacement="outside"
           name="delievry"
-          placeholder="اسم المسلّم"
+          placeholder="اسم العميل"
         />
         <Input
           size="lg"
           isRequired
-          errorMessage="من فضلك ادخل رقم المسلّم"
-          label="رقم المسلّم"
+          errorMessage="من فضلك ادخل رقم العميل"
+          label="رقم العميل"
           labelPlacement="outside"
           name="delievryPhoneNumber"
-          placeholder="رقم المسلّم"
+          placeholder="رقم العميل"
         />
 
         <Select
@@ -187,43 +202,47 @@ export function OPForm({ onClose }) {
           )}
         </Select>
 
-        <Select
-          isRequired
-          disallowEmptySelection
-          label="الاعطال"
-          size="lg"
-          labelPlacement="outside"
-          placeholder="اختر الاعطال"
-          selectionMode="multiple"
-          errorMessage="من فضلك اختر الاعطال"
-          selectedKeys={failures}
-          onSelectionChange={keys => {
-            const newSet = new Set([]);
-            keys.forEach(key => {
-              const failureId = failureData.find(f => f.id === key)?.id;
-              if (failureId) newSet.add(failureId);
-            });
-            setFailures(newSet);
-          }}
-          items={failureData ?? []}
-        >
-          {item => (
-            <SelectItem dir="rtl" className="text-right">
-              {item.name}
-            </SelectItem>
-          )}
-        </Select>
+        <div className="flex items-end gap-2">
+          <Select
+            isRequired
+            disallowEmptySelection
+            label="الاعطال"
+            size="lg"
+            labelPlacement="outside"
+            placeholder="اختر الاعطال"
+            selectionMode="multiple"
+            errorMessage="من فضلك اختر الاعطال"
+            selectedKeys={failures}
+            onSelectionChange={keys => {
+              const newSet = new Set([]);
+              keys.forEach(key => {
+                const failureId = failureData.find(f => f.id === key)?.id;
+                if (failureId) newSet.add(failureId);
+              });
+              setFailures(newSet);
+            }}
+            items={failureData ?? []}
+          >
+            {item => (
+              <SelectItem dir="rtl" className="text-right">
+                {item.name}
+              </SelectItem>
+            )}
+          </Select>
+          <Button size="lg" color="success" onPress={onAddFailure}>
+            اضافة عطل
+          </Button>
+        </div>
+
         <Autocomplete
-          name="receiverID"
-          // Todo: get over here later
-          // defaultInputValue={rowData.maintainerId}
-          // defaultSelectedKey={""}
-          label="القائم بالصيانة"
+          defaultItems={users ?? []}
+          selectedKey={receiverID}
+          onSelectionChange={setReceiverID}
+          label="المستلم"
           labelPlacement="outside"
           size="lg"
           className="col-span-2"
           classNames={{ selectorButton: "text-default-500" }}
-          defaultItems={users ?? []}
           listboxProps={{
             hideSelectedIcon: true,
             itemClasses: {
@@ -240,7 +259,7 @@ export function OPForm({ onClose }) {
               ],
             },
           }}
-          placeholder="ادخل القائم بالصيانة"
+          placeholder="ادخل المستلم"
           popoverProps={{
             offset: 10,
             classNames: { content: "p-1 border-small border-default-100 bg-background" },
@@ -251,18 +270,14 @@ export function OPForm({ onClose }) {
         >
           {item => (
             <AutocompleteItem key={item.id} textValue={item.name}>
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2 items-center">
-                  <div className="flex flex-col">
-                    <span className="text-small">{item.name}</span>
-                    <div className="flex gap-x-2">
-                      {item.specializations.map((spec, index) => (
-                        <span key={index} className="text-tiny text-default-400">
-                          {spec.name}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+              <div dir="rtl" className="flex flex-col text-start">
+                <span className="text-small">{item.name}</span>
+                <div className="flex gap-x-2">
+                  {item.specializations.map((spec, index) => (
+                    <span key={index} className="text-tiny text-default-400">
+                      {spec.name}
+                    </span>
+                  ))}
                 </div>
               </div>
             </AutocompleteItem>

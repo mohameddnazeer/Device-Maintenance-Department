@@ -1,4 +1,4 @@
-import { fetchData, getUrl } from "@/lib/utils";
+import { customFetch, getUrl } from "@/lib/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
@@ -11,59 +11,33 @@ import {
   ModalHeader,
   useDraggable,
 } from "@heroui/modal";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-function DepartmentModal({ isOpen, onOpenChange }) {
+function DepartmentModal({ onClose, isOpen, onOpenChange }) {
   const targetRef = useRef(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
-  const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
-  const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
+  const [regionSelectedKey, setRegionSelectedKey] = useState();
+  const [gateSelectedKey, setGateSelectedKey] = useState();
 
-  const regionRes = useQuery({
-    queryKey: ["addDevice", "region"],
-    queryFn: async () => fetchData("api/regions"),
+  const { data: regions } = useQuery({
+    select: data => data.data,
+    queryKey: ["add-department", "region"],
+    queryFn: async () => customFetch("api/regions"),
   });
-  const gateRes = useQuery({
-    queryKey: ["addDevice", "gate", regionState.selectedKey],
+  const { data: gates } = useQuery({
+    select: data => data.data,
+    queryKey: ["add-department", "gate", regionSelectedKey],
     queryFn: async () => {
-      return fetchData(`api/regions/${regionState.selectedKey}/gates`);
+      return customFetch(`api/regions/${regionSelectedKey}/gates`);
     },
-    enabled: !!regionState.selectedKey,
+    enabled: !!regionSelectedKey,
   });
-
-  useEffect(() => {
-    regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionRes.data }));
-  }, [regionRes.data]);
-  useEffect(() => {
-    gateRes.data && setGateState(prevState => ({ ...prevState, items: gateRes.data }));
-  }, [gateRes.data]);
-
-  const onSelectionChange = (key, setState, data, name) => {
-    setState(prevState => {
-      let selectedItem = prevState.items.find(option => option.id.toString() === key?.toString());
-      return { inputValue: selectedItem?.name || "", selectedKey: key, items: data };
-    });
-    switch (name) {
-      case "regionId":
-        setGateState(prevState => ({ ...prevState, selectedKey: null, inputValue: "" }));
-        break;
-      default:
-        break;
-    }
-  };
-
-  const onInputChange = (value, setState, data) => {
-    setState(state => ({
-      ...state,
-      inputValue: value,
-      items: data.filter(item => item.name.includes(value)),
-    }));
-  };
 
   const onSubmit = e => {
     // Prevent default browser page refresh.
@@ -77,9 +51,7 @@ function DepartmentModal({ isOpen, onOpenChange }) {
 
     let config = {
       method: "post",
-      url:
-        getUrl() +
-        `api/regions/${regionState.selectedKey}/gates/${gateState.selectedKey}/departments`,
+      url: getUrl() + `api/regions/${regionSelectedKey}/gates/${gateSelectedKey}/departments`,
       headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
       data: data.name,
     };
@@ -87,18 +59,30 @@ function DepartmentModal({ isOpen, onOpenChange }) {
     toast.promise(axios.request(config), {
       loading: <p>جاري اضافة المكتب</p>,
       success: () => {
-        window.location.reload();
+        onClose();
+        setGateSelectedKey(null);
+        setRegionSelectedKey(null);
+        queryClient.refetchQueries({ type: "active" });
         return "تم اضافة المكتب بنجاح";
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء اضافة المكتب";
+        return err.response.data.message || "حدث خطأ اثناء اضافة المكتب";
       },
     });
   };
 
   return (
-    <Modal size="lg" ref={targetRef} isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      size="lg"
+      ref={targetRef}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      onClose={() => {
+        setGateSelectedKey(null);
+        setRegionSelectedKey(null);
+      }}
+    >
       <ModalContent dir="rtl">
         {onClose => (
           <>
@@ -117,16 +101,12 @@ function DepartmentModal({ isOpen, onOpenChange }) {
                     isRequired
                     name="regionId"
                     size="lg"
-                    inputValue={regionState.inputValue}
-                    items={regionState.items}
+                    items={regions || []}
                     label="القطاع"
                     labelPlacement="outside"
                     placeholder="اختر القطاع"
-                    selectedKey={regionState.selectedKey}
-                    onInputChange={value => onInputChange(value, setRegionState, regionRes.data)}
-                    onSelectionChange={key =>
-                      onSelectionChange(key, setRegionState, regionRes.data, "regionId")
-                    }
+                    selectedKey={regionSelectedKey}
+                    onSelectionChange={setRegionSelectedKey}
                     errorMessage="من فضلك اختر القطاع"
                   >
                     {item => (
@@ -137,18 +117,15 @@ function DepartmentModal({ isOpen, onOpenChange }) {
                   </Autocomplete>
                   <Autocomplete
                     isRequired
+                    isDisabled={!regionSelectedKey}
                     name="gateId"
                     size="lg"
-                    inputValue={gateState.inputValue}
-                    items={gateState.items}
+                    items={gates || []}
                     label="البوابة"
                     labelPlacement="outside"
                     placeholder="اختر البوابة"
-                    selectedKey={gateState.selectedKey}
-                    onInputChange={value => onInputChange(value, setGateState, gateRes.data)}
-                    onSelectionChange={key =>
-                      onSelectionChange(key, setGateState, gateRes.data, "gateId")
-                    }
+                    selectedKey={gateSelectedKey}
+                    onSelectionChange={setGateSelectedKey}
                     errorMessage="من فضلك اختر البوابة"
                   >
                     {item => (

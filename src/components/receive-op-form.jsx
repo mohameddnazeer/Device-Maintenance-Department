@@ -19,7 +19,7 @@ const states = [
 export function ReceiveOpForm() {
   const [submitted, setSubmitted] = useState(null);
   const [failures, setFailures] = useState(new Set([]));
-  console.log("🚀 ~ ReceiveOpForm ~ failures:", failures);
+  // console.log("🚀 ~ ReceiveOpForm ~ failures:", failures);
 
   const rowData = useSelector(state => state.receiveModal.rowData); // Access row data from Redux store
 

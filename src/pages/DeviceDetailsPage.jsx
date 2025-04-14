@@ -1,6 +1,6 @@
 import DeviceDetails from "@/components/DeviceDetails";
-import PageWrapper from "./Layout";
 import DeviceHistory from "@/components/DeviceHistory";
+import PageWrapper from "./Layout";
 
 const DeviceDetailsPage = () => {
   return (

@@ -23,14 +23,16 @@ function UpdateModal({ title, desc, isOpen, onOpenChange, form, name, buttonText
               <p className="text-muted-foreground">{desc}</p>
             </ModalHeader>
             <ModalBody>{form ?? children}</ModalBody>
-            <ModalFooter>
-              <Button form={name} type="reset" color="danger" variant="light" onPress={onClose}>
-                إلغاء
-              </Button>
-              <Button form={name} type="submit" color="success">
-                {buttonText}
-              </Button>
-            </ModalFooter>
+            {buttonText && (
+              <ModalFooter>
+                <Button form={name} type="reset" color="danger" variant="light" onPress={onClose}>
+                  إلغاء
+                </Button>
+                <Button form={name} type="submit" color="success">
+                  {buttonText}
+                </Button>
+              </ModalFooter>
+            )}
           </>
         )}
       </ModalContent>

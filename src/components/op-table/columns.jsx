@@ -38,7 +38,7 @@ export const columns = [
   },
   {
     accessorKey: "delievryPhoneNumber",
-    label: "رقم المسلّم",
+    label: "رقم العميل",
     header: ({ column }) => (
       <DataTableColumnHeader
         className="text-right text-nowrap"
@@ -56,7 +56,7 @@ export const columns = [
     enableGlobalFilter: false,
   },
   {
-    accessorKey: "receiverID",
+    accessorKey: "receiverName",
     label: "مستلم الجهاز",
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -67,13 +67,13 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">
-        <span className="max-w-[200px] truncate font-medium">{row.getValue("receiverID")}</span>
+        <span className="max-w-[200px] truncate font-medium">{row.getValue("receiverName")}</span>
       </div>
     ),
     filterFn: "includesString",
   },
   {
-    accessorKey: "maintainerId",
+    accessorKey: "maintainerName",
     label: "القائم بالصيانة",
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -84,10 +84,10 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">
-        <span className="max-w-[200px] truncate font-medium">{row.getValue("maintainerId")}</span>
+        <span className="max-w-[200px] truncate font-medium">{row.getValue("maintainerName")}</span>
       </div>
     ),
-    filterFn: "includesString",
+    // filterFn: "includesString",
   },
   {
     accessorKey: "state",
@@ -147,7 +147,7 @@ export const columns = [
   },
   {
     // TODO: add this in the backend
-    accessorKey: "delivered",
+    accessorKey: "isDelivered",
     label: "تم التسليم",
     header: ({ column }) => (
       <DataTableColumnHeader
@@ -157,20 +157,17 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      switch (row.getValue("delivered")) {
-        case "Delivered":
-          return (
-            <Chip color="success" startContent={<CheckCircleIcon size={18} />}>
-              تم التسليم
-            </Chip>
-          );
-        default:
-          return (
-            <Chip color="default" startContent={<XCircle size={18} />}>
-              لم يتم التسليم
-            </Chip>
-          );
-      }
+      if (row.getValue("isDelivered"))
+        return (
+          <Chip color="success" startContent={<CheckCircleIcon size={18} />}>
+            تم التسليم
+          </Chip>
+        );
+      return (
+        <Chip color="default" startContent={<XCircle size={18} />}>
+          لم يتم التسليم
+        </Chip>
+      );
     },
   },
   {

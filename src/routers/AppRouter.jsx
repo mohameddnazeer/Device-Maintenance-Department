@@ -8,6 +8,7 @@ import { Login } from "../pages/Login";
 // import AddDevice from "../pages/AddDevice";
 import { getUrl } from "@/lib/utils";
 import AddDevice from "@/pages/AddDevice";
+import AddUser from "@/pages/AddUser";
 import DeviceDetailsPage from "@/pages/DeviceDetailsPage";
 import axios from "axios";
 import { useInterval } from "usehooks-ts";
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
     <>
       <Route path="login" element={<Login />} />
       {/* <Route path="register" element={<Register />} /> */}
+      <Route path="/addUser" element={<AddUser />} />
       <Route path="/" element={<Login />} />
       {/* <Route path="/" element={<MainLayout />} /> */}
       <Route path="/alldevices" element={<AllDevices />} />
@@ -53,6 +55,7 @@ const AppRouter = () => {
         window.localStorage.setItem("accessToken", accessToken);
         window.localStorage.setItem("refreshToken", refreshToken);
       } catch (error) {
+        console.log("🚀 ~ useInterval ~ error:", error);
         window.localStorage.removeItem("accessToken");
         window.localStorage.removeItem("refreshToken");
         window.location.href = "/login";

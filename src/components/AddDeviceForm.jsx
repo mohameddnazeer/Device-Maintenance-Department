@@ -138,7 +138,7 @@ function AddDeviceForm({ onSuccess }) {
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء اضافة الجهاز";
+        return err.response.data.message || "حدث خطأ اثناء اضافة الجهاز";
       },
     });
   };
@@ -214,22 +214,22 @@ function AddDeviceForm({ onSuccess }) {
         errorMsg: "رقم المسؤول مطلوب",
       },
       {
-        isRequired: true,
+        isRequired: false,
         title: "نوع الجهاز",
         placeholder: "ادخل نوع الجهاز",
         name: "type",
         errorMsg: "نوع الجهاز مطلوب",
       },
       {
-        isRequired: true,
+        isRequired: false,
         title: "MAC",
         placeholder: "ادخل MAC",
         name: "mac",
         errorMsg: "عنوان MAC مطلوب",
       },
-      { isRequired: true, title: "CPU", placeholder: "ادخل موديل CPU", name: "cpu" },
-      { isRequired: true, title: "GPU", placeholder: "ادخل موديل GPU", name: "gpu" },
-      { isRequired: true, title: "RAM", placeholder: "ادخل حجم RAM", name: "ramTotal" },
+      { isRequired: false, title: "CPU", placeholder: "ادخل موديل CPU", name: "cpu" },
+      { isRequired: false, title: "GPU", placeholder: "ادخل موديل GPU", name: "gpu" },
+      { isRequired: false, title: "RAM", placeholder: "ادخل حجم RAM", name: "ramTotal" },
     ],
     [
       regionState,

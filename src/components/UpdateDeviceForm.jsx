@@ -163,7 +163,7 @@ function UpdateDeviceForm({ onSuccess }) {
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء اضافة الجهاز";
+        return err.response.data.message || "حدث خطأ اثناء اضافة الجهاز";
       },
     });
   };

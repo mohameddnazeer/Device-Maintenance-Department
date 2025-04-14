@@ -1,4 +1,4 @@
-import { fetchData, getUrl } from "@/lib/utils";
+import { customFetch, getUrl } from "@/lib/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
@@ -11,41 +11,24 @@ import {
   ModalHeader,
   useDraggable,
 } from "@heroui/modal";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-function GateModal({ isOpen, onOpenChange }) {
+function GateModal({ onClose, isOpen, onOpenChange }) {
   const targetRef = useRef(null);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
-  const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
+  const [regionSelectedKey, setRegionSelectedKey] = useState();
 
-  const regionRes = useQuery({
-    queryKey: ["addDevice", "region"],
-    queryFn: async () => fetchData("api/regions"),
+  const { data: regions } = useQuery({
+    select: data => data.data,
+    queryKey: ["add-gate", "region"],
+    queryFn: async () => customFetch("api/regions"),
   });
-
-  useEffect(() => {
-    regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionRes.data }));
-  }, [regionRes.data]);
-
-  const onSelectionChange = (key, setState, data) => {
-    setState(prevState => {
-      let selectedItem = prevState.items.find(option => option.id.toString() === key?.toString());
-      return { inputValue: selectedItem?.name || "", selectedKey: key, items: data };
-    });
-  };
-
-  const onInputChange = (value, setState, data) => {
-    setState(state => ({
-      ...state,
-      inputValue: value,
-      items: data.filter(item => item.name.includes(value)),
-    }));
-  };
 
   const onSubmit = e => {
     // Prevent default browser page refresh.
@@ -59,7 +42,7 @@ function GateModal({ isOpen, onOpenChange }) {
 
     let config = {
       method: "post",
-      url: getUrl() + `api/regions/${regionState.selectedKey}/gates`,
+      url: getUrl() + `api/regions/${regionSelectedKey}/gates`,
       headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
       data: data.name,
     };
@@ -67,18 +50,26 @@ function GateModal({ isOpen, onOpenChange }) {
     toast.promise(axios.request(config), {
       loading: <p>جاري اضافة البوابة</p>,
       success: () => {
-        window.location.reload();
+        onClose();
+        setRegionSelectedKey(null);
+        queryClient.refetchQueries({ type: "active" });
         return "تم اضافة البوابة بنجاح";
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء اضافة البوابة";
+        return err.response.data.message || "حدث خطأ اثناء اضافة البوابة";
       },
     });
   };
 
   return (
-    <Modal size="lg" ref={targetRef} isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      size="lg"
+      ref={targetRef}
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      onClose={() => setRegionSelectedKey(null)}
+    >
       <ModalContent dir="rtl">
         {onClose => (
           <>
@@ -97,16 +88,12 @@ function GateModal({ isOpen, onOpenChange }) {
                     isRequired
                     name="regionId"
                     size="lg"
-                    inputValue={regionState.inputValue}
-                    items={regionState.items}
+                    items={regions}
                     label="القطاع"
                     labelPlacement="outside"
                     placeholder="اختر القطاع"
-                    selectedKey={regionState.selectedKey}
-                    onInputChange={value => onInputChange(value, setRegionState, regionRes.data)}
-                    onSelectionChange={key =>
-                      onSelectionChange(key, setRegionState, regionRes.data)
-                    }
+                    selectedKey={regionSelectedKey}
+                    onSelectionChange={setRegionSelectedKey}
                     errorMessage="من فضلك اختر القطاع"
                   >
                     {item => (

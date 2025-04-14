@@ -36,7 +36,7 @@ export const Login = () => {
       },
       error: err => {
         console.log(err);
-        return "حدث خطأ اثناء تسجيل الدخول";
+        return err.response.data.message || "حدث خطأ اثناء تسجيل الدخول";
       },
     });
   };

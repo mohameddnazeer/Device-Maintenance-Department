@@ -6,7 +6,7 @@ import { Input } from "@heroui/input";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Navbar } from "../components/utils/Navbar";
+import PageWrapper from "./Layout";
 
 const AllDevices = () => {
   const navigate = useNavigate();
@@ -223,8 +223,7 @@ const AllDevices = () => {
   };
 
   return (
-    <>
-      <Navbar />
+    <PageWrapper>
       <div dir="rtl" className="flex flex-col items-center justify-center mt-10">
         <div className="container space-y-4">
           <div className="flex justify-between items-center w-full">
@@ -268,7 +267,7 @@ const AllDevices = () => {
           <Table />
         </div>
       </div>
-    </>
+    </PageWrapper>
   );
 };
 

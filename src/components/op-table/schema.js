@@ -12,6 +12,6 @@ export const taskSchema = z.object({
   notes: z.any(),
   state: z.any(),
   maintainLocation: z.any(),
-  delivered: z.any(),
+  isDelivered: z.any(),
   createdDate: z.any(),
 });
