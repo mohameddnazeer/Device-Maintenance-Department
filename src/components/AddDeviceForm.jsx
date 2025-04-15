@@ -150,7 +150,12 @@ function AddDeviceForm({ onSuccess }) {
         title: "رقم الجهاز",
         placeholder: "ادخل رقم الجهاز",
         name: "domainIDIfExists",
-        errorMsg: "رقم الجهاز مطلوب",
+        // maxLength: 36,
+        errorMessage: ({ validationDetails: { valueMissing } }) => {
+          // if (tooShort) return "لا يقل عن 10 احرف";
+          // if (tooLong) return "لا يقل عن 36 احرف";
+          if (valueMissing) return "رقم الجهاز مطلوب";
+        },
       },
       {
         isRequired: true,
@@ -161,11 +166,11 @@ function AddDeviceForm({ onSuccess }) {
         setState: setRegionState,
         data: regionData,
         placeholder: "اختر القطاع",
-        errorMsg: "القطاع مطلوب",
+        errorMessage: "القطاع مطلوب",
       },
       {
         isRequired: true,
-        disabled: !regionState.selectedKey,
+        isDisabled: !regionState.selectedKey,
         title: "البوابة",
         name: "gate",
         label: "البوابة",
@@ -173,11 +178,11 @@ function AddDeviceForm({ onSuccess }) {
         setState: setGateState,
         data: gateData,
         placeholder: "اختر البوابة",
-        errorMsg: "البوابة مطلوبة",
+        errorMessage: "البوابة مطلوبة",
       },
       {
         isRequired: true,
-        disabled: !gateState.selectedKey,
+        isDisabled: !gateState.selectedKey,
         title: "الإدارة",
         name: "department",
         label: "الإدارة",
@@ -185,11 +190,11 @@ function AddDeviceForm({ onSuccess }) {
         setState: setDepartmentState,
         data: departmentRes.data,
         placeholder: "اختر الإدارة",
-        errorMsg: "الإدارة مطلوبة",
+        errorMessage: "الإدارة مطلوبة",
       },
       {
         isRequired: true,
-        disabled: !departmentState.selectedKey,
+        isDisabled: !departmentState.selectedKey,
         title: "المكتب",
         name: "office",
         label: "المكتب",
@@ -197,35 +202,57 @@ function AddDeviceForm({ onSuccess }) {
         setState: setOfficeState,
         data: officeRes.data,
         placeholder: "اختر المكتب",
-        errorMsg: "المكتب مطلوب",
+        errorMessage: "المكتب مطلوب",
       },
       {
         isRequired: true,
         title: "اسم المسؤول عن الجهاز",
         placeholder: "ادخل الاسم ",
         name: "owner",
-        errorMsg: "اسم المسؤول مطلوب",
+        minLength: 2,
+        // maxLength: 36,
+        errorMessage: ({ validationDetails: { tooShort, valueMissing } }) => {
+          if (tooShort) return "لا يقل عن 2 احرف";
+          // if (tooLong) return "لا يقل عن 36 احرف";
+          if (valueMissing) return "اسم المسؤول مطلوب";
+        },
       },
       {
         isRequired: true,
         title: "رقم المسؤول عن الجهاز",
         placeholder: "ادخل الرقم ",
         name: "phoneNmber",
-        errorMsg: "رقم المسؤول مطلوب",
+        minLength: 10,
+        maxLength: 11,
+        errorMessage: ({ validationDetails: { tooShort, tooLong, valueMissing } }) => {
+          if (tooShort) return "لا يقل عن 10 احرف";
+          if (tooLong) return "لا يقل عن 11 احرف";
+          if (valueMissing) return "رقم المسؤول مطلوب";
+        },
       },
       {
         isRequired: false,
         title: "نوع الجهاز",
         placeholder: "ادخل نوع الجهاز",
         name: "type",
-        errorMsg: "نوع الجهاز مطلوب",
+        // errorMessage: "نوع الجهاز مطلوب",
       },
       {
         isRequired: false,
         title: "MAC",
         placeholder: "ادخل MAC",
         name: "mac",
-        errorMsg: "عنوان MAC مطلوب",
+        // minLength: 17,
+        // maxLength: 17,
+        // pattern: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,
+        pattern: "[0-9]{3}",
+        errorMessage: ({ validationDetails: { patternMismatch, tooShort, tooLong } }) => {
+          console.log("patternMismatch", patternMismatch);
+          if (tooShort) return "لا يقل عن 17 احرف";
+          if (tooLong) return "لا يقل عن 17 احرف";
+          if (patternMismatch) return "صيغة MAC غير صحيحة";
+          // if (valueMissing) return "رقم المسؤول مطلوب";
+        },
       },
       { isRequired: false, title: "CPU", placeholder: "ادخل موديل CPU", name: "cpu" },
       { isRequired: false, title: "GPU", placeholder: "ادخل موديل GPU", name: "gpu" },
@@ -251,57 +278,40 @@ function AddDeviceForm({ onSuccess }) {
       className="w-full flex flex-col items-center justify-center p-2"
     >
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-        {elList.map(
-          ({
-            name,
-            placeholder,
-            title,
-            label,
-            state,
-            setState,
-            disabled,
-            data,
-            isRequired,
-            errorMsg,
-          }) => {
-            if (label)
-              return (
-                <Autocomplete
-                  isRequired={isRequired}
-                  key={name}
-                  isDisabled={disabled}
-                  size="lg"
-                  inputValue={state.inputValue}
-                  items={state.items}
-                  label={label || title}
-                  labelPlacement="outside"
-                  placeholder={placeholder}
-                  selectedKey={state.selectedKey}
-                  onInputChange={value => onInputChange(value, setState, data)}
-                  onSelectionChange={key => onSelectionChange(key, setState, data, name)}
-                  errorMessage={errorMsg}
-                >
-                  {item => (
-                    <AutocompleteItem dir="rtl" key={item.id} className="text-right">
-                      {item.name}
-                    </AutocompleteItem>
-                  )}
-                </Autocomplete>
-              );
+        {elList.map(({ name, title, label, state, setState, data, ...props }) => {
+          if (label)
             return (
-              <Input
-                isRequired={isRequired}
+              <Autocomplete
                 key={name}
+                name={name}
+                size="lg"
+                inputValue={state.inputValue}
+                items={state.items}
                 label={label || title}
                 labelPlacement="outside"
-                size="lg"
-                name={name}
-                placeholder={placeholder}
-                errorMessage={errorMsg}
-              />
+                selectedKey={state.selectedKey}
+                onInputChange={value => onInputChange(value, setState, data)}
+                onSelectionChange={key => onSelectionChange(key, setState, data, name)}
+                {...props}
+              >
+                {item => (
+                  <AutocompleteItem dir="rtl" key={item.id} className="text-right">
+                    {item.name}
+                  </AutocompleteItem>
+                )}
+              </Autocomplete>
             );
-          }
-        )}
+          return (
+            <Input
+              key={name}
+              name={name}
+              label={label || title}
+              labelPlacement="outside"
+              size="lg"
+              {...props}
+            />
+          );
+        })}
       </div>
     </Form>
   );
