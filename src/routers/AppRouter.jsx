@@ -14,6 +14,7 @@ import axios from "axios";
 import { useInterval } from "usehooks-ts";
 import AllDevices from "../pages/AllDevices";
 import { MaintenanceOperations } from "../pages/MaintenanceOperations";
+import { jwtDecode } from "jwt-decode";
 // import { ReadyForDelivery } from "../pages/ReadyForDelivery";
 
 const router = createBrowserRouter(
@@ -54,10 +55,14 @@ const AppRouter = () => {
         } = await axios.request(config);
         window.localStorage.setItem("accessToken", accessToken);
         window.localStorage.setItem("refreshToken", refreshToken);
+        const user = jwtDecode(accessToken);
+        console.log("🚀 ~ useInterval ~ user:", user);
+        if (user) window.localStorage.setItem("user", JSON.stringify(user));
       } catch (error) {
         console.log("🚀 ~ useInterval ~ error:", error);
         window.localStorage.removeItem("accessToken");
         window.localStorage.removeItem("refreshToken");
+        window.localStorage.removeItem("user");
         window.location.href = "/login";
       }
     }
