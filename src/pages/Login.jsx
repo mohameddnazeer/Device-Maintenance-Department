@@ -4,7 +4,8 @@ import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import axios from "axios";
-import { useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import maintenanceImage from "../assets/images/loginImage.svg";
@@ -31,7 +32,14 @@ export const Login = () => {
       success: ({ data }) => {
         window.localStorage.setItem("accessToken", data.accessToken);
         window.localStorage.setItem("refreshToken", data.refreshToken);
-        navigate("/home");
+        const decodedUser = jwtDecode(data.accessToken);
+        const user = {
+          name: decodedUser["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+          id: decodedUser["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+          role: decodedUser["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+        };
+        if (user) window.localStorage.setItem("user", JSON.stringify(user));
+        navigate("/maintenance");
         return "تم تسجيل الدخول بنجاح";
       },
       error: err => {
@@ -51,18 +59,14 @@ export const Login = () => {
        * @param {{ validationDetails: ValidityState }} validationDetails
        * @returns {string} The error message to be displayed
        */
-      errorMsg: ({ validationDetails }) => {
-        if (validationDetails.valueMissing) return "اسم المستخدم مطلوب";
-        if (validationDetails.tooShort) return "اسم المستخدم يجب ان يكون اكثر من حرفين";
-      },
-      minLength: 2,
+      errorMsg: "اسم المستخدم مطلوب",
     },
     {
       isRequired: true,
       title: "كلمة المرور",
       placeholder: "ادخل كلمة المرور",
       name: "password",
-      errorMsg: "كلمة المرور مطلوبة",
+      errorMsg: "كلمة المرور مطلوب",
       type: isVisible ? "text" : "password",
       endContent: (
         <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
@@ -75,6 +79,12 @@ export const Login = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    const accessToken = window.localStorage.getItem("accessToken");
+    const refreshToken = window.localStorage.getItem("refreshToken");
+    if (accessToken && refreshToken) navigate("/maintenance");
+  }, [navigate]);
 
   return (
     <div className="flex flex-col md:flex-row p-4 min-h-screen justify-center">

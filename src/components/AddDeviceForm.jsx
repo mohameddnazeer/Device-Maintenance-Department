@@ -119,7 +119,6 @@ function AddDeviceForm({ onSuccess }) {
     if (!accessToken) return navigate("/login");
     // Get form data as an object.
     const data = JSON.stringify(Object.fromEntries(new FormData(event.currentTarget)));
-    console.log("🚀", data);
     let config = {
       method: "post",
       url:
@@ -131,8 +130,7 @@ function AddDeviceForm({ onSuccess }) {
 
     toast.promise(axios.request(config), {
       loading: <p>جاري اضافة الجهاز</p>,
-      success: res => {
-        console.log("🚀 ", res);
+      success: () => {
         onSuccess?.();
         return "تم اضافة الجهاز بنجاح";
       },
@@ -221,13 +219,17 @@ function AddDeviceForm({ onSuccess }) {
         isRequired: true,
         title: "رقم المسؤول عن الجهاز",
         placeholder: "ادخل الرقم ",
+        pattern: "^(010|011|012|015)[0-9]{8}$", // Egyptian phone number format
         name: "phoneNmber",
         minLength: 10,
         maxLength: 11,
-        errorMessage: ({ validationDetails: { tooShort, tooLong, valueMissing } }) => {
+        errorMessage: ({
+          validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+        }) => {
           if (tooShort) return "لا يقل عن 10 احرف";
           if (tooLong) return "لا يقل عن 11 احرف";
           if (valueMissing) return "رقم المسؤول مطلوب";
+          if (patternMismatch) return "رقم الهاتف غير صحيح";
         },
       },
       {
@@ -242,16 +244,10 @@ function AddDeviceForm({ onSuccess }) {
         title: "MAC",
         placeholder: "ادخل MAC",
         name: "mac",
-        // minLength: 17,
-        // maxLength: 17,
-        // pattern: /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/,
-        pattern: "[0-9]{3}",
-        errorMessage: ({ validationDetails: { patternMismatch, tooShort, tooLong } }) => {
-          console.log("patternMismatch", patternMismatch);
-          if (tooShort) return "لا يقل عن 17 احرف";
-          if (tooLong) return "لا يقل عن 17 احرف";
+        pattern:
+          "^(?:(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2}|[0-9a-fA-F]{12})$",
+        errorMessage: ({ validationDetails: { patternMismatch } }) => {
           if (patternMismatch) return "صيغة MAC غير صحيحة";
-          // if (valueMissing) return "رقم المسؤول مطلوب";
         },
       },
       { isRequired: false, title: "CPU", placeholder: "ادخل موديل CPU", name: "cpu" },

@@ -4,7 +4,7 @@ import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import maintenanceImage from "../assets/images/loginImage.svg";
@@ -12,6 +12,12 @@ import maintenanceImage from "../assets/images/loginImage.svg";
 export const Register = () => {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const accessToken = window.localStorage.getItem("accessToken");
+    const refreshToken = window.localStorage.getItem("refreshToken");
+    if (accessToken && refreshToken) navigate("/maintenance");
+  }, [navigate]);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const { mutateAsync } = useMutation({
@@ -29,8 +35,7 @@ export const Register = () => {
       loading: <p>جاري تسجيل الدخول</p>,
       // eslint-disable-next-line no-unused-vars
       success: data => {
-        console.log("🚀 ", data);
-        navigate("/home");
+        navigate("/");
         return "تم تسجيل الدخول بنجاح";
       },
       error: err => {

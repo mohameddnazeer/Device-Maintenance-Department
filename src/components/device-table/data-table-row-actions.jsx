@@ -3,6 +3,7 @@ import { openModal, setRowData } from "@/store/updateDeviceSlice";
 import { Button } from "@heroui/button";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { ExternalLinkIcon, PenSquareIcon } from "lucide-react";
 import { useDispatch } from "react-redux";
@@ -14,6 +15,7 @@ export function DataTableRowActions({ row }) {
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const onAction = key => {
     switch (key) {
@@ -23,7 +25,6 @@ export function DataTableRowActions({ row }) {
         );
         break;
       case "edit":
-        console.log("edit", row.original);
         dispatch(setRowData(row.original));
         dispatch(openModal());
         break;
@@ -39,8 +40,8 @@ export function DataTableRowActions({ row }) {
 
         toast.promise(axios.request(config), {
           loading: <p>جاري حذف الجهاز</p>,
-          success: res => {
-            console.log("🚀 ", res);
+          success: () => {
+            queryClient.refetchQueries({ type: "active" });
             return "تم حذف الجهاز بنجاح";
           },
           error: err => {
@@ -48,7 +49,6 @@ export function DataTableRowActions({ row }) {
             return err.response.data.message || "حدث خطأ اثناء حذف الجهاز";
           },
         });
-        console.log("delete", row.original);
         break;
       default:
         break;

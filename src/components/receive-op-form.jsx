@@ -19,35 +19,23 @@ const states = [
 export function ReceiveOpForm() {
   const [submitted, setSubmitted] = useState(null);
   const [failures, setFailures] = useState(new Set([]));
-  // console.log("🚀 ~ ReceiveOpForm ~ failures:", failures);
 
-  const rowData = useSelector(state => state.receiveModal.rowData); // Access row data from Redux store
+  const rowData = useSelector(state => state.updateModal.rowData); // Access row data from Redux store
+  // const rowData = useSelector(state => state.receiveModal.rowData); // Access row data from Redux store
 
   useEffect(() => {
-    console.log(rowData);
     if (rowData) setFailures(rowData.failureMaintains);
   }, [rowData]);
 
-  const { isFetching, data: failureData } = useQuery({
-    queryKey: ["receive-op-form", "failures"],
-    queryFn: async () => fetchData("api/failures"),
-  });
+  // const { isFetching, data: failureData } = useQuery({
+  //   queryKey: ["receive-op-form", "failures"],
+  //   queryFn: async () => fetchData("api/failures"),
+  // });
 
   const { isFetching: isFetchingUser, data: users } = useQuery({
     queryKey: ["receive-op-form", "users"],
     queryFn: async () => fetchData("api/users"),
   });
-
-  // useEffect(() => {
-  //   if (rowData && failureData) {
-  //     const newSet = new Set([]);
-  //     rowData.failureMaintains.forEach(failure => {
-  //       const failureId = failureData.find(f => f.name === failure.name)?.id;
-  //       if (failureId) newSet.add(parseInt(failureId));
-  //     });
-  //     setFailures(newSet);
-  //   }
-  // }, [failureData, rowData]);
 
   const onSubmit = e => {
     // Prevent default browser page refresh.
@@ -61,7 +49,7 @@ export function ReceiveOpForm() {
     setSubmitted(data);
   };
 
-  if (isFetchingUser || isFetching) return <Loader />;
+  if (isFetchingUser) return <Loader />;
   return (
     <Form
       id="update-op-form"

@@ -97,7 +97,6 @@ function AddUserForm({ onSuccess }) {
     const data = Object.fromEntries(new FormData(event.currentTarget));
     data.roles = Array.from(value);
     data.departmentId = departmentState.selectedKey;
-    console.log("🚀", data);
 
     let config = {
       method: "post",
@@ -108,8 +107,7 @@ function AddUserForm({ onSuccess }) {
 
     toast.promise(axios.request(config), {
       loading: "جاري اضافة مستخدم جديد",
-      success: res => {
-        console.log("🚀 ", res);
+      success: () => {
         onSuccess?.();
         queryClient.refetchQueries({ type: "active" });
         return "تم اضافة المستخدم بنجاح";
@@ -146,7 +144,12 @@ function AddUserForm({ onSuccess }) {
           size="lg"
           name="userName"
           placeholder="ahmed123"
-          errorMessage="اسم المستخدم مطلوب"
+          pattern="^[a-zA-Z0-9_]{3,}$" // At least 8 characters and only letters, numbers, and underscores
+          errorMessage={({ validationDetails: { valueMissing, tooShort, patternMismatch } }) => {
+            if (valueMissing) return "اسم المستخدم مطلوب";
+            if (tooShort) return "لا يقل عن 8 احرف";
+            if (patternMismatch) return "يجب ان يحتوي على احرف و ارقام و _ فقط";
+          }}
         />
         <Input
           isRequired
@@ -157,10 +160,15 @@ function AddUserForm({ onSuccess }) {
           placeholder="ادخل كلمة المرور"
           minLength={10}
           maxLength={36}
-          errorMessage={({ validationDetails: { tooShort, tooLong, valueMissing } }) => {
+          pattern=".*[0-9].*" // Includes at least 1 number
+          errorMessage={({
+            validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+          }) => {
+            if (valueMissing) return "كلمة المرور مطلوبة";
             if (tooShort) return "لا يقل عن 10 احرف";
             if (tooLong) return "لا يقل عن 36 احرف";
-            if (valueMissing) return "كلمة المرور مطلوبة";
+            if (patternMismatch)
+              return "يجب ان تحتوي كلمة المرور على رقم واحد على الاقل ولا يقل عن 10 احرف";
           }}
           type={isVisible.password ? "text" : "password"}
           endContent={
@@ -186,10 +194,15 @@ function AddUserForm({ onSuccess }) {
           placeholder="ادخل كلمة المرور"
           minLength={10}
           maxLength={36}
-          errorMessage={({ validationDetails: { tooShort, tooLong, valueMissing } }) => {
+          pattern=".*[0-9].*" // Includes at least 1 number
+          errorMessage={({
+            validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+          }) => {
+            if (valueMissing) return "كلمة المرور مطلوبة";
             if (tooShort) return "لا يقل عن 10 احرف";
             if (tooLong) return "لا يقل عن 36 احرف";
-            if (valueMissing) return "تأكيد كلمة المرور مطلوبة";
+            if (patternMismatch)
+              return "يجب ان تحتوي كلمة المرور على رقم واحد على الاقل ولا يقل عن 10 احرف";
           }}
           type={isVisible.confirmPass ? "text" : "password"}
           endContent={
@@ -213,7 +226,17 @@ function AddUserForm({ onSuccess }) {
           size="lg"
           name="phoneNumber"
           placeholder="01122334455"
-          errorMessage="رقم الهاتف مطلوب"
+          pattern="^(010|011|012|015)[0-9]{8}$" // Egyptian phone number format
+          minLength={10}
+          maxLength={11}
+          errorMessage={({
+            validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+          }) => {
+            if (tooShort) return "لا يقل عن 10 احرف";
+            if (tooLong) return "لا يقل عن 11 احرف";
+            if (valueMissing) return "رقم المسؤول مطلوب";
+            if (patternMismatch) return "رقم الهاتف غير صحيح";
+          }}
         />
         <Select
           isRequired

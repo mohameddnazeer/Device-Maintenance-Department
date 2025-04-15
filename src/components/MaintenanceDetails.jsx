@@ -62,7 +62,6 @@ const MaintenanceDetails = ({ id, rowData }) => {
     "maintainLocation",
     "state",
   ]);
-  console.log(d);
 
   const renderCell = useCallback(
     (device, columnKey) => {

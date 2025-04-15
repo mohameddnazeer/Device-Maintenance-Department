@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Loader from "./loader";
+import { Button } from "@heroui/button";
+import { closeModal } from "@/store/updateModalSlice";
 
 const states = [
   { id: 1, name: "CancelledDeviceNotNeedIt", label: "تم الإلغاء لعدم الحاجة" },
@@ -22,8 +24,8 @@ export function UpdateStatusForm() {
   const navigate = useNavigate();
   const [failures, setFailures] = useState(new Set([]));
 
-  const rowData = useSelector(state => state.updateStatus.rowData); // Access row data from Redux store
-  // console.log("🚀 :", rowData);
+  const rowData = useSelector(state => state.updateModal.rowData); // Access row data from Redux store
+  // const rowData = useSelector(state => state.updateStatus.rowData); // Access row data from Redux store
 
   useEffect(() => {
     if (rowData) setFailures(rowData.failureMaintains);
@@ -53,8 +55,7 @@ export function UpdateStatusForm() {
 
     toast.promise(Promise.all(configs.map(config => axios.request(config))), {
       loading: "جاري تحديث الحالة",
-      success: res => {
-        console.log("🚀 1", res);
+      success: () => {
         dispatch(closeStatus());
         dispatch(setRefetchOp());
         return "تم تحديث الحالة بنجاح";
@@ -96,6 +97,14 @@ export function UpdateStatusForm() {
             </Select>
           );
         })}
+      </div>
+      <div className="justify-end w-full flex gap-2 p-2">
+        <Button type="reset" color="danger" variant="light" onPress={() => dispatch(closeModal())}>
+          إلغاء
+        </Button>
+        <Button type="submit" color="success">
+          تحديث البيانات
+        </Button>
       </div>
     </Form>
   );

@@ -33,10 +33,8 @@ const DeviceHistory = () => {
     queryFn: () => customFetch(`api/device/${id}/maintainHistory`),
     enabled: !!id,
   });
-  console.log("🚀 ~ DeviceHistory ~ data:", data);
   const renderCell = useCallback((maintenanceRecord, columnKey) => {
     const cellValue = maintenanceRecord[columnKey];
-    console.log(maintenanceRecord, columnKey, cellValue);
 
     switch (columnKey) {
       case "failureMaintains":

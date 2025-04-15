@@ -59,7 +59,6 @@ function DelUserModal({ onClose, isOpen, onOpenChange }) {
 
     // Get form data as an object.
     const data = Object.fromEntries(new FormData(e.currentTarget));
-    console.log("🚀:", data);
     const accessToken = window.localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
 

@@ -2,7 +2,7 @@ import { closeModal, openModal } from "@/store/failureModalSlice";
 import { Button } from "@heroui/button";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { useDisclosure } from "@heroui/modal";
-import { PlusCircleIcon, PlusIcon, Trash2Icon } from "lucide-react";
+import { LogOutIcon, PlusCircleIcon, PlusIcon, Trash2Icon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,6 +41,10 @@ export const Navbar = () => {
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
   const isOpen = useSelector(state => state.failureModal.isOpen);
   // const isDelFailureOpen = useSelector(state => state.delFailureModal.isOpen);
+  const [user, _setUser] = useState(() => {
+    const user = window.localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  });
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -58,6 +62,13 @@ export const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // ** add logic for redirecting to login page if not logged in
+  useEffect(() => {
+    const accessToken = window.localStorage.getItem("accessToken");
+    const refreshToken = window.localStorage.getItem("refreshToken");
+    if (!accessToken || !refreshToken) navigate("/login");
+  }, [navigate]);
 
   const onAction = key => {
     switch (key) {
@@ -109,6 +120,13 @@ export const Navbar = () => {
     }
   };
 
+  const onLogout = () => {
+    window.localStorage.removeItem("accessToken");
+    window.localStorage.removeItem("refreshToken");
+    window.localStorage.removeItem("user");
+    navigate("/login");
+  };
+
   return (
     <div className="flex justify-between items-center p-4 relative shadow-md">
       <div className="flex gap-x-4">
@@ -117,39 +135,49 @@ export const Navbar = () => {
             <FaBars />
           </Button>
         </div>
+
+        <Button isIconOnly onPress={onLogout} variant="solid" color="danger">
+          <LogOutIcon />
+        </Button>
+
         <Darkmode />
 
-        <Dropdown dir="rtl">
-          <DropdownTrigger>
-            <Button isIconOnly variant="solid" radius="lg">
-              <Trash2Icon />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            aria-label="Dropdown menu with description"
-            variant="faded"
-            onAction={onDelete}
-          >
-            <DropdownItem key="delete-region" endContent={<PlusIcon className={iconClasses} />}>
-              حذف قطاع
-            </DropdownItem>
-            <DropdownItem key="delete-gate" endContent={<PlusIcon className={iconClasses} />}>
-              حذف بوابة
-            </DropdownItem>
-            <DropdownItem key="delete-department" endContent={<PlusIcon className={iconClasses} />}>
-              حذف إدارة
-            </DropdownItem>
-            <DropdownItem key="delete-office" endContent={<PlusIcon className={iconClasses} />}>
-              حذف مكتب
-            </DropdownItem>
-            <DropdownItem key="delete-failure" endContent={<PlusIcon className={iconClasses} />}>
-              حذف عطل
-            </DropdownItem>
-            <DropdownItem key="delete-user" endContent={<PlusIcon className={iconClasses} />}>
-              حذف مستخدم
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        {user.role === "Admin" && (
+          <Dropdown dir="rtl">
+            <DropdownTrigger>
+              <Button isIconOnly variant="solid" radius="lg">
+                <Trash2Icon />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Dropdown menu with description"
+              variant="faded"
+              onAction={onDelete}
+            >
+              <DropdownItem key="delete-region" endContent={<PlusIcon className={iconClasses} />}>
+                حذف قطاع
+              </DropdownItem>
+              <DropdownItem key="delete-gate" endContent={<PlusIcon className={iconClasses} />}>
+                حذف بوابة
+              </DropdownItem>
+              <DropdownItem
+                key="delete-department"
+                endContent={<PlusIcon className={iconClasses} />}
+              >
+                حذف إدارة
+              </DropdownItem>
+              <DropdownItem key="delete-office" endContent={<PlusIcon className={iconClasses} />}>
+                حذف مكتب
+              </DropdownItem>
+              <DropdownItem key="delete-failure" endContent={<PlusIcon className={iconClasses} />}>
+                حذف عطل
+              </DropdownItem>
+              <DropdownItem key="delete-user" endContent={<PlusIcon className={iconClasses} />}>
+                حذف مستخدم
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        )}
 
         <Dropdown dir="rtl">
           <DropdownTrigger>
@@ -177,9 +205,11 @@ export const Navbar = () => {
             <DropdownItem key="add-failure" endContent={<PlusIcon className={iconClasses} />}>
               اضافة عطل
             </DropdownItem>
-            <DropdownItem key="add-user" endContent={<PlusIcon className={iconClasses} />}>
-              اضافة مستخدم
-            </DropdownItem>
+            {user.role === "Admin" && (
+              <DropdownItem key="add-user" endContent={<PlusIcon className={iconClasses} />}>
+                اضافة مستخدم
+              </DropdownItem>
+            )}
           </DropdownMenu>
         </Dropdown>
         <div className="hidden lg:flex lg:items-center gap-4 text-muted-foreground">

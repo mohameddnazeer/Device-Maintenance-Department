@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Loader from "./loader";
-import { pick } from "lodash";
 
 const columns = [{ key: "key" }, { key: "value" }];
 const locale = {
@@ -97,7 +96,6 @@ const DeviceDetails = () => {
           if (!device.office) return <div className="!text-lg">لا يوجد</div>;
           return <div className="!text-lg">{device.office.name}</div>;
         default:
-          console.log("🚀 ", cellValue, device[cellValue]);
           if (!device[cellValue]) return <div className="!text-lg">لا يوجد</div>;
           return <div className="!text-lg">{device[cellValue]}</div>;
       }

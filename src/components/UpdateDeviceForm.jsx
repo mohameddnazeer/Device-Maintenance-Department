@@ -143,102 +143,29 @@ function UpdateDeviceForm({ onSuccess }) {
     const accessToken = window.localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
     // Get form data as an object.
-    const data = JSON.stringify(Object.fromEntries(new FormData(event.currentTarget)));
-    console.log("🚀", data);
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+    data.id = rowData.id;
     let config = {
-      method: "post",
+      method: "put",
       url:
         getUrl() +
         `api/regions/${regionState.selectedKey}/gates/${gateState.selectedKey}/departments/${departmentState.selectedKey}/offices/${officeState.selectedKey}/devices`,
       headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
-      data,
+      data: JSON.stringify(data),
     };
 
     toast.promise(axios.request(config), {
-      loading: <p>جاري اضافة الجهاز</p>,
-      success: res => {
-        console.log("🚀 ", res);
+      loading: "جاري تحديث البيانات",
+      success: () => {
         onSuccess?.();
-        return "تم اضافة الجهاز بنجاح";
+        return "تم تحديث البيانات بنجاح";
       },
       error: err => {
         console.log(err);
-        return err.response.data.message || "حدث خطأ اثناء اضافة الجهاز";
+        return err.response.data.message || "فشل تحديث البيانات";
       },
     });
   };
-
-  const elList = useMemo(
-    () => [
-      {
-        title: "المنطقة",
-        name: "region",
-        label: "القطاع",
-        state: regionState,
-        setState: setRegionState,
-        data: regionData,
-        placeholder: "اختر القطاع",
-      },
-      {
-        disabled: !regionState.selectedKey,
-        title: "البوابة",
-        name: "gate",
-        label: "البوابة",
-        state: gateState,
-        setState: setGateState,
-        data: gateData,
-        placeholder: "اختر البوابة",
-      },
-      {
-        disabled: !gateState.selectedKey,
-        title: "الإدارة",
-        name: "department",
-        label: "الإدارة",
-        state: departmentState,
-        setState: setDepartmentState,
-        data: departmentRes.data,
-        placeholder: "اختر الإدارة",
-      },
-      {
-        disabled: !departmentState.selectedKey,
-        title: "المكتب",
-        name: "office",
-        label: "المكتب",
-        state: officeState,
-        setState: setOfficeState,
-        data: officeRes.data,
-        placeholder: "اختر المكتب",
-      },
-      {
-        title: "اسم المسؤول عن الجهاز",
-        placeholder: "ادخل الاسم ",
-        name: "owner",
-      },
-      {
-        title: "رقم المسؤول عن الجهاز",
-        placeholder: "ادخل الرقم ",
-        name: "phoneNmber",
-      },
-      {
-        title: "نوع الجهاز",
-        placeholder: "ادخل نوع الجهاز",
-        name: "type",
-      },
-      { title: "CPU", placeholder: "ادخل موديل CPU", name: "cpu" },
-      { title: "GPU", placeholder: "ادخل موديل GPU", name: "gpu" },
-      { title: "RAM", placeholder: "ادخل حجم RAM", name: "ramTotal" },
-    ],
-    [
-      regionState,
-      gateState,
-      departmentState,
-      officeState,
-      regionData,
-      gateData,
-      departmentRes.data,
-      officeRes.data,
-    ]
-  );
 
   return (
     <Form
@@ -260,6 +187,7 @@ function UpdateDeviceForm({ onSuccess }) {
             data,
             isRequired,
             errorMsg,
+            ...props
           }) => {
             if (label)
               return (
@@ -277,6 +205,7 @@ function UpdateDeviceForm({ onSuccess }) {
                   onInputChange={value => onInputChange(value, setState, data)}
                   onSelectionChange={key => onSelectionChange(key, setState, data, name)}
                   errorMessage={errorMsg}
+                  {...props}
                 >
                   {item => (
                     <AutocompleteItem dir="rtl" key={item.id} className="text-right">
@@ -295,6 +224,7 @@ function UpdateDeviceForm({ onSuccess }) {
                 name={name}
                 placeholder={placeholder}
                 defaultValue={rowData[name]}
+                {...props}
               />
             );
           }
@@ -305,3 +235,83 @@ function UpdateDeviceForm({ onSuccess }) {
 }
 
 export default UpdateDeviceForm;
+
+const elList = [
+  {
+    title: "رقم الدومين",
+    placeholder: "ادخل رقم الدومين",
+    name: "domainIDIfExists",
+    maxLength: 8,
+    errorMessage: ({ validationDetails: { tooLong } }) => {
+      if (tooLong) return "لا يزيد عن 8 حرفا";
+    },
+  },
+  {
+    title: "اسم المسؤول عن الجهاز",
+    placeholder: "ادخل الاسم ",
+    name: "owner",
+    maxLength: 50,
+    errorMessage: ({ validationDetails: { tooLong } }) => {
+      if (tooLong) return "لا يزيد عن 50 حرفا";
+    },
+  },
+  {
+    title: "رقم المسؤول عن الجهاز",
+    placeholder: "ادخل الرقم ",
+    name: "phoneNmber",
+    pattern: "^(010|011|012|015)[0-9]{8}$", // Egyptian phone number format
+    minLength: 10,
+    maxLength: 11,
+    errorMessage: ({ validationDetails: { tooShort, tooLong, patternMismatch } }) => {
+      if (tooShort) return "لا يقل عن 10 احرف";
+      if (tooLong) return "لا يقل عن 11 احرف";
+      if (patternMismatch) return "رقم الهاتف غير صحيح";
+    },
+  },
+  {
+    title: "نوع الجهاز",
+    placeholder: "ادخل نوع الجهاز",
+    name: "type",
+    maxLength: 20,
+    errorMessage: ({ validationDetails: { tooLong } }) => {
+      if (tooLong) return "لا يزيد عن 20 حرفا";
+    },
+  },
+  {
+    title: "MAC",
+    placeholder: "ادخل MAC",
+    name: "mac",
+    pattern:
+      "^(?:(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2}|[0-9a-fA-F]{12})$",
+    errorMessage: ({ validationDetails: { patternMismatch } }) => {
+      if (patternMismatch) return "صيغة MAC غير صحيحة";
+    },
+  },
+  {
+    title: "CPU",
+    placeholder: "ادخل موديل CPU",
+    name: "cpu",
+    maxLength: 20,
+    errorMessage: ({ validationDetails: { tooLong } }) => {
+      if (tooLong) return "لا يزيد عن 20 حرفا";
+    },
+  },
+  {
+    title: "GPU",
+    placeholder: "ادخل موديل GPU",
+    name: "gpu",
+    maxLength: 100,
+    errorMessage: ({ validationDetails: { tooLong } }) => {
+      if (tooLong) return "لا يزيد عن 100 حرفا";
+    },
+  },
+  {
+    title: "RAM",
+    placeholder: "ادخل حجم RAM",
+    name: "ramTotal",
+    maxLength: 8,
+    errorMessage: ({ validationDetails: { tooLong } }) => {
+      if (tooLong) return "لا يزيد عن 8 حرفا";
+    },
+  },
+];

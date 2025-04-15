@@ -103,6 +103,14 @@ export function OPForm({ onClose }) {
       },
       error: err => {
         console.log(err);
+        if (err.response.data.errors) {
+          const errs = Array.from(Object.entries(err.response.data.errors));
+          let msg = ["فشل اضافة عملية الصيانة"];
+          errs.forEach(errors => {
+            errors[1].forEach(error => msg.push(error));
+          });
+          return msg.join(" - ");
+        }
         return err.response.data.message || "حدث خطأ اثناء اضافة عملية الصيانة";
       },
     });
@@ -175,14 +183,25 @@ export function OPForm({ onClose }) {
         <Input
           size="lg"
           isRequired
-          errorMessage="من فضلك ادخل رقم العميل"
           label="رقم العميل"
           labelPlacement="outside"
           name="delievryPhoneNumber"
-          placeholder="رقم العميل"
+          placeholder="01122334455"
+          pattern="^(010|011|012|015)[0-9]{8}$" // Egyptian phone number format
+          minLength={10}
+          maxLength={11}
+          errorMessage={({
+            validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+          }) => {
+            if (tooShort) return "لا يقل عن 10 احرف";
+            if (tooLong) return "لا يقل عن 11 احرف";
+            if (valueMissing) return "رقم المسؤول مطلوب";
+            if (patternMismatch) return "رقم الهاتف غير صحيح";
+          }}
         />
 
         <Select
+          isRequired
           name="maintainLocation"
           // className="col-span-2"
           label="مكان الصيانة"
@@ -194,6 +213,7 @@ export function OPForm({ onClose }) {
             { id: 1, name: "InOurBranch", label: "داخل فرع النظم" },
             { id: 2, name: "InDeviceOwnerOffice", label: "مع صاحب الجهاز" },
           ]}
+          errorMessage="من فضلك اختر مكان الصيانة"
         >
           {item => (
             <SelectItem dir="rtl" className="text-start" key={item.name}>
@@ -235,6 +255,7 @@ export function OPForm({ onClose }) {
         </div>
 
         <Autocomplete
+          isRequired
           defaultItems={users ?? []}
           selectedKey={receiverID}
           onSelectionChange={setReceiverID}
@@ -267,6 +288,7 @@ export function OPForm({ onClose }) {
           radius="lg"
           startContent={<SearchIcon className="text-default-400" size={20} strokeWidth={2.5} />}
           variant="flat"
+          errorMessage="من فضلك اختر المستلم"
         >
           {item => (
             <AutocompleteItem key={item.id} textValue={item.name}>

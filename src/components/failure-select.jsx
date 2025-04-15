@@ -16,7 +16,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 
 const FailureSelect = ({ title, options, selectedValues, setSelectedValues, resetFilter }) => {
-  console.log(title, options, selectedValues);
   return (
     <Popover>
       <PopoverTrigger asChild>

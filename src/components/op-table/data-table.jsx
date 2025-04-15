@@ -94,8 +94,6 @@ export function DataTable({ columns, data }) {
           {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id} className="group/tr border-none cursor-default">
               {headerGroup.headers.map(header => {
-                // (header.id === "actions" || header.id === "id") && console.log(header);
-
                 return (
                   <TableHead
                     className="group/th px-3 bg-accent whitespace-nowrap font-semibold"

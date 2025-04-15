@@ -1,10 +1,19 @@
 import AddUserForm from "@/components/AddUserForm";
 import { Button } from "@heroui/button";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "./Layout";
 
 const AddUser = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const data = localStorage.getItem("user");
+    if (!data) navigate("/login", { replace: true });
+    const user = JSON.parse(data);
+    if (user.role !== "Admin") navigate("/", { replace: true });
+  }, [navigate]);
+
   return (
     <PageWrapper>
       <div dir="rtl" className="flex flex-col items-center mt-10 p-6">

@@ -1,16 +1,13 @@
-import { cn } from "@/lib/utils";
+import { cn, getUrl } from "@/lib/utils";
 import { openMaintenance, setRowData as setData, setID } from "@/store/maintenanceModalSlice";
-import {
-  openModal as openReceive,
-  setRowData as setReceiveRowData,
-} from "@/store/receiveModalSlice";
 import { openModal, setRowData } from "@/store/updateModalSlice";
-import { openStatus, setRowData as setRowStatusData } from "@/store/updateStatusSlice";
 import { Button } from "@heroui/button";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/dropdown";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import axios from "axios";
 import { ExternalLinkIcon, PenSquareIcon, Trash2Icon } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 export function DataTableRowActions({ row }) {
   const dispatch = useDispatch();
@@ -28,32 +25,28 @@ export function DataTableRowActions({ row }) {
         break;
 
       case "update-status":
-        dispatch(setRowStatusData(row.original));
-        dispatch(openStatus());
+        dispatch(setRowData(row.original));
+        dispatch(openModal());
         break;
 
       case "delete":
-        // const accessToken = window.localStorage.getItem("accessToken");
-        // let config = {
-        //   method: "delete",
-        //   url:
-        //     getUrl() +
-        //     `api/Regions/${row.original.region.id}/Gates/${row.original.gate.id}/Departments/${row.original.department.id}/offices/${row.original.office.id}/Devices/${row.original.id}`,
-        //   headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
-        // };
+        const accessToken = window.localStorage.getItem("accessToken");
+        let config = {
+          method: "delete",
+          url: getUrl() + `api/maintenance/${row.original.id}`,
+          headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
+        };
 
-        // toast.promise(axios.request(config), {
-        //   loading: <p>جاري حذف الجهاز</p>,
-        //   success: res => {
-        //     console.log("🚀 ", res);
-        //     return "تم حذف الجهاز بنجاح";
-        //   },
-        //   error: err => {
-        //     console.log(err);
-        //     return err.response.data.message || "حدث خطأ اثناء حذف الجهاز";
-        //   },
-        // });
-        // console.log("delete", row.original);
+        toast.promise(axios.request(config), {
+          loading: "جاري حذف عملية الصيانة...",
+          success: () => {
+            return "تم حذف عملية الصيانة بنجاح";
+          },
+          error: err => {
+            console.log(err);
+            return err.response.data.message || "حدث خطأ أثناء حذف عملية الصيانة";
+          },
+        });
         break;
 
       default:
@@ -69,8 +62,8 @@ export function DataTableRowActions({ row }) {
         variant="light"
         color="success"
         onPress={() => {
-          dispatch(setReceiveRowData(row.original));
-          dispatch(openReceive());
+          dispatch(setRowData(row.original));
+          dispatch(openModal());
         }}
       >
         تسليم

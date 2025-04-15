@@ -2,6 +2,7 @@ import { fetchData, getUrl } from "@/lib/utils";
 import { setRefetchOp } from "@/store/refetchOpSlice";
 import { closeModal } from "@/store/updateModalSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
@@ -27,7 +28,6 @@ export function UpdateOpForm() {
   });
 
   useEffect(() => {
-    console.log(rowData.maintainerId, rowData.maintainerName);
     if (rowData) setMaintainerId(rowData.maintainerId);
   }, [rowData]);
 
@@ -60,8 +60,7 @@ export function UpdateOpForm() {
     };
     toast.promise(axios.request(config), {
       loading: "جاري تحديث البيانات",
-      success: res => {
-        console.log("🚀 ", res);
+      success: () => {
         dispatch(closeModal());
         dispatch(setRefetchOp());
         return "تم تحديث البيانات بنجاح";
@@ -173,14 +172,14 @@ export function UpdateOpForm() {
           )}
         </Select>
 
-        <Input
+        {/* <Input
           size="lg"
           label="طريقة الحل"
           labelPlacement="outside"
           name="solution"
           placeholder="طريقة الحل"
           className="col-span-2"
-        />
+        /> */}
 
         <Input
           size="lg"
@@ -191,6 +190,14 @@ export function UpdateOpForm() {
           placeholder="الملاحظات"
           className="col-span-2"
         />
+      </div>
+      <div className="justify-end w-full flex gap-2 p-2">
+        <Button type="reset" color="danger" variant="light" onPress={() => dispatch(closeModal())}>
+          إلغاء
+        </Button>
+        <Button type="submit" color="success">
+          تحديث البيانات
+        </Button>
       </div>
     </Form>
   );
