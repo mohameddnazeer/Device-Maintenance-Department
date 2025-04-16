@@ -15,7 +15,16 @@ export const columns = [
         title={column.columnDef.label || capitalize(column.id)}
       />
     ),
-    cell: ({ row }) => <div className="w-[80px] text-center">{row.getValue("deviceId")}</div>,
+    cell: ({ row }) => (
+      <div className="w-[80px] text-center">
+        {row.original.domainIDIfExists
+          ? row.original.domainIDIfExists
+          : row.original.mac
+          ? row.original.mac
+          : row.original.deviceId}
+      </div>
+    ),
+
     enableSorting: true,
     enableHiding: true,
   },

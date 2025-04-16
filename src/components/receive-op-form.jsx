@@ -34,7 +34,7 @@ export function ReceiveOpForm() {
 
   const { isFetching: isFetchingUser, data: users } = useQuery({
     queryKey: ["receive-op-form", "users"],
-    queryFn: async () => fetchData("api/users"),
+    queryFn: async () => fetchData("api/Users/UsersNamesWithIds"),
   });
 
   const onSubmit = e => {
@@ -164,13 +164,13 @@ export function ReceiveOpForm() {
                 <div className="flex gap-2 items-center">
                   <div className="flex flex-col">
                     <span className="text-small">{item.name}</span>
-                    <div className="flex gap-x-2">
+                    {/* <div className="flex gap-x-2">
                       {item.specializations.map((spec, index) => (
                         <span key={index} className="text-tiny text-default-400">
                           {spec.name}
                         </span>
                       ))}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

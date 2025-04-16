@@ -48,7 +48,7 @@ function DelUserModal({ onClose, isOpen, onOpenChange }) {
     select: data => data.data,
     queryKey: ["delete-user", "user"],
     queryFn: async () => {
-      return customFetch(`api/users`);
+      return customFetch(`api/Users/UsersNamesWithIds`);
     },
     // enabled: !!departmentSelectedKey,
   });

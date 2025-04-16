@@ -179,71 +179,39 @@ export const Navbar = () => {
           </Dropdown>
         )}
 
-        <Dropdown dir="rtl">
-          <DropdownTrigger>
-            <Button isIconOnly variant="solid" radius="lg">
-              <PlusCircleIcon />
-            </Button>
-          </DropdownTrigger>
-          <DropdownMenu
-            aria-label="Dropdown menu with description"
-            variant="faded"
-            onAction={onAction}
-          >
-            <DropdownItem key="add-region" endContent={<PlusIcon className={iconClasses} />}>
-              اضافة قطاع
-            </DropdownItem>
-            <DropdownItem key="add-gate" endContent={<PlusIcon className={iconClasses} />}>
-              اضافة بوابة
-            </DropdownItem>
-            <DropdownItem key="add-department" endContent={<PlusIcon className={iconClasses} />}>
-              اضافة إدارة
-            </DropdownItem>
-            <DropdownItem key="add-office" endContent={<PlusIcon className={iconClasses} />}>
-              اضافة مكتب
-            </DropdownItem>
-            <DropdownItem key="add-failure" endContent={<PlusIcon className={iconClasses} />}>
-              اضافة عطل
-            </DropdownItem>
-            {user.role === "Admin" && (
+        {user.role === "Admin" && (
+          <Dropdown dir="rtl">
+            <DropdownTrigger>
+              <Button isIconOnly variant="solid" radius="lg">
+                <PlusCircleIcon />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              aria-label="Dropdown menu with description"
+              variant="faded"
+              onAction={onAction}
+            >
+              <DropdownItem key="add-region" endContent={<PlusIcon className={iconClasses} />}>
+                اضافة قطاع
+              </DropdownItem>
+              <DropdownItem key="add-gate" endContent={<PlusIcon className={iconClasses} />}>
+                اضافة بوابة
+              </DropdownItem>
+              <DropdownItem key="add-department" endContent={<PlusIcon className={iconClasses} />}>
+                اضافة إدارة
+              </DropdownItem>
+              <DropdownItem key="add-office" endContent={<PlusIcon className={iconClasses} />}>
+                اضافة مكتب
+              </DropdownItem>
+              <DropdownItem key="add-failure" endContent={<PlusIcon className={iconClasses} />}>
+                اضافة عطل
+              </DropdownItem>
               <DropdownItem key="add-user" endContent={<PlusIcon className={iconClasses} />}>
                 اضافة مستخدم
               </DropdownItem>
-            )}
-          </DropdownMenu>
-        </Dropdown>
-        <div className="hidden lg:flex lg:items-center gap-4 text-muted-foreground">
-          {/* <NavLink
-            to="/ready-for-delivery"
-            className={({ isActive }) =>
-              `text-xl ${
-                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
-              }`
-            }
-          >
-            جاهز للتسليم
-          </NavLink> */}
-          <NavLink
-            to="/maintenance"
-            className={({ isActive }) =>
-              `text-xl ${
-                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
-              }`
-            }
-          >
-            عمليات الصيانة
-          </NavLink>
-          <NavLink
-            to="/alldevices"
-            className={({ isActive }) =>
-              `text-xl ${
-                isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
-              }`
-            }
-          >
-            كل الاجهزة
-          </NavLink>
-        </div>
+            </DropdownMenu>
+          </Dropdown>
+        )}
       </div>
 
       <div
@@ -269,8 +237,31 @@ export const Navbar = () => {
         </Button> */}
       </div>
 
+      <div className="hidden lg:flex lg:items-center gap-4 text-muted-foreground">
+        <NavLink
+          to="/maintenance"
+          className={({ isActive }) =>
+            `text-xl ${
+              isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
+            }`
+          }
+        >
+          عمليات الصيانة
+        </NavLink>
+        <NavLink
+          to="/alldevices"
+          className={({ isActive }) =>
+            `text-xl ${
+              isActive ? "text-foreground" : "hover:text-foreground transition-all duration-300"
+            }`
+          }
+        >
+          كل الاجهزة
+        </NavLink>
+      </div>
+
       <div className="flex justify-center items-center gap-x-2">
-        <h2 className="lg:text-3xl md:text-lg">Maintenance</h2>
+        <h2 className="lg:text-3xl md:text-lg">الصيانة</h2>
         <img className="w-10 dark:hidden" src={darkImage} alt="nav" />
         <img className="w-10 hidden dark:block" src={lightImage} alt="nav" />
       </div>

@@ -22,10 +22,14 @@ export function OPForm({ onClose }) {
   const [macState, setMacState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [failures, setFailures] = useState(new Set([]));
   const [receiverID, setReceiverID] = useState(null);
+  const [user, _setUser] = useState(() => {
+    const user = window.localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  });
 
   const { data: users } = useQuery({
     queryKey: ["new-op", "users"],
-    queryFn: async () => fetchData("api/users"),
+    queryFn: async () => fetchData("api/Users/UsersNamesWithIds"),
   });
   const { data: idData } = useQuery({
     select: data => data.data.filter(item => item.domainIDIfExists),
@@ -249,9 +253,11 @@ export function OPForm({ onClose }) {
               </SelectItem>
             )}
           </Select>
-          <Button size="lg" color="success" onPress={onAddFailure}>
-            اضافة عطل
-          </Button>
+          {user.role === "Admin" && (
+            <Button size="lg" color="success" onPress={onAddFailure}>
+              اضافة عطل
+            </Button>
+          )}
         </div>
 
         <Autocomplete
@@ -294,13 +300,13 @@ export function OPForm({ onClose }) {
             <AutocompleteItem key={item.id} textValue={item.name}>
               <div dir="rtl" className="flex flex-col text-start">
                 <span className="text-small">{item.name}</span>
-                <div className="flex gap-x-2">
+                {/* <div className="flex gap-x-2">
                   {item.specializations.map((spec, index) => (
                     <span key={index} className="text-tiny text-default-400">
                       {spec.name}
                     </span>
                   ))}
-                </div>
+                </div> */}
               </div>
             </AutocompleteItem>
           )}

@@ -27,18 +27,18 @@ const AllDevices = () => {
   }, [search]);
 
   const regionRes = useQuery({
-    queryKey: ["table", "region"],
+    queryKey: ["device-table", "region"],
     queryFn: async () => fetchData("api/regions"),
   });
 
   const gateRes = useQuery({
-    queryKey: ["table", "gate", regionState.selectedKey],
+    queryKey: ["device-table", "gate", regionState.selectedKey],
     queryFn: async () => fetchData(`api/regions/${regionState.selectedKey}/gates`),
     enabled: !!regionState.selectedKey,
   });
 
   const departmentRes = useQuery({
-    queryKey: ["addDevice", "department", regionState.selectedKey, gateState.selectedKey],
+    queryKey: ["device-table", "department", regionState.selectedKey, gateState.selectedKey],
     queryFn: async () => {
       return fetchData(
         `api/regions/${regionState.selectedKey}/gates/${gateState.selectedKey}/departments`
@@ -49,7 +49,7 @@ const AllDevices = () => {
 
   const officeRes = useQuery({
     queryKey: [
-      "addDevice",
+      "device-table",
       "office",
       regionState.selectedKey,
       gateState.selectedKey,

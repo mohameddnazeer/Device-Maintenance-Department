@@ -15,7 +15,7 @@ export default function Table() {
   const [QueryParams] = useSearchParams();
   const { error, data, isFetching, refetch } = useQuery({
     select: data => data.data,
-    queryKey: ["table", "devices"],
+    queryKey: ["device-table", "devices"],
     queryFn: async () => customFetch(`api/devices?${QueryParams.toString()}`),
   });
   const isOpen = useSelector(state => state.updateDevice.isOpen); // Access row data from Redux store
@@ -31,7 +31,7 @@ export default function Table() {
       <UpdateModal
         buttonText="تحديث البيانات"
         title="تعديل بيانات الجهاز"
-        form={<UpdateDeviceForm />}
+        form={<UpdateDeviceForm onSuccess={() => dispatch(closeModal())} />}
         isOpen={isOpen}
         name="update-device-form"
         onOpenChange={() => dispatch(closeModal())}

@@ -2,7 +2,7 @@ import { fetchData, getUrl } from "@/lib/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 function UpdateDeviceForm({ onSuccess }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const rowData = useSelector(state => state.updateDevice.rowData); // Access row data from Redux store
   const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
@@ -158,6 +159,7 @@ function UpdateDeviceForm({ onSuccess }) {
       loading: "جاري تحديث البيانات",
       success: () => {
         onSuccess?.();
+        queryClient.refetchQueries({ queryKey: ["device-table"] });
         return "تم تحديث البيانات بنجاح";
       },
       error: err => {
