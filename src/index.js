@@ -11,9 +11,7 @@ root.render(
   <React.StrictMode>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <Provider>
-        <div className="min-h-screen">
-          <AppRouter />
-        </div>
+        <AppRouter />
       </Provider>
     </ThemeProvider>
   </React.StrictMode>

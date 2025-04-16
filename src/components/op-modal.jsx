@@ -25,7 +25,7 @@ function OpModal({ isOpen, onOpenChange }) {
               <p className="text-sm text-muted-foreground">يرجى ادخال المعلومات الخاصة بالجهاز</p>
             </ModalHeader>
             <ModalBody>
-              <div className="overflow-auto scrollbar-hide">
+              <div className="overflow-auto">
                 <OPForm onClose={onClose} />
               </div>
             </ModalBody>

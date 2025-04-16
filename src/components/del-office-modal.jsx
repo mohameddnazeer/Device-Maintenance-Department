@@ -123,7 +123,7 @@ function DelOfficeModal({ onClose, isOpen, onOpenChange }) {
             onSubmit={onSubmit}
             className="w-full flex flex-col items-center justify-center"
           >
-            <div className="w-full overflow-auto max-h-[65vh] scrollbar-hide p-2 space-y-4">
+            <div className="w-full overflow-auto max-h-[65vh] p-2 space-y-4">
               <Autocomplete
                 isRequired
                 size="lg"

@@ -10,12 +10,14 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { DeleteDocumentIcon } from "../icons";
+import { useLocalStorage } from "usehooks-ts";
 
 export function DataTableRowActions({ row }) {
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
+  const [user] = useLocalStorage("user", null, { deserializer: JSON.parse });
 
   const onAction = key => {
     switch (key) {
@@ -67,21 +69,23 @@ export function DataTableRowActions({ row }) {
           عرض التفاصيل
         </DropdownItem>
         <DropdownItem
-          showDivider
+          showDivider={user?.role === "Admin"}
           key="edit"
           startContent={<PenSquareIcon className={iconClasses} />}
         >
           تعديل البيانات
         </DropdownItem>
 
-        <DropdownItem
-          key="delete"
-          className="text-danger"
-          color="danger"
-          startContent={<DeleteDocumentIcon className={cn(iconClasses, "text-danger")} />}
-        >
-          حذف
-        </DropdownItem>
+        {user?.role === "Admin" && (
+          <DropdownItem
+            key="delete"
+            className="text-danger"
+            color="danger"
+            startContent={<DeleteDocumentIcon className={cn(iconClasses, "text-danger")} />}
+          >
+            حذف
+          </DropdownItem>
+        )}
       </DropdownMenu>
     </Dropdown>
   );

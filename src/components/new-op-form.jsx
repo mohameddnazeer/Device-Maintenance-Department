@@ -1,12 +1,11 @@
 import { customFetch, fetchData, getUrl } from "@/lib/utils";
 import { openModal } from "@/store/failureModalSlice";
-import { setRefetchOp } from "@/store/refetchOpSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { parseInt } from "lodash";
 import { SearchIcon } from "lucide-react";
@@ -19,6 +18,7 @@ import { useLocalStorage } from "usehooks-ts";
 export function OPForm({ onClose }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const [idState, setIdState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [macState, setMacState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [failures, setFailures] = useState(new Set([]));
@@ -101,7 +101,7 @@ export function OPForm({ onClose }) {
       loading: <p>جاري اضافة عملية الصيانة</p>,
       success: () => {
         onClose?.();
-        dispatch(setRefetchOp());
+        queryClient.refetchQueries(["op-table", "maintenance"]);
         return "تم اضافة عملية الصيانة بنجاح";
       },
       error: err => {
@@ -125,7 +125,7 @@ export function OPForm({ onClose }) {
       onSubmit={onSubmit}
       className="w-full flex flex-col items-center justify-center"
     >
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto max-h-[65vh] scrollbar-hide p-2">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto max-h-[65vh] p-2">
         <div className="flex w-full justify-between items-center gap-x-2 col-span-2">
           <Autocomplete
             isDisabled={macState.selectedKey}

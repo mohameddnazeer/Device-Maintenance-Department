@@ -82,7 +82,7 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
                 onSubmit={onSubmit}
                 className="w-full flex flex-col items-center justify-center"
               >
-                <div className="w-full overflow-auto max-h-[65vh] scrollbar-hide flex flex-col gap-y-4 p-2">
+                <div className="w-full overflow-auto max-h-[65vh] flex flex-col gap-y-4 p-2">
                   <Autocomplete
                     isRequired
                     name="regionId"

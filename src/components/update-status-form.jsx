@@ -1,16 +1,15 @@
 import { getUrl } from "@/lib/utils";
-import { setRefetchOp } from "@/store/refetchOpSlice";
-import { closeStatus } from "@/store/updateStatusSlice";
+import { closeModal, nextTab } from "@/store/updateModalSlice";
+import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Select, SelectItem } from "@heroui/select";
+import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Loader from "./loader";
-import { Button } from "@heroui/button";
-import { closeModal } from "@/store/updateModalSlice";
 
 const states = [
   { id: 1, name: "CancelledDeviceNotNeedIt", label: "تم الإلغاء لعدم الحاجة" },
@@ -23,9 +22,8 @@ export function UpdateStatusForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [failures, setFailures] = useState(new Set([]));
-
+  const queryClient = useQueryClient();
   const rowData = useSelector(state => state.updateModal.rowData); // Access row data from Redux store
-  // const rowData = useSelector(state => state.updateStatus.rowData); // Access row data from Redux store
 
   useEffect(() => {
     if (rowData) setFailures(rowData.failureMaintains);
@@ -56,8 +54,9 @@ export function UpdateStatusForm() {
     toast.promise(Promise.all(configs.map(config => axios.request(config))), {
       loading: "جاري تحديث الحالة",
       success: () => {
-        dispatch(closeStatus());
-        dispatch(setRefetchOp());
+        dispatch(nextTab());
+        queryClient.refetchQueries(["op-table", "maintenance"]);
+
         return "تم تحديث الحالة بنجاح";
       },
       error: err => {
@@ -69,12 +68,8 @@ export function UpdateStatusForm() {
 
   if (!rowData) return <Loader />;
   return (
-    <Form
-      id="update-status-form"
-      onSubmit={onSubmit}
-      className="w-full flex flex-col items-center justify-center"
-    >
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto max-h-[65vh] scrollbar-hide p-2">
+    <Form id="update-status-form" onSubmit={onSubmit} className="w-full h-full flex flex-col">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 p-2">
         {Array.from(failures).map(({ id, name, state }) => {
           return (
             <Select
@@ -85,7 +80,6 @@ export function UpdateStatusForm() {
               labelPlacement="outside"
               placeholder="اختر الحالة"
               selectionMode="single"
-              // TODO: Ask adham !!!!!!
               items={states}
               defaultSelectedKeys={[state]}
             >
@@ -98,12 +92,12 @@ export function UpdateStatusForm() {
           );
         })}
       </div>
-      <div className="justify-end w-full flex gap-2 p-2">
+      <div className="justify-end mt-auto w-full flex gap-2 p-2">
         <Button type="reset" color="danger" variant="light" onPress={() => dispatch(closeModal())}>
           إلغاء
         </Button>
         <Button type="submit" color="success">
-          تحديث البيانات
+          تحديث حالة الأعطال
         </Button>
       </div>
     </Form>

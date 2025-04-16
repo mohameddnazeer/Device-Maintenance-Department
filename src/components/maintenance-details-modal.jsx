@@ -30,7 +30,7 @@ function MaintenanceDetailsModal() {
             <ModalHeader {...moveProps} className="flex flex-col gap-1">
               <h2 className="text-xl">تفاصيل عملية الصيانة</h2>
             </ModalHeader>
-            <ModalBody className="overflow-auto scrollbar-hide p-4 pt-0">
+            <ModalBody className="overflow-auto p-4 pt-0">
               <MaintenanceDetails id={id} rowData={data} />
             </ModalBody>
           </>

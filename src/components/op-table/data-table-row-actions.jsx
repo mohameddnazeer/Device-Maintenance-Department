@@ -8,9 +8,13 @@ import axios from "axios";
 import { ExternalLinkIcon, PenSquareIcon, Trash2Icon } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import { useLocalStorage } from "usehooks-ts";
 
 export function DataTableRowActions({ row }) {
   const dispatch = useDispatch();
+  const [user] = useLocalStorage("user", null, { deserializer: JSON.parse });
+
+  console.log("🚀 ~ DataTableRowActions:", row.original);
 
   const handleAction = key => {
     switch (key) {
@@ -57,17 +61,19 @@ export function DataTableRowActions({ row }) {
 
   return (
     <div className="flex items-center gap-1">
-      <Button
-        size="sm"
-        variant="light"
-        color="success"
-        onPress={() => {
-          dispatch(setRowData(row.original));
-          dispatch(openModal());
-        }}
-      >
-        تسليم
-      </Button>
+      {!row.original.isDelivered && (
+        <Button
+          size="sm"
+          variant="light"
+          color="success"
+          onPress={() => {
+            dispatch(setRowData(row.original));
+            dispatch(openModal());
+          }}
+        >
+          تسليم
+        </Button>
+      )}
       <Dropdown showArrow>
         <DropdownTrigger>
           <Button isIconOnly size="sm" variant="light" radius="full">
@@ -80,26 +86,37 @@ export function DataTableRowActions({ row }) {
           variant="faded"
           onAction={handleAction}
         >
-          <DropdownItem key="open" startContent={<ExternalLinkIcon className={iconClasses} />}>
+          <DropdownItem
+            key="open"
+            showDivider={user?.role === "Admin" && row.original.isDelivered}
+            startContent={<ExternalLinkIcon className={iconClasses} />}
+          >
             عرض التفاصيل
           </DropdownItem>
-          <DropdownItem key="update" startContent={<PenSquareIcon className={iconClasses} />}>
-            تعديل البيانات
-          </DropdownItem>
-          <DropdownItem
-            key="update-status"
-            startContent={<PenSquareIcon className={iconClasses} />}
-          >
-            تعديل حالة العطل
-          </DropdownItem>
-          <DropdownItem
-            key="delete"
-            className="text-danger"
-            color="danger"
-            startContent={<Trash2Icon className={cn(iconClasses, "text-danger")} />}
-          >
-            حذف عملية الصيانة
-          </DropdownItem>
+          {!row.original.isDelivered && (
+            <>
+              <DropdownItem key="update" startContent={<PenSquareIcon className={iconClasses} />}>
+                تعديل البيانات
+              </DropdownItem>
+              <DropdownItem
+                key="update-status"
+                showDivider={user?.role === "Admin"}
+                startContent={<PenSquareIcon className={iconClasses} />}
+              >
+                تعديل حالة العطل
+              </DropdownItem>
+            </>
+          )}
+          {user?.role === "Admin" && (
+            <DropdownItem
+              key="delete"
+              className="text-danger"
+              color="danger"
+              startContent={<Trash2Icon className={cn(iconClasses, "text-danger")} />}
+            >
+              حذف عملية الصيانة
+            </DropdownItem>
+          )}
         </DropdownMenu>
       </Dropdown>
     </div>

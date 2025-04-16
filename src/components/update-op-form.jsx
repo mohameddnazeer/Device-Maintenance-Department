@@ -1,12 +1,11 @@
 import { customFetch, getUrl } from "@/lib/utils";
-import { setRefetchOp } from "@/store/refetchOpSlice";
-import { closeModal } from "@/store/updateModalSlice";
+import { closeModal, nextTab } from "@/store/updateModalSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { SearchIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -19,7 +18,7 @@ export function UpdateOpForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [maintainerId, setMaintainerId] = useState(null);
-
+  const queryClient = useQueryClient();
   const rowData = useSelector(state => state.updateModal.rowData); // Access row data from Redux store
 
   const { isFetching: isFetchingUser, data: users } = useQuery({
@@ -62,8 +61,9 @@ export function UpdateOpForm() {
     toast.promise(axios.request(config), {
       loading: "جاري تحديث البيانات",
       success: () => {
-        dispatch(closeModal());
-        dispatch(setRefetchOp());
+        dispatch(nextTab());
+        queryClient.refetchQueries(["op-table", "maintenance"]);
+
         return "تم تحديث البيانات بنجاح";
       },
       error: err => {
@@ -80,7 +80,7 @@ export function UpdateOpForm() {
       onSubmit={onSubmit}
       className="w-full flex flex-col items-center justify-center"
     >
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 overflow-auto max-h-[65vh] scrollbar-hide p-2">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 p-2">
         <Input
           size="lg"
           label="اسم العميل"
@@ -192,12 +192,12 @@ export function UpdateOpForm() {
           className="col-span-2"
         />
       </div>
-      <div className="justify-end w-full flex gap-2 p-2">
+      <div className="justify-end mt-auto w-full flex gap-2 p-2">
         <Button type="reset" color="danger" variant="light" onPress={() => dispatch(closeModal())}>
           إلغاء
         </Button>
         <Button type="submit" color="success">
-          تحديث البيانات
+          تحديث عملية الصيانة
         </Button>
       </div>
     </Form>

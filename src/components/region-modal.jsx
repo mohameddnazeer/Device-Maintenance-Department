@@ -67,7 +67,7 @@ function RegionModal({ onClose, isOpen, onOpenChange }) {
                 onSubmit={onSubmit}
                 className="w-full flex flex-col items-center justify-center"
               >
-                <div className="w-full overflow-auto max-h-[65vh] scrollbar-hide p-2">
+                <div className="w-full overflow-auto max-h-[65vh] p-2">
                   <Input
                     size="lg"
                     isRequired

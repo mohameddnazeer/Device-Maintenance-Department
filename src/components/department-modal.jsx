@@ -95,7 +95,7 @@ function DepartmentModal({ onClose, isOpen, onOpenChange }) {
                 onSubmit={onSubmit}
                 className="w-full flex flex-col items-center justify-center"
               >
-                <div className="flex flex-col gap-y-4 w-full overflow-auto max-h-[65vh] scrollbar-hide p-2">
+                <div className="flex flex-col gap-y-4 w-full overflow-auto max-h-[65vh] p-2">
                   <Autocomplete
                     isRequired
                     name="regionId"
