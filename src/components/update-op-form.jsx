@@ -1,4 +1,4 @@
-import { fetchData, getUrl } from "@/lib/utils";
+import { customFetch, getUrl } from "@/lib/utils";
 import { setRefetchOp } from "@/store/refetchOpSlice";
 import { closeModal } from "@/store/updateModalSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -23,8 +23,9 @@ export function UpdateOpForm() {
   const rowData = useSelector(state => state.updateModal.rowData); // Access row data from Redux store
 
   const { isFetching: isFetchingUser, data: users } = useQuery({
+    select: data => data.data,
     queryKey: ["update-op-form", "users"],
-    queryFn: async () => fetchData("api/Users/UsersNamesWithIds"),
+    queryFn: async () => customFetch("api/Users/UsersNamesWithIds"),
   });
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { fetchData } from "@/lib/utils";
+import { customFetch } from "@/lib/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
@@ -33,8 +33,9 @@ export function ReceiveOpForm() {
   // });
 
   const { isFetching: isFetchingUser, data: users } = useQuery({
+    select: data => data.data,
     queryKey: ["receive-op-form", "users"],
-    queryFn: async () => fetchData("api/Users/UsersNamesWithIds"),
+    queryFn: async () => customFetch("api/Users/UsersNamesWithIds"),
   });
 
   const onSubmit = e => {

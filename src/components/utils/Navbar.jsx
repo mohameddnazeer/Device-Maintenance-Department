@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaBars } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useLocalStorage } from "usehooks-ts";
 import lightImage from "../../assets/web-main.png";
 import darkImage from "../../assets/web-maintenance.png";
 import Darkmode from "../Darkmode";
@@ -36,39 +37,28 @@ export const Navbar = () => {
   const delDepartmentState = useDisclosure();
   const delOfficeState = useDisclosure();
   const delUserState = useDisclosure();
-  // const failureState = useDisclosure();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
   const isOpen = useSelector(state => state.failureModal.isOpen);
-  // const isDelFailureOpen = useSelector(state => state.delFailureModal.isOpen);
-  const [user, _setUser] = useState(() => {
-    const user = window.localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
-  });
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const handleClickOutside = event => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
-      setIsMenuOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  const [user] = useLocalStorage("user", null, { deserializer: JSON.parse });
+  const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
 
   // ** add logic for redirecting to login page if not logged in
   useEffect(() => {
     const accessToken = window.localStorage.getItem("accessToken");
     const refreshToken = window.localStorage.getItem("refreshToken");
-    if (!accessToken || !refreshToken) navigate("/login");
+    if (!refreshToken || !accessToken) navigate("/login");
   }, [navigate]);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleClickOutside = event => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) setIsMenuOpen(false);
+  };
 
   const onAction = key => {
     switch (key) {
@@ -126,6 +116,8 @@ export const Navbar = () => {
     window.localStorage.removeItem("user");
     navigate("/login");
   };
+
+  if (!user) return null;
 
   return (
     <div className="flex justify-between items-center p-4 relative shadow-md">
@@ -230,11 +222,6 @@ export const Navbar = () => {
             عمليات الصيانة
           </NavLink>
         </Button>
-        {/* <Button variant="secondary">
-          <NavLink to="/ready-for-delivery" onClick={toggleMenu}>
-            جاهز للتسليم
-          </NavLink>
-        </Button> */}
       </div>
 
       <div className="hidden lg:flex lg:items-center gap-4 text-muted-foreground">
@@ -266,57 +253,61 @@ export const Navbar = () => {
         <img className="w-10 hidden dark:block" src={lightImage} alt="nav" />
       </div>
 
-      <FailureModal isOpen={isOpen} onOpenChange={() => dispatch(closeModal())} />
-      <DelFailureModal
-        isOpen={delFailureState.isOpen}
-        onOpenChange={delFailureState.onOpenChange}
-        onClose={delFailureState.onClose}
-      />
-      <DelRegionModal
-        isOpen={delRegionState.isOpen}
-        onOpenChange={delRegionState.onOpenChange}
-        onClose={delRegionState.onClose}
-      />
-      <DelGateModal
-        isOpen={delGateState.isOpen}
-        onOpenChange={delGateState.onOpenChange}
-        onClose={delGateState.onClose}
-      />
-      <DelDepartmentModal
-        isOpen={delDepartmentState.isOpen}
-        onOpenChange={delDepartmentState.onOpenChange}
-        onClose={delDepartmentState.onClose}
-      />
-      <DelOfficeModal
-        isOpen={delOfficeState.isOpen}
-        onOpenChange={delOfficeState.onOpenChange}
-        onClose={delOfficeState.onClose}
-      />
-      <DelUserModal
-        isOpen={delUserState.isOpen}
-        onOpenChange={delUserState.onOpenChange}
-        onClose={delUserState.onClose}
-      />
-      <RegionModal
-        isOpen={regionState.isOpen}
-        onOpenChange={regionState.onOpenChange}
-        onClose={regionState.onClose}
-      />
-      <GateModal
-        isOpen={gateState.isOpen}
-        onOpenChange={gateState.onOpenChange}
-        onClose={gateState.onClose}
-      />
-      <DepartmentModal
-        isOpen={departmentState.isOpen}
-        onOpenChange={departmentState.onOpenChange}
-        onClose={departmentState.onClose}
-      />
-      <OfficeModal
-        isOpen={officeState.isOpen}
-        onOpenChange={officeState.onOpenChange}
-        onClose={officeState.onClose}
-      />
+      {user.role === "Admin" && (
+        <>
+          <FailureModal isOpen={isOpen} onOpenChange={() => dispatch(closeModal())} />
+          <DelFailureModal
+            isOpen={delFailureState.isOpen}
+            onOpenChange={delFailureState.onOpenChange}
+            onClose={delFailureState.onClose}
+          />
+          <DelRegionModal
+            isOpen={delRegionState.isOpen}
+            onOpenChange={delRegionState.onOpenChange}
+            onClose={delRegionState.onClose}
+          />
+          <DelGateModal
+            isOpen={delGateState.isOpen}
+            onOpenChange={delGateState.onOpenChange}
+            onClose={delGateState.onClose}
+          />
+          <DelDepartmentModal
+            isOpen={delDepartmentState.isOpen}
+            onOpenChange={delDepartmentState.onOpenChange}
+            onClose={delDepartmentState.onClose}
+          />
+          <DelOfficeModal
+            isOpen={delOfficeState.isOpen}
+            onOpenChange={delOfficeState.onOpenChange}
+            onClose={delOfficeState.onClose}
+          />
+          <DelUserModal
+            isOpen={delUserState.isOpen}
+            onOpenChange={delUserState.onOpenChange}
+            onClose={delUserState.onClose}
+          />
+          <RegionModal
+            isOpen={regionState.isOpen}
+            onOpenChange={regionState.onOpenChange}
+            onClose={regionState.onClose}
+          />
+          <GateModal
+            isOpen={gateState.isOpen}
+            onOpenChange={gateState.onOpenChange}
+            onClose={gateState.onClose}
+          />
+          <DepartmentModal
+            isOpen={departmentState.isOpen}
+            onOpenChange={departmentState.onOpenChange}
+            onClose={departmentState.onClose}
+          />
+          <OfficeModal
+            isOpen={officeState.isOpen}
+            onOpenChange={officeState.onOpenChange}
+            onClose={officeState.onClose}
+          />
+        </>
+      )}
     </div>
   );
 };

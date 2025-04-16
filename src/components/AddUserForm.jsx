@@ -100,7 +100,7 @@ function AddUserForm({ onSuccess }) {
 
     let config = {
       method: "post",
-      url: getUrl() + `api/Users`,
+      url: getUrl() + "api/Users",
       headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
       data: JSON.stringify(data),
     };

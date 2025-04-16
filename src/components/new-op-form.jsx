@@ -1,4 +1,4 @@
-import { fetchData, getUrl } from "@/lib/utils";
+import { customFetch, fetchData, getUrl } from "@/lib/utils";
 import { openModal } from "@/store/failureModalSlice";
 import { setRefetchOp } from "@/store/refetchOpSlice";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useLocalStorage } from "usehooks-ts";
 
 export function OPForm({ onClose }) {
   const navigate = useNavigate();
@@ -22,14 +23,12 @@ export function OPForm({ onClose }) {
   const [macState, setMacState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [failures, setFailures] = useState(new Set([]));
   const [receiverID, setReceiverID] = useState(null);
-  const [user, _setUser] = useState(() => {
-    const user = window.localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
-  });
+  const [user] = useLocalStorage("user", null, { deserializer: JSON.parse });
 
   const { data: users } = useQuery({
+    select: data => data.data,
     queryKey: ["new-op", "users"],
-    queryFn: async () => fetchData("api/Users/UsersNamesWithIds"),
+    queryFn: async () => customFetch("api/Users/UsersNamesWithIds"),
   });
   const { data: idData } = useQuery({
     select: data => data.data.filter(item => item.domainIDIfExists),
