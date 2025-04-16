@@ -7,14 +7,17 @@ export const HomePage = () => {
 
   useEffect(() => {
     const accessToken = window.localStorage.getItem("accessToken");
+    console.log("🚀 ~ useEffect ~ accessToken:", accessToken);
     const refreshToken = window.localStorage.getItem("refreshToken");
+    console.log("🚀 ~ useEffect ~ refreshToken:", refreshToken);
     const user = window.localStorage.getItem("user");
-    if (!accessToken || !refreshToken || !user) navigate("/login", { replace: true });
+    console.log("🚀 ~ useEffect ~ user:", user);
+    if (accessToken && refreshToken && user) navigate("/maintenance", { replace: true });
 
     // TODO come back to this when we have dashboard
     // const parsedUser = JSON.parse(user);
     // if (parsedUser.role === "Admin") navigate("/dashboard", { replace: true });
-    navigate("/maintenance", { replace: true });
+    navigate("/login", { replace: true });
   }, [navigate]);
 
   return (
