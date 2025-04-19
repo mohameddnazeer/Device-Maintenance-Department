@@ -240,12 +240,11 @@ function AddDeviceForm({ onSuccess }) {
         // errorMessage: "نوع الجهاز مطلوب",
       },
       {
-        isRequired: false,
+        isRequired: true,
         title: "MAC",
         placeholder: "ادخل MAC",
         name: "mac",
-        pattern:
-          "^(?:(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2}|[0-9a-fA-F]{12})$",
+        pattern: "^(?:(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2})$",
         errorMessage: ({ validationDetails: { patternMismatch } }) => {
           if (patternMismatch) return "صيغة MAC غير صحيحة";
         },

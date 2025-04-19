@@ -1,11 +1,3 @@
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from "react-router-dom";
-import { Login } from "../pages/Login";
-// import AddDevice from "../pages/AddDevice";
 import { getUrl } from "@/lib/utils";
 import AddDevice from "@/pages/AddDevice";
 import AddUser from "@/pages/AddUser";
@@ -13,32 +5,15 @@ import DeviceDetailsPage from "@/pages/DeviceDetailsPage";
 import { HomePage } from "@/pages/HomePage";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { useInterval } from "usehooks-ts";
 import AllDevices from "../pages/AllDevices";
+import { Login } from "../pages/Login";
 import { MaintenanceOperations } from "../pages/MaintenanceOperations";
-// import { ReadyForDelivery } from "../pages/ReadyForDelivery";
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/addUser" element={<AddUser />} />
-      <Route path="/alldevices" element={<AllDevices />} />
-      <Route path="/addDevice" element={<AddDevice />} />
-      <Route path="/maintenance" element={<MaintenanceOperations />} />
-      <Route
-        path="/regions/:regionId/gates/:gateId/departments/:deptId/offices/:officeId/devices/:id"
-        element={<DeviceDetailsPage />}
-      />
-      {/* <Route path="register" element={<Register />} /> */}
-      {/* <Route path="/home" element={<AllDevices />} /> */}
-      {/* <Route path="/ready-for-delivery" element={<ReadyForDelivery />} /> */}
-      {/* <Route path="/maintenance/:id" element={<MaintenanceDetailsPage />} /> */}
-    </>
-  )
-);
 const AppRouter = () => {
+  const navigate = useNavigate();
+
   useInterval(async () => {
     const accessToken = window.localStorage.getItem("accessToken");
     const refreshToken = window.localStorage.getItem("refreshToken");
@@ -66,14 +41,28 @@ const AppRouter = () => {
         window.localStorage.removeItem("accessToken");
         window.localStorage.removeItem("refreshToken");
         window.localStorage.removeItem("user");
-        window.location.href = "/login";
+        navigate("/login");
       }
     }
-  }, 1 * 60 * 1000);
+  }, 0.5 * 60 * 1000);
+
   return (
-    <>
-      <RouterProvider router={router} />
-    </>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/addUser" element={<AddUser />} />
+      <Route path="/alldevices" element={<AllDevices />} />
+      <Route path="/addDevice" element={<AddDevice />} />
+      <Route path="/maintenance" element={<MaintenanceOperations />} />
+      <Route
+        path="/regions/:regionId/gates/:gateId/departments/:deptId/offices/:officeId/devices/:id"
+        element={<DeviceDetailsPage />}
+      />
+      {/* <Route path="register" element={<Register />} /> */}
+      {/* <Route path="/home" element={<AllDevices />} /> */}
+      {/* <Route path="/ready-for-delivery" element={<ReadyForDelivery />} /> */}
+      {/* <Route path="/maintenance/:id" element={<MaintenanceDetailsPage />} /> */}
+    </Routes>
   );
 };
 

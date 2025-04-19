@@ -30,9 +30,9 @@ export const Login = () => {
     toast.promise(axios.request(config), {
       loading: <p>جاري تسجيل الدخول</p>,
       success: ({ data }) => {
-        window.localStorage.setItem("accessToken", data.accessToken);
-        window.localStorage.setItem("refreshToken", data.refreshToken);
-        const decodedUser = jwtDecode(data.accessToken);
+        window.localStorage.setItem("accessToken", data?.accessToken);
+        window.localStorage.setItem("refreshToken", data?.refreshToken);
+        const decodedUser = jwtDecode(data?.accessToken);
         const user = {
           name: decodedUser["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
           id: decodedUser["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
@@ -44,7 +44,7 @@ export const Login = () => {
       },
       error: err => {
         console.log(err);
-        return err.response.data.message || "حدث خطأ اثناء تسجيل الدخول";
+        return err.response?.data?.message || "اسم المستخدم أو كلمة المرور غير صحيحة";
       },
     });
   };
