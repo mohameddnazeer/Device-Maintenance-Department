@@ -2,7 +2,7 @@ import { fetchData, getUrl } from "@/lib/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query"; // Added useMutation
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,12 @@ import { toast } from "sonner";
 
 function AddDeviceForm({ onSuccess }) {
   const navigate = useNavigate();
+  // Add state variables for cpu, gpu, mac, and ramTotal
+  const [cpu, setCpu] = useState("");
+  const [gpu, setGpu] = useState("");
+  const [mac, setMac] = useState("");
+  const [ramTotal, setRamTotal] = useState("");
+  const [username, setUsername] = useState("");
 
   const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
@@ -20,6 +26,35 @@ function AddDeviceForm({ onSuccess }) {
   });
   const [officeState, setOfficeState] = useState({ selectedKey: null, inputValue: "", items: [] });
 
+  const [ipAddress, setIpAddress] = useState("");
+  const hardwareMutation = useMutation({
+    mutationFn: async ip => {
+      const response = await axios.get(`http://${ip}:5000/hardware`);
+      return response.data;
+    },
+    onSuccess: data => {
+      toast.success("تم جلب بيانات الجهاز بنجاح");
+      console.log("Hardware Data:", data);
+
+      // Populate the input fields with the fetched data
+      setCpu(data.cpu || "");
+      setGpu(data.gpu || "");
+      setMac(data.macAddress || "");
+      setRamTotal(data.ram.totalRAM || "");
+      setUsername(data.username || "");
+    },
+    onError: error => {
+      toast.error("فشل في جلب بيانات الجهاز");
+      console.error("Error fetching hardware data:", error);
+    },
+  });
+  const handleFetchHardware = () => {
+    if (!ipAddress) {
+      toast.error("يرجى إدخال عنوان IP");
+      return;
+    }
+    hardwareMutation.mutate(ipAddress);
+  };
   const regionRes = useQuery({
     queryKey: ["addDevice", "region"],
     queryFn: async () => fetchData("api/regions"),
@@ -148,12 +183,23 @@ function AddDeviceForm({ onSuccess }) {
         title: "رقم الجهاز",
         placeholder: "ادخل رقم الجهاز",
         name: "domainIDIfExists",
+        value: username,
         // maxLength: 36,
         errorMessage: ({ validationDetails: { valueMissing } }) => {
           // if (tooShort) return "لا يقل عن 10 احرف";
           // if (tooLong) return "لا يقل عن 36 احرف";
           if (valueMissing) return "رقم الجهاز مطلوب";
         },
+        onChange: e => setUsername(e.target.value),
+      },
+      {
+        isRequired: true,
+        title: "عنوان IP",
+        placeholder: "ادخل عنوان IP",
+        name: "ipAddress",
+        value: ipAddress,
+        onChange: e => setIpAddress(e.target.value),
+        errorMessage: "عنوان IP مطلوب",
       },
       {
         isRequired: true,
@@ -207,6 +253,7 @@ function AddDeviceForm({ onSuccess }) {
         title: "اسم المسؤول عن الجهاز",
         placeholder: "ادخل الاسم ",
         name: "owner",
+
         minLength: 2,
         // maxLength: 36,
         errorMessage: ({ validationDetails: { tooShort, valueMissing } }) => {
@@ -239,19 +286,43 @@ function AddDeviceForm({ onSuccess }) {
         name: "type",
         // errorMessage: "نوع الجهاز مطلوب",
       },
+      //
+      {
+        isRequired: false,
+        title: "CPU",
+        placeholder: "ادخل موديل CPU",
+        name: "cpu",
+        value: cpu,
+        onChange: e => setCpu(e.target.value),
+      },
+      {
+        isRequired: false,
+        title: "GPU",
+        placeholder: "ادخل موديل GPU",
+        name: "gpu",
+        value: gpu,
+        onChange: e => setGpu(e.target.value),
+      },
       {
         isRequired: true,
         title: "MAC",
         placeholder: "ادخل MAC",
         name: "mac",
+        value: mac,
+        onChange: e => setMac(e.target.value),
         pattern: "^(?:(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2})$",
         errorMessage: ({ validationDetails: { patternMismatch } }) => {
           if (patternMismatch) return "صيغة MAC غير صحيحة";
         },
       },
-      { isRequired: false, title: "CPU", placeholder: "ادخل موديل CPU", name: "cpu" },
-      { isRequired: false, title: "GPU", placeholder: "ادخل موديل GPU", name: "gpu" },
-      { isRequired: false, title: "RAM", placeholder: "ادخل حجم RAM", name: "ramTotal" },
+      {
+        isRequired: false,
+        title: "RAM",
+        placeholder: "ادخل حجم RAM",
+        name: "ramTotal",
+        value: ramTotal,
+        onChange: e => setRamTotal(e.target.value),
+      },
     ],
     [
       regionState,
@@ -262,6 +333,12 @@ function AddDeviceForm({ onSuccess }) {
       gateData,
       departmentRes.data,
       officeRes.data,
+      ipAddress,
+      cpu,
+      gpu,
+      mac,
+      ramTotal,
+      username,
     ]
   );
 
@@ -307,6 +384,11 @@ function AddDeviceForm({ onSuccess }) {
             />
           );
         })}
+      </div>
+      <div className="flex justify-end mt-4">
+        <button type="button" onClick={handleFetchHardware} className="btn btn-primary">
+          جلب بيانات الجهاز
+        </button>
       </div>
     </Form>
   );
