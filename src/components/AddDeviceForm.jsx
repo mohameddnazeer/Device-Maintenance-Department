@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Button } from "./ui/button";
 
 function AddDeviceForm({ onSuccess }) {
   const navigate = useNavigate();
@@ -386,9 +387,9 @@ function AddDeviceForm({ onSuccess }) {
         })}
       </div>
       <div className="flex justify-end mt-4">
-        <button type="button" onClick={handleFetchHardware} className="btn btn-primary">
+        <Button type="button" onClick={handleFetchHardware} className="btn btn-primary">
           جلب بيانات الجهاز
-        </button>
+        </Button>
       </div>
     </Form>
   );
