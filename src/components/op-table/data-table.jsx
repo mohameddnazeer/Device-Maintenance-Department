@@ -62,13 +62,13 @@ export function DataTable({ columns, data }) {
 
   const table = useReactTable({
     columns,
-    data: data.data,
+    data: data?.response?.data,
     state: { sorting, columnVisibility },
     initialState: { pagination: { pageIndex: currentPage - 1, pageSize } },
     manualPagination: true,
     manualFiltering: true,
     manualSorting: true,
-    pageCount: data.pagination.totalPages,
+    pageCount: data?.pagination?.totalPages,
     onSortingChange: updaterOrValue => {
       const sort = updaterOrValue();
       const newParams = objectToSearchParamsStr(
@@ -110,7 +110,7 @@ export function DataTable({ columns, data }) {
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row, rowIndex) => (
               <TableRow
                 key={row.id}
@@ -124,7 +124,7 @@ export function DataTable({ columns, data }) {
                     className={`relative text-start ${
                       rowIndex === 0 ? "first:rounded-ss-lg last:rounded-se-lg" : ""
                     } ${
-                      rowIndex === table.getRowModel().rows.length - 1
+                      rowIndex === table.getRowModel().rows?.length - 1
                         ? "first:rounded-es-lg last:rounded-ee-lg"
                         : ""
                     }`}
@@ -136,7 +136,7 @@ export function DataTable({ columns, data }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={columns?.length} className="h-24 text-center">
                 لا يوجد بيانات
               </TableCell>
             </TableRow>

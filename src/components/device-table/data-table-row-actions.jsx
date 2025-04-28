@@ -9,8 +9,8 @@ import { ExternalLinkIcon, PenSquareIcon } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { DeleteDocumentIcon } from "../icons";
 import { useLocalStorage } from "usehooks-ts";
+import { DeleteDocumentIcon } from "../icons";
 
 export function DataTableRowActions({ row }) {
   const iconClasses = "text-xl text-default-500 pointer-events-none flex-shrink-0";
@@ -65,12 +65,16 @@ export function DataTableRowActions({ row }) {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Dropdown menu with description" variant="faded" onAction={onAction}>
-        <DropdownItem key="open" startContent={<ExternalLinkIcon className={iconClasses} />}>
+        <DropdownItem
+          key="open"
+          showDivider={user?.role === "Admin" && !!row.original.isDelivered} // Ensure this is a boolean
+          startContent={<ExternalLinkIcon className={iconClasses} />}
+        >
           عرض التفاصيل
         </DropdownItem>
         <DropdownItem
-          showDivider={user?.role === "Admin"}
           key="edit"
+          showDivider={user?.role === "Admin"}
           startContent={<PenSquareIcon className={iconClasses} />}
         >
           تعديل البيانات

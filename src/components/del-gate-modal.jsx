@@ -95,7 +95,7 @@ function DelGateModal({ onClose, isOpen, onOpenChange }) {
               <Autocomplete
                 isRequired
                 size="lg"
-                items={regions}
+                items={regions?.data}
                 label="القطاع"
                 labelPlacement="outside"
                 placeholder="اختر القطاع"
@@ -113,7 +113,7 @@ function DelGateModal({ onClose, isOpen, onOpenChange }) {
                 isRequired
                 isDisabled={!regionSelectedKey}
                 size="lg"
-                items={gates || []}
+                items={gates?.data || []}
                 label="البوابة"
                 labelPlacement="outside"
                 placeholder="اختر البوابة"

@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import OpModal from "@/components/op-modal";
 import UpdateOPModal from "@/components/update-op-modal";
 import { objectToSearchParamsStr } from "@/lib/utils";
-import { closeModal } from "@/store/updateModalSlice";
+import { closeModal } from "@/store/delRegionModalSlice";
 import { Button } from "@heroui/button";
 import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";
@@ -54,7 +54,8 @@ export const MaintenanceOperations = () => {
         name="update-op-form"
         buttonText="تحديث البيانات"
       /> */}
-      {/* <UpdateModal
+      {/*
+      <UpdateModal
         title="تسليم الجهاز"
         isOpen={isReceiveOpen}
         onOpenChange={() => dispatch(closeReceive())}
@@ -68,7 +69,8 @@ export const MaintenanceOperations = () => {
             تسليم
           </Button>
         </div>
-      </UpdateModal> */}
+      </UpdateModal>
+      */}
       {/* <UpdateModal
         title="تحديث الحالة"
         isOpen={isStatusOpen}

@@ -9,14 +9,15 @@ import { DataTable } from "./data-table";
 export default function Table() {
   const [URLSearchParams] = useSearchParams();
   const { error, data, isFetching, refetch } = useQuery({
-    select: data => data.data,
+    select: data => data?.data,
     queryKey: ["op-table", "maintenance"],
     queryFn: async () => customFetch(`api/maintenance?${URLSearchParams.toString()}`),
   });
-
+  console.log(data);
   useEffect(() => {
     refetch();
   }, [URLSearchParams, refetch]);
+
 
   if (isFetching) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;

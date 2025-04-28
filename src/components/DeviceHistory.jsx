@@ -100,7 +100,7 @@ const DeviceHistory = () => {
       <TableHeader columns={columns}>
         {column => <TableColumn key={column.key}>{column.label}</TableColumn>}
       </TableHeader>
-      <TableBody items={data}>
+      <TableBody items={data?.data}>
         {item => (
           <TableRow key={item.key}>
             {columnKey => (

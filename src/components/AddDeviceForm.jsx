@@ -17,6 +17,7 @@ function AddDeviceForm({ onSuccess }) {
   const [mac, setMac] = useState("");
   const [ramTotal, setRamTotal] = useState("");
   const [username, setUsername] = useState("");
+  const [errors, setErrors] = useState({});
 
   const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
@@ -37,7 +38,6 @@ function AddDeviceForm({ onSuccess }) {
       toast.success("تم جلب بيانات الجهاز بنجاح");
       console.log("Hardware Data:", data);
 
-      // Populate the input fields with the fetched data
       setCpu(data.cpu || "");
       setGpu(data.gpu || "");
       setMac(data.macAddress || "");
@@ -57,6 +57,7 @@ function AddDeviceForm({ onSuccess }) {
     hardwareMutation.mutate(ipAddress);
   };
   const regionRes = useQuery({
+    select: data => data.data,
     queryKey: ["addDevice", "region"],
     queryFn: async () => fetchData("api/regions"),
   });
@@ -65,6 +66,7 @@ function AddDeviceForm({ onSuccess }) {
     [regionRes.data]
   );
   const gateRes = useQuery({
+    select: data => data.data,
     queryKey: ["addDevice", "gate", regionState.selectedKey],
     queryFn: async () => {
       return fetchData(`api/regions/${regionState.selectedKey}/gates`);
@@ -77,6 +79,7 @@ function AddDeviceForm({ onSuccess }) {
   );
 
   const departmentRes = useQuery({
+    select: data => data.data,
     queryKey: ["addDevice", "department", regionState.selectedKey, gateState.selectedKey],
     queryFn: async () => {
       return fetchData(
@@ -87,6 +90,7 @@ function AddDeviceForm({ onSuccess }) {
   });
 
   const officeRes = useQuery({
+    select: data => data.data,
     queryKey: [
       "addDevice",
       "office",
@@ -153,7 +157,7 @@ function AddDeviceForm({ onSuccess }) {
     event.preventDefault();
     const accessToken = window.localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
-    // Get form data as an object.
+
     const data = JSON.stringify(Object.fromEntries(new FormData(event.currentTarget)));
     let config = {
       method: "post",
@@ -171,8 +175,14 @@ function AddDeviceForm({ onSuccess }) {
         return "تم اضافة الجهاز بنجاح";
       },
       error: err => {
-        console.log(err);
-        return err.response.data.message || "حدث خطأ اثناء اضافة الجهاز";
+        if (err.response?.data?.errors) {
+          setErrors(err.response.data.errors);
+          const errorMessages = Object.values(err.response.data.errors).flat();
+          toast.error(errorMessages.join(" - "));
+        } else {
+          toast.error("حدث خطأ اثناء اضافة الجهاز");
+        }
+        return;
       },
     });
   };
@@ -186,21 +196,23 @@ function AddDeviceForm({ onSuccess }) {
         name: "domainIDIfExists",
         value: username,
         // maxLength: 36,
-        errorMessage: ({ validationDetails: { valueMissing } }) => {
-          // if (tooShort) return "لا يقل عن 10 احرف";
-          // if (tooLong) return "لا يقل عن 36 احرف";
-          if (valueMissing) return "رقم الجهاز مطلوب";
-        },
+        // errorMessage: ({ validationDetails: { valueMissing } }) => {
+        //   // if (tooShort) return "لا يقل عن 10 احرف";
+        //   // if (tooLong) return "لا يقل عن 36 احرف";
+        //   if (valueMissing) return "رقم الجهاز مطلوب";
+        // },
+        errorMessage: errors.domainIDIfExists,
         onChange: e => setUsername(e.target.value),
       },
       {
-        isRequired: true,
+        isRequired: false,
         title: "عنوان IP",
         placeholder: "ادخل عنوان IP",
         name: "ipAddress",
         value: ipAddress,
         onChange: e => setIpAddress(e.target.value),
-        errorMessage: "عنوان IP مطلوب",
+        // errorMessage: "عنوان IP مطلوب",
+        errorMessage: errors.ipAddress,
       },
       {
         isRequired: true,
@@ -211,7 +223,8 @@ function AddDeviceForm({ onSuccess }) {
         setState: setRegionState,
         data: regionData,
         placeholder: "اختر القطاع",
-        errorMessage: "القطاع مطلوب",
+        // errorMessage: "القطاع مطلوب",
+        errorMessage: errors.region,
       },
       {
         isRequired: true,
@@ -223,7 +236,8 @@ function AddDeviceForm({ onSuccess }) {
         setState: setGateState,
         data: gateData,
         placeholder: "اختر البوابة",
-        errorMessage: "البوابة مطلوبة",
+        // errorMessage: "البوابة مطلوبة",
+        errorMessage: errors.gate,
       },
       {
         isRequired: true,
@@ -235,7 +249,8 @@ function AddDeviceForm({ onSuccess }) {
         setState: setDepartmentState,
         data: departmentRes.data,
         placeholder: "اختر الإدارة",
-        errorMessage: "الإدارة مطلوبة",
+        // errorMessage: "الإدارة مطلوبة",
+        errorMessage: errors.department,
       },
       {
         isRequired: true,
@@ -247,7 +262,8 @@ function AddDeviceForm({ onSuccess }) {
         setState: setOfficeState,
         data: officeRes.data,
         placeholder: "اختر المكتب",
-        errorMessage: "المكتب مطلوب",
+        // errorMessage: "المكتب مطلوب",
+        errorMessage: errors.office,
       },
       {
         isRequired: true,
@@ -257,11 +273,12 @@ function AddDeviceForm({ onSuccess }) {
 
         minLength: 2,
         // maxLength: 36,
-        errorMessage: ({ validationDetails: { tooShort, valueMissing } }) => {
-          if (tooShort) return "لا يقل عن 2 احرف";
-          // if (tooLong) return "لا يقل عن 36 احرف";
-          if (valueMissing) return "اسم المسؤول مطلوب";
-        },
+        // errorMessage: ({ validationDetails: { tooShort, valueMissing } }) => {
+        //   if (tooShort) return "لا يقل عن 2 احرف";
+        //   // if (tooLong) return "لا يقل عن 36 احرف";
+        //   if (valueMissing) return "اسم المسؤول مطلوب";
+        // },
+        errorMessage: errors.owner,
       },
       {
         isRequired: true,
@@ -295,11 +312,13 @@ function AddDeviceForm({ onSuccess }) {
         name: "cpu",
         value: cpu,
         onChange: e => setCpu(e.target.value),
+        errorMessage: errors.cpu,
       },
       {
         isRequired: false,
         title: "GPU",
         placeholder: "ادخل موديل GPU",
+        errorMessage: errors.gpu,
         name: "gpu",
         value: gpu,
         onChange: e => setGpu(e.target.value),
@@ -311,8 +330,9 @@ function AddDeviceForm({ onSuccess }) {
         name: "mac",
         value: mac,
         onChange: e => setMac(e.target.value),
-        pattern: "^(?:(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2})$",
-        errorMessage: ({ validationDetails: { patternMismatch } }) => {
+        pattern: "^(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$", // Backend-compatible regex
+        errorMessage: ({ validationDetails: { patternMismatch, valueMissing } }) => {
+          if (valueMissing) return "عنوان MAC مطلوب";
           if (patternMismatch) return "صيغة MAC غير صحيحة";
         },
       },
@@ -322,6 +342,7 @@ function AddDeviceForm({ onSuccess }) {
         placeholder: "ادخل حجم RAM",
         name: "ramTotal",
         value: ramTotal,
+        errorMessage: errors.ramTotal,
         onChange: e => setRamTotal(e.target.value),
       },
     ],
@@ -340,6 +361,7 @@ function AddDeviceForm({ onSuccess }) {
       mac,
       ramTotal,
       username,
+      errors,
     ]
   );
 
@@ -351,7 +373,7 @@ function AddDeviceForm({ onSuccess }) {
       className="w-full flex flex-col items-center justify-center p-2"
     >
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
-        {elList.map(({ name, title, label, state, setState, data, ...props }) => {
+        {elList.map(({ name, title, label, state, errorMessage, setState, data, ...props }) => {
           if (label)
             return (
               <Autocomplete
@@ -381,6 +403,7 @@ function AddDeviceForm({ onSuccess }) {
               label={label || title}
               labelPlacement="outside"
               size="lg"
+              errorMessage={errorMessage}
               {...props}
             />
           );

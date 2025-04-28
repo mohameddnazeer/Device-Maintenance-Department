@@ -100,7 +100,7 @@ function DepartmentModal({ onClose, isOpen, onOpenChange }) {
                     isRequired
                     name="regionId"
                     size="lg"
-                    items={regions || []}
+                    items={regions?.data || []}
                     label="القطاع"
                     labelPlacement="outside"
                     placeholder="اختر القطاع"
@@ -119,7 +119,7 @@ function DepartmentModal({ onClose, isOpen, onOpenChange }) {
                     isDisabled={!regionSelectedKey}
                     name="gateId"
                     size="lg"
-                    items={gates || []}
+                    items={gates?.data || []}
                     label="البوابة"
                     labelPlacement="outside"
                     placeholder="اختر البوابة"

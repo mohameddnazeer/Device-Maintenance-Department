@@ -30,9 +30,9 @@ export const Login = () => {
     toast.promise(axios.request(config), {
       loading: <p>جاري تسجيل الدخول</p>,
       success: ({ data }) => {
-        window.localStorage.setItem("accessToken", data?.accessToken);
-        window.localStorage.setItem("refreshToken", data?.refreshToken);
-        const decodedUser = jwtDecode(data?.accessToken);
+        window.localStorage.setItem("accessToken", data?.data[0].accessToken);
+        window.localStorage.setItem("refreshToken", data?.data[0].refreshToken);
+        const decodedUser = jwtDecode(data?.data[0].accessToken);
         const user = {
           name: decodedUser["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
           id: decodedUser["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],

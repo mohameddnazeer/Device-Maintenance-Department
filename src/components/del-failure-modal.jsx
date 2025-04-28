@@ -84,7 +84,7 @@ function DelFailureModal({ onClose, isOpen, onOpenChange }) {
               <Autocomplete
                 isRequired
                 size="lg"
-                items={failures}
+                items={failures?.data}
                 label="العطل"
                 labelPlacement="outside"
                 placeholder="اختر العطل"

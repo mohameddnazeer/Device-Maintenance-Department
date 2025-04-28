@@ -108,7 +108,7 @@ function DelDepartmentModal({ onClose, isOpen, onOpenChange }) {
               <Autocomplete
                 isRequired
                 size="lg"
-                items={regions || []}
+                items={regions?.data || []}
                 label="القطاع"
                 labelPlacement="outside"
                 placeholder="اختر القطاع"
@@ -126,7 +126,7 @@ function DelDepartmentModal({ onClose, isOpen, onOpenChange }) {
                 isRequired
                 isDisabled={!regionSelectedKey}
                 size="lg"
-                items={gates || []}
+                items={gates?.data || []}
                 label="البوابة"
                 labelPlacement="outside"
                 placeholder="اختر البوابة"
@@ -144,7 +144,7 @@ function DelDepartmentModal({ onClose, isOpen, onOpenChange }) {
                 isRequired
                 isDisabled={!gateSelectedKey}
                 size="lg"
-                items={departments || []}
+                items={departments?.data || []}
                 label="الادارة"
                 labelPlacement="outside"
                 placeholder="اختر الادارة"

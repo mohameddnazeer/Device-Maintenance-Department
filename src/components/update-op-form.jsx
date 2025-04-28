@@ -47,7 +47,7 @@ export function UpdateOpForm() {
     if (maintainerId !== rowData.maintainerId)
       data.push({ op: "replace", path: `/maintainerId`, value: maintainerId });
 
-    if (data.length === 0) return toast.warning("لا توجد تغييرات لتحديثها");
+    // if (data?.length === 0) return toast.warning("لا توجد تغييرات لتحديثها");
 
     let config = {
       method: "patch",
@@ -98,7 +98,7 @@ export function UpdateOpForm() {
           placeholder="رقم العميل"
         />
         <Autocomplete
-          defaultItems={users ?? []}
+          defaultItems={users?.data ?? []}
           selectedKey={maintainerId}
           onSelectionChange={setMaintainerId}
           label="القائم بالصيانة"

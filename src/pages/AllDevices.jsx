@@ -65,6 +65,7 @@ const AllDevices = () => {
 
   useEffect(() => {
     const selectedRegionId = QueryParams.get("RegionId");
+
     const selectedGateId = QueryParams.get("GateId");
     const selectedDepartmentId = QueryParams.get("DeptId");
     const selectedOfficeId = QueryParams.get("OfficeId");
@@ -79,41 +80,52 @@ const AllDevices = () => {
   }, []);
 
   useEffect(() => {
-    regionRes.data &&
+    regionRes?.data?.data &&
       setRegionState(prevState => {
-        let selectedItem = regionRes.data.find(
+        let selectedItem = regionRes?.data?.data.find(
           option => option.id.toString() === prevState.selectedKey?.toString()
         );
-        return { ...prevState, items: regionRes.data, inputValue: selectedItem?.name || "" };
+        console.log(selectedItem);
+
+        return {
+          ...prevState,
+          items: regionRes?.data?.data,
+          inputValue: selectedItem?.name || "",
+        };
       });
-  }, [regionRes.data]);
+  }, [regionRes?.data?.data]);
+
   useEffect(() => {
-    gateRes.data &&
+    gateRes?.data?.data &&
       setGateState(prevState => {
-        let selectedItem = gateRes.data.find(
+        let selectedItem = gateRes?.data?.data.find(
           option => option.id.toString() === prevState.selectedKey?.toString()
         );
-        return { ...prevState, items: gateRes.data, inputValue: selectedItem?.name || "" };
+        return { ...prevState, items: gateRes?.data?.data, inputValue: selectedItem?.name || "" };
       });
-  }, [gateRes.data]);
+  }, [gateRes?.data?.data]);
   useEffect(() => {
-    departmentRes.data &&
+    departmentRes?.data?.data &&
       setDepartmentState(prevState => {
-        let selectedItem = departmentRes.data.find(
+        let selectedItem = departmentRes?.data?.data.find(
           option => option.id.toString() === prevState.selectedKey?.toString()
         );
-        return { ...prevState, items: departmentRes.data, inputValue: selectedItem?.name || "" };
+        return {
+          ...prevState,
+          items: departmentRes?.data?.data,
+          inputValue: selectedItem?.name || "",
+        };
       });
-  }, [departmentRes.data]);
+  }, [departmentRes?.data?.data]);
   useEffect(() => {
-    officeRes.data &&
+    officeRes?.data?.data &&
       setOfficeState(prevState => {
-        let selectedItem = officeRes.data.find(
+        let selectedItem = officeRes?.data?.data.find(
           option => option.id.toString() === prevState.selectedKey?.toString()
         );
-        return { ...prevState, items: officeRes.data, inputValue: selectedItem?.name || "" };
+        return { ...prevState, items: officeRes?.data?.data, inputValue: selectedItem?.name || "" };
       });
-  }, [officeRes.data]);
+  }, [officeRes?.data?.data]);
 
   const filterEls = useMemo(
     () => [
@@ -123,7 +135,7 @@ const AllDevices = () => {
         label: "القطاع",
         state: regionState,
         setState: setRegionState,
-        data: Array.isArray(regionRes?.data) ? regionRes.data : [],
+        data: Array.isArray(regionRes?.data?.data) ? regionRes.data?.data : [],
         placeholder: "اختر القطاع",
       },
       {
@@ -133,7 +145,7 @@ const AllDevices = () => {
         label: "البوابة",
         state: gateState,
         setState: setGateState,
-        data: Array.isArray(gateRes?.data) ? gateRes.data : [],
+        data: Array.isArray(gateRes?.data?.data) ? gateRes?.data?.data : [],
         placeholder: "اختر البوابة",
       },
       {
@@ -143,7 +155,7 @@ const AllDevices = () => {
         label: "الإدارة",
         state: departmentState,
         setState: setDepartmentState,
-        data: departmentRes.data,
+        data: departmentRes?.data?.data,
         placeholder: "اختر الإدارة",
       },
       {
@@ -153,19 +165,19 @@ const AllDevices = () => {
         label: "المكتب",
         state: officeState,
         setState: setOfficeState,
-        data: officeRes.data,
+        data: officeRes?.data?.data,
         placeholder: "اختر المكتب",
       },
     ],
     [
       regionState,
-      regionRes.data,
+      regionRes?.data?.data,
       gateState,
-      gateRes.data,
+      gateRes?.data?.data,
       departmentState,
-      departmentRes.data,
+      departmentRes?.data?.data,
       officeState,
-      officeRes.data,
+      officeRes?.data?.data,
     ]
   );
 

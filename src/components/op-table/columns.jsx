@@ -195,7 +195,7 @@ export const columns = [
           {row.getValue("failureMaintains")?.map((item, index) => (
             <span key={index} className="text-right text-sm font-normal">
               {item.name}
-              {index !== row.getValue("failureMaintains").length - 1 && " -"}
+              {index !== row.getValue("failureMaintains")?.length - 1 && " -"}
             </span>
           ))}
         </span>

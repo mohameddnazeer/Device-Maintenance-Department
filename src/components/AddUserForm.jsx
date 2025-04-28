@@ -1,6 +1,5 @@
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons";
 import { customFetch, getUrl } from "@/lib/utils";
-import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
@@ -15,6 +14,8 @@ function AddUserForm({ onSuccess }) {
   const queryClient = useQueryClient();
   const [isVisible, setIsVisible] = useState({ password: false, confirmPass: false });
   const [value, setValue] = useState(new Set([]));
+  const [errors, setErrors] = useState({}); // State to store backend errors
+
   const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [departmentState, setDepartmentState] = useState({
@@ -48,15 +49,15 @@ function AddUserForm({ onSuccess }) {
   });
 
   useEffect(() => {
-    regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionRes.data }));
-  }, [regionRes.data]);
+    regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionRes?.data?.data }));
+  }, [regionRes?.data?.data]);
   useEffect(() => {
-    gateRes.data && setGateState(prevState => ({ ...prevState, items: gateRes.data }));
-  }, [gateRes.data]);
+    gateRes.data && setGateState(prevState => ({ ...prevState, items: gateRes?.data?.data }));
+  }, [gateRes?.data?.data]);
   useEffect(() => {
     departmentRes.data &&
-      setDepartmentState(prevState => ({ ...prevState, items: departmentRes.data }));
-  }, [departmentRes.data]);
+      setDepartmentState(prevState => ({ ...prevState, items: departmentRes?.data?.data }));
+  }, [departmentRes?.data?.data]);
 
   const toggleVisibility = useCallback(
     value => setIsVisible(prev => ({ ...prev, [value]: !prev[value] })),
@@ -65,7 +66,7 @@ function AddUserForm({ onSuccess }) {
 
   const onSelectionChange = (key, setState, data, name) => {
     setState(prevState => {
-      let selectedItem = prevState.items.find(option => option.id.toString() === key?.toString());
+      let selectedItem = prevState.items?.find(option => option.id.toString() === key?.toString());
       return { inputValue: selectedItem?.name || "", selectedKey: key, items: data };
     });
     switch (name) {
@@ -113,9 +114,14 @@ function AddUserForm({ onSuccess }) {
         return "تم اضافة المستخدم بنجاح";
       },
       error: err => {
-        console.log(err);
-        // TODO: handle error messages for validation errors
-        return err.response.data.message || "حدث خطأ ما";
+        if (err.response?.data?.errors) {
+          setErrors(err.response.data.errors);
+          const errorMessages = Object.values(err.response.data.errors).flat();
+          toast.error(errorMessages.join(" - "));
+        } else {
+          toast.error("حدث خطأ ما");
+        }
+        return;
       },
     });
   };
@@ -134,8 +140,9 @@ function AddUserForm({ onSuccess }) {
           labelPlacement="outside"
           size="lg"
           name="name"
-          placeholder="احمد محمد ..."
-          errorMessage="الاسم مطلوب"
+          placeholder="ادخل الاسم بالكامل"
+          // errorMessage="الاسم مطلوب"
+          errorMessage={errors.name}
         />
         <Input
           isRequired
@@ -143,13 +150,14 @@ function AddUserForm({ onSuccess }) {
           labelPlacement="outside"
           size="lg"
           name="userName"
-          placeholder="ahmed123"
+          placeholder="ادخل اسم المستخدم"
           pattern="^[a-zA-Z0-9_]{3,}$" // At least 8 characters and only letters, numbers, and underscores
-          errorMessage={({ validationDetails: { valueMissing, tooShort, patternMismatch } }) => {
-            if (valueMissing) return "اسم المستخدم مطلوب";
-            if (tooShort) return "لا يقل عن 8 احرف";
-            if (patternMismatch) return "يجب ان يحتوي على احرف و ارقام و _ فقط";
-          }}
+          // errorMessage={({ validationDetails: { valueMissing, tooShort, patternMismatch } }) => {
+          //   if (valueMissing) return "اسم المستخدم مطلوب";
+          //   if (tooShort) return "لا يقل عن 8 احرف";
+          //   if (patternMismatch) return "يجب ان يحتوي على احرف و ارقام و _ فقط";
+          // }}
+          errorMessage={errors.userName}
         />
         <Input
           isRequired
@@ -158,18 +166,19 @@ function AddUserForm({ onSuccess }) {
           size="lg"
           name="password"
           placeholder="ادخل كلمة المرور"
-          minLength={10}
+          minLength={5}
           maxLength={36}
           pattern=".*[0-9].*" // Includes at least 1 number
-          errorMessage={({
-            validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
-          }) => {
-            if (valueMissing) return "كلمة المرور مطلوبة";
-            if (tooShort) return "لا يقل عن 10 احرف";
-            if (tooLong) return "لا يقل عن 36 احرف";
-            if (patternMismatch)
-              return "يجب ان تحتوي كلمة المرور على رقم واحد على الاقل ولا يقل عن 10 احرف";
-          }}
+          // errorMessage={({
+          //   validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+          // }) => {
+          //   if (valueMissing) return "كلمة المرور مطلوبة";
+          //   if (tooShort) return "لا يقل عن 5 احرف";
+          //   if (tooLong) return "لا يقل عن 36 احرف";
+          //   if (patternMismatch)
+          //     return "يجب ان تحتوي كلمة المرور على رقم واحد على الاقل ولا يقل عن 5 احرف";
+          // }}
+          errorMessage={errors.password}
           type={isVisible.password ? "text" : "password"}
           endContent={
             <button
@@ -192,18 +201,19 @@ function AddUserForm({ onSuccess }) {
           size="lg"
           name="confirmPass"
           placeholder="ادخل كلمة المرور"
-          minLength={10}
+          minLength={5}
           maxLength={36}
           pattern=".*[0-9].*" // Includes at least 1 number
-          errorMessage={({
-            validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
-          }) => {
-            if (valueMissing) return "كلمة المرور مطلوبة";
-            if (tooShort) return "لا يقل عن 10 احرف";
-            if (tooLong) return "لا يقل عن 36 احرف";
-            if (patternMismatch)
-              return "يجب ان تحتوي كلمة المرور على رقم واحد على الاقل ولا يقل عن 10 احرف";
-          }}
+          // errorMessage={({
+          //   validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+          // }) => {
+          //   if (valueMissing) return "كلمة المرور مطلوبة";
+          //   if (tooShort) return "لا يقل عن 5 احرف";
+          //   if (tooLong) return "لا يقل عن 36 احرف";
+          //   if (patternMismatch)
+          //     return "يجب ان تحتوي كلمة المرور على رقم واحد على الاقل ولا يقل عن 5 احرف";
+          // }}
+          errorMessage={errors.confirmPass}
           type={isVisible.confirmPass ? "text" : "password"}
           endContent={
             <button
@@ -229,14 +239,15 @@ function AddUserForm({ onSuccess }) {
           pattern="^(010|011|012|015)[0-9]{8}$" // Egyptian phone number format
           minLength={10}
           maxLength={11}
-          errorMessage={({
-            validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
-          }) => {
-            if (tooShort) return "لا يقل عن 10 احرف";
-            if (tooLong) return "لا يقل عن 11 احرف";
-            if (valueMissing) return "رقم المسؤول مطلوب";
-            if (patternMismatch) return "رقم الهاتف غير صحيح";
-          }}
+          // errorMessage={({
+          //   validationDetails: { tooShort, tooLong, valueMissing, patternMismatch },
+          // }) => {
+          //   if (tooShort) return "لا يقل عن 10 احرف";
+          //   if (tooLong) return "لا يقل عن 11 احرف";
+          //   if (valueMissing) return "رقم المسؤول مطلوب";
+          //   if (patternMismatch) return "رقم الهاتف غير صحيح";
+          // }}
+          errorMessage={errors.phoneNumber}
         />
         <Select
           isRequired
@@ -244,7 +255,8 @@ function AddUserForm({ onSuccess }) {
           label="الصلاحيات"
           placeholder="اختر الصلاحيات"
           labelPlacement="outside"
-          errorMessage="الصلاحيات مطلوبة"
+          // errorMessage="الصلاحيات مطلوبة"
+          errorMessage={errors.roles}
           selectedKeys={value}
           onSelectionChange={setValue}
           items={[
@@ -259,73 +271,6 @@ function AddUserForm({ onSuccess }) {
             </SelectItem>
           )}
         </Select>
-
-        <Autocomplete
-          isRequired
-          // name="regionId"
-          size="lg"
-          inputValue={regionState.inputValue}
-          items={regionState.items}
-          label="القطاع"
-          labelPlacement="outside"
-          placeholder="اختر القطاع"
-          selectedKey={regionState.selectedKey}
-          onInputChange={value => onInputChange(value, setRegionState, regionRes.data)}
-          onSelectionChange={key =>
-            onSelectionChange(key, setRegionState, regionRes.data, "regionId")
-          }
-          errorMessage="من فضلك اختر القطاع"
-        >
-          {item => (
-            <AutocompleteItem dir="rtl" key={item.id} className="text-right">
-              {item.name}
-            </AutocompleteItem>
-          )}
-        </Autocomplete>
-        <Autocomplete
-          isRequired
-          isDisabled={!regionState.selectedKey}
-          // name="gateId"
-          size="lg"
-          inputValue={gateState.inputValue}
-          items={gateState.items}
-          label="البوابة"
-          labelPlacement="outside"
-          placeholder="اختر البوابة"
-          selectedKey={gateState.selectedKey}
-          onInputChange={value => onInputChange(value, setGateState, gateRes.data)}
-          onSelectionChange={key => onSelectionChange(key, setGateState, gateRes.data, "gateId")}
-          errorMessage="من فضلك اختر البوابة"
-        >
-          {item => (
-            <AutocompleteItem dir="rtl" key={item.id} className="text-right">
-              {item.name}
-            </AutocompleteItem>
-          )}
-        </Autocomplete>
-        <Autocomplete
-          isRequired
-          isDisabled={!gateState.selectedKey}
-          // name="deptId"
-          size="lg"
-          inputValue={departmentState.inputValue}
-          items={departmentState.items}
-          label="الإدارة"
-          labelPlacement="outside"
-          placeholder="اختر الإدارة"
-          selectedKey={departmentState.selectedKey}
-          onInputChange={value => onInputChange(value, setDepartmentState, departmentRes.data)}
-          onSelectionChange={key =>
-            onSelectionChange(key, setDepartmentState, departmentRes.data, "departmentId")
-          }
-          errorMessage="من فضلك اختر الإدارة"
-        >
-          {item => (
-            <AutocompleteItem dir="rtl" key={item.id} className="text-right">
-              {item.name}
-            </AutocompleteItem>
-          )}
-        </Autocomplete>
       </div>
     </Form>
   );

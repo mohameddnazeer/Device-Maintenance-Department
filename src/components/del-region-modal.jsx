@@ -84,7 +84,7 @@ function DelRegionModal({ onClose, isOpen, onOpenChange }) {
               <Autocomplete
                 isRequired
                 size="lg"
-                items={regions}
+                items={regions?.data}
                 label="القطاع"
                 labelPlacement="outside"
                 placeholder="اختر القطاع"

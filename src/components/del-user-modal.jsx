@@ -171,7 +171,7 @@ function DelUserModal({ onClose, isOpen, onOpenChange }) {
                 isRequired
                 // isDisabled={!departmentSelectedKey}
                 size="lg"
-                items={users || []}
+                items={users?.data || []}
                 label="المستخدم"
                 labelPlacement="outside"
                 placeholder="اختر المستخدم"

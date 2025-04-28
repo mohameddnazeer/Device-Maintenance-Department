@@ -11,28 +11,30 @@ import { toast } from "sonner";
 import { useLocalStorage } from "usehooks-ts";
 
 export function DataTableRowActions({ row }) {
+  console.log(row);
+
   const dispatch = useDispatch();
   const [user] = useLocalStorage("user", null, { deserializer: JSON.parse });
+  console.log(user);
 
-  console.log("🚀 ~ DataTableRowActions:", row.original);
+  console.log("Row Data:", row.original);
 
   const handleAction = key => {
     switch (key) {
+      case "update":
+        console.log("row.original-test", row.original);
+        dispatch(setRowData(row.original));
+        dispatch(openModal());
+        break;
       case "open":
         dispatch(setData(row.original));
         dispatch(setID(row.original.id));
         dispatch(openMaintenance());
         break;
-      case "update":
-        dispatch(setRowData(row.original));
-        dispatch(openModal());
-        break;
-
       case "update-status":
         dispatch(setRowData(row.original));
         dispatch(openModal());
         break;
-
       case "delete":
         const accessToken = window.localStorage.getItem("accessToken");
         let config = {
@@ -98,6 +100,7 @@ export function DataTableRowActions({ row }) {
               <DropdownItem key="update" startContent={<PenSquareIcon className={iconClasses} />}>
                 تعديل البيانات
               </DropdownItem>
+
               <DropdownItem
                 key="update-status"
                 showDivider={user?.role === "Admin"}

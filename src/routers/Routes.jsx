@@ -44,7 +44,7 @@ const AppRouter = () => {
         navigate("/login");
       }
     }
-  }, 0.5 * 60 * 1000);
+  }, 23 * 60 * 60 * 1000);
 
   return (
     <Routes>

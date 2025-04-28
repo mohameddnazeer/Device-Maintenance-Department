@@ -27,12 +27,12 @@ function OfficeModal({ onClose, isOpen, onOpenChange }) {
   const [departmentSelectedKey, setDepartmentSelectedKey] = useState();
 
   const { data: regions } = useQuery({
-    select: data => data.data,
+    select: data => data?.data,
     queryKey: ["add-office", "region"],
     queryFn: async () => customFetch("api/regions"),
   });
   const { data: gates } = useQuery({
-    select: data => data.data,
+    select: data => data?.data,
     queryKey: ["add-office", "gate", regionSelectedKey],
     queryFn: async () => {
       return customFetch(`api/regions/${regionSelectedKey}/gates`);
@@ -112,7 +112,7 @@ function OfficeModal({ onClose, isOpen, onOpenChange }) {
                     isRequired
                     name="regionId"
                     size="lg"
-                    items={regions || []}
+                    items={regions?.data || []}
                     label="القطاع"
                     labelPlacement="outside"
                     placeholder="اختر القطاع"
@@ -131,7 +131,7 @@ function OfficeModal({ onClose, isOpen, onOpenChange }) {
                     isDisabled={!regionSelectedKey}
                     name="gateId"
                     size="lg"
-                    items={gates || []}
+                    items={gates?.data || []}
                     label="البوابة"
                     labelPlacement="outside"
                     placeholder="اختر البوابة"
@@ -150,7 +150,7 @@ function OfficeModal({ onClose, isOpen, onOpenChange }) {
                     isDisabled={!gateSelectedKey}
                     name="deptId"
                     size="lg"
-                    items={departments || []}
+                    items={departments?.data || []}
                     label="الإدارة"
                     labelPlacement="outside"
                     placeholder="اختر الإدارة"

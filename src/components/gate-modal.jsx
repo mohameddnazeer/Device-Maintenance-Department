@@ -12,6 +12,7 @@ import {
   useDraggable,
 } from "@heroui/modal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { data } from "autoprefixer";
 import axios from "axios";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,10 +26,11 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
   const [regionSelectedKey, setRegionSelectedKey] = useState();
 
   const { data: regions } = useQuery({
-    select: data => data.data,
+    select: data => data?.data,
     queryKey: ["add-gate", "region"],
     queryFn: async () => customFetch("api/regions"),
   });
+  console.log(data.data);
 
   const onSubmit = e => {
     // Prevent default browser page refresh.
@@ -87,7 +89,7 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
                     isRequired
                     name="regionId"
                     size="lg"
-                    items={regions}
+                    items={regions.data}
                     label="القطاع"
                     labelPlacement="outside"
                     placeholder="اختر القطاع"

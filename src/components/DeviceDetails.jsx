@@ -37,13 +37,16 @@ const DeviceDetails = () => {
     isFetching,
     error,
   } = useQuery({
-    select: data => data.data,
+    select: data => data?.data,
     queryKey: ["device", regionId, gateId, deptId, officeId, id],
     queryFn: () =>
       customFetch(
         `api/Regions/${regionId}/Gates/${gateId}/Departments/${deptId}/offices/${officeId}/Devices/${id}`
       ),
   });
+
+  console.log("device", device?.data[0]);
+
   const renderCell = useCallback(
     (item, columnKey) => {
       // const d = rowData || data;
@@ -53,51 +56,86 @@ const DeviceDetails = () => {
         return <div className="!text-lg">{locale[cellValue] || cellValue}</div>;
       switch (cellValue) {
         case "deviceStatus":
-          if (!device.deviceStatus) return <div className="!text-lg">لا يوجد</div>;
+          if (!device?.data[0]?.deviceStatus) return <div className="!text-lg">لا يوجد</div>;
           return (
-            <Chip color={deviceStatus[device.deviceStatus].color}>
-              {deviceStatus[device.deviceStatus].text}
+            <Chip color={deviceStatus[device?.data[0]?.deviceStatus].color}>
+              {deviceStatus[device?.data[0]?.deviceStatus].text}
             </Chip>
           );
         case "createdDate":
-          if (!device.createdDate) return <div className="!text-lg">لا يوجد</div>;
+          if (!device?.data[0]?.createdDate) return <div className="!text-lg">لا يوجد</div>;
           return (
             <div className="flex gap-x-4">
               <p className="!text-lg">
-                {new Date(device.createdDate).toLocaleString("ar-EG", { dateStyle: "short" })}
+                {new Date(device?.data[0]?.createdDate).toLocaleString("ar-EG", {
+                  dateStyle: "short",
+                })}
               </p>
               <p className="!text-lg">
-                {new Date(device.createdDate).toLocaleString("ar-EG", { timeStyle: "short" })}
+                {new Date(device?.data[0]?.createdDate).toLocaleString("ar-EG", {
+                  timeStyle: "short",
+                })}
               </p>
             </div>
           );
         case "lastModifiedDate":
-          if (!device.lastModifiedDate) return <div className="!text-lg">لا يوجد</div>;
+          if (!device?.data[0]?.lastModifiedDate) return <div className="!text-lg">لا يوجد</div>;
           return (
             <div className="flex gap-x-4">
               <p className="!text-lg">
-                {new Date(device.lastModifiedDate).toLocaleString("ar-EG", { dateStyle: "short" })}
+                {new Date(device?.data[0]?.lastModifiedDate).toLocaleString("ar-EG", {
+                  dateStyle: "short",
+                })}
               </p>
               <p className="!text-lg">
-                {new Date(device.lastModifiedDate).toLocaleString("ar-EG", { timeStyle: "short" })}
+                {new Date(device?.data[0]?.lastModifiedDate).toLocaleString("ar-EG", {
+                  timeStyle: "short",
+                })}
               </p>
             </div>
           );
-        case "region":
-          if (!device.region) return <div className="!text-lg">لا يوجد</div>;
-          return <div className="!text-lg">{device.region.name}</div>;
+        case "domainIDIfExists":
+          if (!device.data[0]?.domainIDIfExists) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.domainIDIfExists}</div>;
+        case "phoneNmber":
+          if (!device.data[0]?.phoneNmber) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.phoneNmber}</div>;
+        case "gpu":
+          if (!device.data[0]?.gpu) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.gpu}</div>;
+        case "cpu":
+          if (!device.data[0]?.cpu) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.cpu}</div>;
+        case "type":
+          if (!device.data[0]?.type) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.type}</div>;
+        case "ramTotal":
+          if (!device.data[0]?.ramTotal) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.ramTotal}</div>;
+        case "owner":
+          if (!device.data[0]?.owner) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.owner}</div>;
+        case "mac":
+          if (!device.data[0]?.mac) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg ">{device?.data[0]?.mac}</div>;
+        case "v":
+          if (!device.data[0]?.region) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.region.name}</div>;
         case "gate":
-          if (!device.gate) return <div className="!text-lg">لا يوجد</div>;
-          return <div className="!text-lg">{device.gate.name}</div>;
+          if (!device.data[0]?.gate) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.gate.name}</div>;
         case "department":
-          if (!device.department) return <div className="!text-lg">لا يوجد</div>;
-          return <div className="!text-lg">{device.department.name}</div>;
+          if (!device.data[0]?.department) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.department.name}</div>;
         case "office":
-          if (!device.office) return <div className="!text-lg">لا يوجد</div>;
-          return <div className="!text-lg">{device.office.name}</div>;
+          if (!device.data[0]?.office) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.office.name}</div>;
+        case "region":
+          if (!device.data[0]?.region) return <div className="!text-lg">لا يوجد</div>;
+          return <div className="!text-lg">{device?.data[0]?.region.name}</div>;
         default:
           if (!device[cellValue]) return <div className="!text-lg">لا يوجد</div>;
-          return <div className="!text-lg">{device[cellValue]}</div>;
+          return <div className="!text-lg">{device?.data[0][cellValue]}</div>;
       }
     },
     [device]
@@ -105,8 +143,8 @@ const DeviceDetails = () => {
 
   if (isFetching) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
-  if (!device) return <div>لا يوجد بيانات</div>;
-  const rows = Object.keys(device)
+  if (!device?.data) return <div>لا يوجد بيانات</div>;
+  const rows = Object.keys(device?.data[0])
     .map(key => ({ key, value: key }))
     .filter(({ key }) => !["id", "createdByUserId", "lastModifiedUserId"].includes(key));
 

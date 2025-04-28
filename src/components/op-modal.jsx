@@ -17,11 +17,11 @@ function OpModal({ isOpen, onOpenChange }) {
 
   return (
     <Modal size="5xl" ref={targetRef} isOpen={isOpen} onOpenChange={onOpenChange}>
+      <h2 className="text-xl">استلام جهاز</h2>
       <ModalContent dir="rtl">
         {onClose => (
           <>
             <ModalHeader {...moveProps} className="flex flex-col gap-1">
-              <h2 className="text-xl">استلام جهاز</h2>
               <p className="text-sm text-muted-foreground">يرجى ادخال المعلومات الخاصة بالجهاز</p>
             </ModalHeader>
             <ModalBody>

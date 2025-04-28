@@ -21,7 +21,8 @@ export const updateModalSlice = createSlice({
       state.isOpen = !state.isOpen; // Toggle modal state
     },
     setRowData: (state, action) => {
-      state.rowData = action.payload; // Set the row data for the modal
+      state.rowData = action.payload;
+      console.log(action.payload); // Set the row data for the
     },
     clearRowData: state => {
       state.rowData = null; // Clear the row data when modal is closed
@@ -34,12 +35,12 @@ export const updateModalSlice = createSlice({
     },
     nextTab: state => {
       const currentIndex = tabs.findIndex(tab => tab.key === state.selectedTab);
-      const nextIndex = (currentIndex + 1) % tabs.length; // Loop back to the first tab
+      const nextIndex = (currentIndex + 1) % tabs?.length; // Loop back to the first tab
       state.selectedTab = tabs[nextIndex].key; // Set the next tab as selected
     },
     prevTab: state => {
       const currentIndex = tabs.findIndex(tab => tab.key === state.selectedTab);
-      const prevIndex = (currentIndex - 1 + tabs.length) % tabs.length; // Loop back to the last tab
+      const prevIndex = (currentIndex - 1 + tabs?.length) % tabs?.length; // Loop back to the last tab
       state.selectedTab = tabs[prevIndex].key; // Set the previous tab as selected
     },
   },

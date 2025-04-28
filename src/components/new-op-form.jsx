@@ -26,12 +26,13 @@ export function OPForm({ onClose }) {
   const [user] = useLocalStorage("user", null, { deserializer: JSON.parse });
 
   const { data: users } = useQuery({
-    select: data => data.data,
+    select: data => data.data.data,
     queryKey: ["new-op", "users"],
     queryFn: async () => customFetch("api/Users/UsersNamesWithIds"),
   });
+  console.log(users);
   const { data: idData } = useQuery({
-    select: data => data.data.filter(item => item.domainIDIfExists),
+    select: data => data.response.data.filter(item => item.domainIDIfExists),
     queryKey: ["new-op", "devices-id", idState.inputValue],
     queryFn: async () =>
       fetchData(
@@ -39,8 +40,9 @@ export function OPForm({ onClose }) {
           (idState.inputValue ? `?SearchTerm=${idState.inputValue}&SearchOptions=domain` : "")
       ),
   });
+
   const { data: macData } = useQuery({
-    select: data => data.data.filter(item => item.mac),
+    select: data => data.response.data.filter(item => item.mac),
     queryKey: ["new-op", "devices-mac", macState.inputValue],
     queryFn: async () =>
       fetchData(
@@ -50,9 +52,11 @@ export function OPForm({ onClose }) {
   });
 
   const { data: failureData } = useQuery({
+    select: data => data.data,
     queryKey: ["new-op", "failures"],
     queryFn: async () => fetchData("api/failures"),
   });
+  console.log(failureData);
 
   useEffect(() => {
     macData && setMacState(prevState => ({ ...prevState, items: macData }));
@@ -63,7 +67,7 @@ export function OPForm({ onClose }) {
 
   const onSelectionChange = (key, setState, data, name) => {
     setState(prevState => {
-      let selectedItem = prevState.items.find(option => option.id?.toString() === key);
+      let selectedItem = prevState?.items?.find(option => option.id?.toString() === key);
       return { inputValue: selectedItem?.[name] || "", selectedKey: key, items: data };
     });
   };
@@ -109,8 +113,10 @@ export function OPForm({ onClose }) {
         if (err.response.data.errors) {
           const errs = Array.from(Object.entries(err.response.data.errors));
           let msg = ["فشل اضافة عملية الصيانة"];
+          console.log(errs);
           errs.forEach(errors => {
-            errors[1].forEach(error => msg.push(error));
+            console.log(errors);
+            errors[1]?.forEach(error => msg.push(error));
           });
           return msg.join(" - ");
         }
@@ -238,7 +244,7 @@ export function OPForm({ onClose }) {
             selectedKeys={failures}
             onSelectionChange={keys => {
               const newSet = new Set([]);
-              keys.forEach(key => {
+              keys?.forEach(key => {
                 const failureId = failureData.find(f => f.id === key)?.id;
                 if (failureId) newSet.add(failureId);
               });
@@ -252,13 +258,12 @@ export function OPForm({ onClose }) {
               </SelectItem>
             )}
           </Select>
-          {user.role === "Admin" && (
+          {user?.role === "Admin" && (
             <Button size="lg" color="success" onPress={onAddFailure}>
               اضافة عطل
             </Button>
           )}
         </div>
-
         <Autocomplete
           isRequired
           defaultItems={users ?? []}
