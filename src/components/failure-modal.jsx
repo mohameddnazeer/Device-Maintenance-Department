@@ -13,12 +13,13 @@ import {
 } from "@heroui/modal";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function FailureModal({ isOpen, onOpenChange }) {
+  const [errors, setErrors] = useState({}); // State to store backend errors
   const targetRef = useRef(null);
   const dispatch = useDispatch();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
@@ -49,8 +50,14 @@ function FailureModal({ isOpen, onOpenChange }) {
         return "تم اضافة العطل بنجاح";
       },
       error: err => {
-        console.log(err);
-        return err.response.data.message || "حدث خطأ اثناء اضافة العطل";
+        if (err.response?.data?.errors) {
+          setErrors(err.response.data.errors); // Set errors in the state
+          const errorMessages = Object.values(err.response.data.errors).flat();
+          toast.error(errorMessages.join(" - "));
+        } else {
+          toast.error("حدث خطأ اثناء اضافة العطل");
+        }
+        return;
       },
     });
   };
@@ -74,7 +81,8 @@ function FailureModal({ isOpen, onOpenChange }) {
                   <Input
                     size="lg"
                     isRequired
-                    errorMessage="من فضلك ادخل اسم العطل"
+                    errorMessage={errors.name}
+                    maxLength={50}
                     label="اسم العطل"
                     labelPlacement="outside"
                     name="name"

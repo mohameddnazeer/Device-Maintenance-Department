@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function DepartmentModal({ onClose, isOpen, onOpenChange }) {
+  const [errors, setErrors] = useState({}); // State to store backend errors
   const targetRef = useRef(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -65,8 +66,14 @@ function DepartmentModal({ onClose, isOpen, onOpenChange }) {
         return "تم اضافة المكتب بنجاح";
       },
       error: err => {
-        console.log(err);
-        return err.response.data.message || "حدث خطأ اثناء اضافة المكتب";
+        if (err.response?.data?.errors) {
+          setErrors(err.response.data.errors); // Set errors in the state
+          const errorMessages = Object.values(err.response.data.errors).flat();
+          toast.error(errorMessages.join(" - "));
+        } else {
+          toast.error("حدث خطأ اثناء اضافة المكتب");
+        }
+        return;
       },
     });
   };
@@ -137,7 +144,8 @@ function DepartmentModal({ onClose, isOpen, onOpenChange }) {
                   <Input
                     size="lg"
                     isRequired
-                    errorMessage="من فضلك ادخل اسم الإدارة"
+                    errorMessage={errors.name}
+                    maxLength={50}
                     label="اسم الإدارة"
                     labelPlacement="outside"
                     name="name"

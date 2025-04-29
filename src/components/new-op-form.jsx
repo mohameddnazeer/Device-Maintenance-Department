@@ -116,7 +116,7 @@ export function OPForm({ onClose }) {
           console.log(errs);
           errs.forEach(errors => {
             console.log(errors);
-            errors[1]?.forEach(error => msg.push(error));
+            errors?.forEach(error => msg.push(error));
           });
           return msg.join(" - ");
         }
@@ -183,6 +183,7 @@ export function OPForm({ onClose }) {
         <Input
           size="lg"
           isRequired
+          maxLength={50}
           errorMessage="من فضلك ادخل اسم العميل"
           label="اسم العميل"
           labelPlacement="outside"

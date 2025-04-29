@@ -97,9 +97,9 @@ export function DataTableRowActions({ row }) {
           </DropdownItem>
           {!row.original.isDelivered && (
             <>
-              <DropdownItem key="update" startContent={<PenSquareIcon className={iconClasses} />}>
+              {/* <DropdownItem key="update" startContent={<PenSquareIcon className={iconClasses} />}>
                 تعديل البيانات
-              </DropdownItem>
+              </DropdownItem> */}
 
               <DropdownItem
                 key="update-status"

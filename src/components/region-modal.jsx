@@ -12,11 +12,12 @@ import {
 } from "@heroui/modal";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function RegionModal({ onClose, isOpen, onOpenChange }) {
+  const [errors, setErrors] = useState({}); // State to store backend errors
 
   const targetRef = useRef(null);
   const queryClient = useQueryClient();
@@ -47,8 +48,14 @@ function RegionModal({ onClose, isOpen, onOpenChange }) {
         return "تم اضافة القطاع بنجاح";
       },
       error: err => {
-        console.log(err);
-        return err.response.data.message || "حدث خطأ اثناء اضافة القطاع";
+        if (err.response?.data?.errors) {
+          setErrors(err.response.data.errors); // Set errors in the state
+          const errorMessages = Object.values(err.response.data.errors).flat();
+          toast.error(errorMessages.join(" - "));
+        } else {
+          toast.error("حدث خطأ اثناء اضافة القطاع");
+        }
+        return;
       },
     });
   };
@@ -72,7 +79,8 @@ function RegionModal({ onClose, isOpen, onOpenChange }) {
                   <Input
                     size="lg"
                     isRequired
-                    errorMessage="من فضلك ادخل اسم القطاع"
+                    errorMessage={errors.name}
+                    maxLength={50}
                     label="اسم القطاع"
                     labelPlacement="outside"
                     name="name"

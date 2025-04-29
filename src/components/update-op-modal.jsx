@@ -1,4 +1,4 @@
-import { resetSelectedTab, setSelectedTab } from "@/store/updateModalSlice";
+import { closeModal, setSelectedTab } from "@/store/updateModalSlice";
 import { Modal, ModalBody, ModalContent, ModalHeader, useDraggable } from "@heroui/modal";
 import { Tab, Tabs } from "@heroui/tabs";
 import { Tally1Icon, Tally2Icon, Tally3Icon } from "lucide-react";
@@ -33,7 +33,7 @@ export const tabs = [
   },
 ];
 
-function UpdateOPModal({ isOpen, onOpenChange }) {
+function UpdateOPModal({ isOpen, onOpenChange, onClose }) {
   const dispatch = useDispatch();
   const targetRef = useRef(null);
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
@@ -47,7 +47,7 @@ function UpdateOPModal({ isOpen, onOpenChange }) {
       ref={targetRef}
       isOpen={isOpen}
       onOpenChange={onOpenChange}
-      onClose={() => dispatch(resetSelectedTab())}
+      onClose={() => dispatch(closeModal())}
     >
       <ModalContent dir="rtl">
         <ModalHeader {...moveProps} className="flex flex-col gap-1">

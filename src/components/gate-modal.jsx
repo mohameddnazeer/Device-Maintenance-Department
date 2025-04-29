@@ -98,6 +98,7 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
                     name="regionId"
                     size="lg"
                     items={regions.data}
+                    maxLength={50}
                     label="القطاع"
                     labelPlacement="outside"
                     placeholder="اختر القطاع"
@@ -115,7 +116,10 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
                   <Input
                     size="lg"
                     isRequired
-                    errorMessage={errors.name}
+                    maxLength={50}
+                    errorMessage={
+                      errors.name || "اسم البوابة يجب ألا يزيد عن 50 حرفًا" // Display error from backend or validation message
+                    }
                     label="اسم البوابة"
                     labelPlacement="outside"
                     name="name"
