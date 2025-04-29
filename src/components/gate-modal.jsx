@@ -18,12 +18,14 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
+
 function GateModal({ onClose, isOpen, onOpenChange }) {
   const targetRef = useRef(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
   const [regionSelectedKey, setRegionSelectedKey] = useState();
+  const [errors, setErrors] = useState({}); // State to store backend errors
 
   const { data: regions } = useQuery({
     select: data => data?.data,
@@ -57,8 +59,14 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
         return "تم اضافة البوابة بنجاح";
       },
       error: err => {
-        console.log(err);
-        return err.response.data.message || "حدث خطأ اثناء اضافة البوابة";
+        if (err.response?.data?.errors) {
+          setErrors(err.response.data.errors); // Set errors in the state
+          const errorMessages = Object.values(err.response.data.errors).flat(); // Extract all error messages
+          toast.error(errorMessages.join(" - ")); // Display error messages in the toast
+        } else {
+          toast.error("حدث خطأ اثناء اضافة البوابة");
+        }
+        return;
       },
     });
   };
@@ -95,7 +103,7 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
                     placeholder="اختر القطاع"
                     selectedKey={regionSelectedKey}
                     onSelectionChange={setRegionSelectedKey}
-                    errorMessage="من فضلك اختر القطاع"
+                    errorMessage={"من فضلك اختر القطاع"}
                   >
                     {item => (
                       <AutocompleteItem dir="rtl" key={item.id} className="text-right">
@@ -107,7 +115,7 @@ function GateModal({ onClose, isOpen, onOpenChange }) {
                   <Input
                     size="lg"
                     isRequired
-                    errorMessage="من فضلك ادخل اسم البوابة"
+                    errorMessage={errors.name}
                     label="اسم البوابة"
                     labelPlacement="outside"
                     name="name"

@@ -7,7 +7,8 @@ import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
+// import { Button } from "./ui/button";
+import { Button } from '@heroui/button';
 
 function AddDeviceForm({ onSuccess }) {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function AddDeviceForm({ onSuccess }) {
   const [ramTotal, setRamTotal] = useState("");
   const [username, setUsername] = useState("");
   const [errors, setErrors] = useState({});
-
+  const [isLoading, setIsLoading] = useState(false);
   const [regionState, setRegionState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [gateState, setGateState] = useState({ selectedKey: null, inputValue: "", items: [] });
   const [departmentState, setDepartmentState] = useState({
@@ -31,12 +32,15 @@ function AddDeviceForm({ onSuccess }) {
   const [ipAddress, setIpAddress] = useState("");
   const hardwareMutation = useMutation({
     mutationFn: async ip => {
+      setIsLoading(true);
       const response = await axios.get(`http://${ip}:5000/hardware`);
       return response.data;
     },
     onSuccess: data => {
+      setIsLoading(false);
       toast.success("تم جلب بيانات الجهاز بنجاح");
       console.log("Hardware Data:", data);
+
 
       setCpu(data.cpu || "");
       setGpu(data.gpu || "");
@@ -45,8 +49,10 @@ function AddDeviceForm({ onSuccess }) {
       setUsername(data.username || "");
     },
     onError: error => {
+      setIsLoading(false);
       toast.error("فشل في جلب بيانات الجهاز");
       console.error("Error fetching hardware data:", error);
+
     },
   });
   const handleFetchHardware = () => {
@@ -410,7 +416,12 @@ function AddDeviceForm({ onSuccess }) {
         })}
       </div>
       <div className="flex justify-end mt-4">
-        <Button type="button" onClick={handleFetchHardware} className="btn btn-primary">
+        <Button
+          isLoading={isLoading} // Pass loading state to the button
+          type="button"
+          onClick={handleFetchHardware}
+          className="btn btn-primary"
+        >
           جلب بيانات الجهاز
         </Button>
       </div>

@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 function RegionModal({ onClose, isOpen, onOpenChange }) {
+
   const targetRef = useRef(null);
   const queryClient = useQueryClient();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });

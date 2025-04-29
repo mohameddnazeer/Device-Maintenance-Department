@@ -1,6 +1,10 @@
 import { cn } from "@/lib/utils";
+// import { closeModal } from "@/store/delRegionModalSlice";
+import { closeModal } from "@/store/updateModalSlice";
+import { Button } from "@heroui/button";
 import { AnimatePresence, motion } from "motion/react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const ModalContext = createContext(undefined);
 
@@ -30,7 +34,8 @@ export const ModalTrigger = ({ children, className }) => {
         "px-4 py-2 rounded-md text-black dark:text-white text-center relative overflow-hidden",
         className
       )}
-      onClick={() => setOpen(true)}>
+      onClick={() => setOpen(true)}
+    >
       {children}
     </button>
   );
@@ -66,7 +71,8 @@ export const ModalBody = ({ children, className }) => {
             opacity: 0,
             backdropFilter: "blur(0px)",
           }}
-          className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-50">
+          className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full  flex items-center justify-center z-50"
+        >
           <Overlay />
 
           <motion.div
@@ -96,7 +102,8 @@ export const ModalBody = ({ children, className }) => {
               type: "spring",
               stiffness: 260,
               damping: 15,
-            }}>
+            }}
+          >
             <CloseIcon />
             {children}
           </motion.div>
@@ -132,14 +139,16 @@ const Overlay = ({ className }) => {
         opacity: 0,
         backdropFilter: "blur(0px)",
       }}
-      className={`fixed inset-0 h-full w-full bg-black bg-opacity-50 z-50 ${className}`}></motion.div>
+      className={`fixed inset-0 h-full w-full bg-black bg-opacity-50 z-50 ${className}`}
+    ></motion.div>
   );
 };
 
 const CloseIcon = () => {
-  const { setOpen } = useModal();
+  const dispatch = useDispatch();
+  // const { setOpen } = useModal();
   return (
-    <button onClick={() => setOpen(false)} className="absolute top-4 right-4 group">
+    <Button onPress={() => dispatch(closeModal())} className="absolute top-4 right-4 group">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="24"
@@ -150,12 +159,13 @@ const CloseIcon = () => {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="text-black dark:text-white h-4 w-4 group-hover:scale-125 group-hover:rotate-3 transition duration-200">
+        className="text-black dark:text-white h-4 w-4 group-hover:scale-125 group-hover:rotate-3 transition duration-200"
+      >
         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
         <path d="M18 6l-12 12" />
         <path d="M6 6l12 12" />
       </svg>
-    </button>
+    </Button>
   );
 };
 
@@ -163,7 +173,7 @@ const CloseIcon = () => {
 // Add it in a separate file, I've added here for simplicity
 export const useOutsideClick = (ref, callback) => {
   useEffect(() => {
-    const listener = (event) => {
+    const listener = event => {
       // DO NOTHING if the element being clicked is the target element or their children
       if (!ref.current || ref.current.contains(event.target)) {
         return;
