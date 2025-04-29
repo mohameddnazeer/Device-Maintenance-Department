@@ -41,20 +41,20 @@ function AddDeviceForm({ onSuccess }) {
       toast.success("تم جلب بيانات الجهاز بنجاح");
       console.log("Hardware Data:", data);
 
-
       setCpu(data.cpu || "");
       setGpu(data.gpu || "");
       setMac(data.macAddress || "");
       setRamTotal(data.ram.totalRAM || "");
       setUsername(data.username || "");
+      console.log(data.macAddress);
     },
     onError: error => {
       setIsLoading(false);
       toast.error("فشل في جلب بيانات الجهاز");
       console.error("Error fetching hardware data:", error);
-
     },
   });
+
   const handleFetchHardware = () => {
     if (!ipAddress) {
       toast.error("يرجى إدخال عنوان IP");
@@ -336,7 +336,7 @@ function AddDeviceForm({ onSuccess }) {
         name: "mac",
         value: mac,
         onChange: e => setMac(e.target.value),
-        pattern: "^(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$", // Backend-compatible regex
+        pattern: "^(?:(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}|(?:[0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2})$", // Backend-compatible regex
         errorMessage: ({ validationDetails: { patternMismatch, valueMissing } }) => {
           if (valueMissing) return "عنوان MAC مطلوب";
           if (patternMismatch) return "صيغة MAC غير صحيحة";

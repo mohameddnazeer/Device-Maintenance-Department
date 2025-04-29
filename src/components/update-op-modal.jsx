@@ -33,7 +33,7 @@ export const tabs = [
   },
 ];
 
-function UpdateOPModal({ isOpen, onOpenChange, onClose }) {
+function UpdateOPModal({ isOpen, onOpenChange }) {
   const dispatch = useDispatch();
   const targetRef = useRef(null);
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
