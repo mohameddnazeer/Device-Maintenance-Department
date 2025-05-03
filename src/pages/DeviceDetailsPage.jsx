@@ -1,5 +1,5 @@
-import DeviceDetails from "@/components/DeviceDetails";
-import DeviceHistory from "@/components/DeviceHistory";
+import DeviceDetails from "@/features/devices/DeviceDetails";
+import DeviceHistory from "@/features/devices/DeviceHistory";
 import PageWrapper from "./Layout";
 
 const DeviceDetailsPage = () => {

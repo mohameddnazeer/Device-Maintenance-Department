@@ -1,18 +1,17 @@
-import { fetchData, getUrl } from "@/lib/utils";
+import { fetchData, getUrl } from "@/utils/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
+import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
-import { useMutation, useQuery } from "@tanstack/react-query"; // Added useMutation
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-// import { Button } from "./ui/button";
-import { Button } from '@heroui/button';
 
 function AddDeviceForm({ onSuccess }) {
   const navigate = useNavigate();
-  // Add state variables for cpu, gpu, mac, and ramTotal
+  const { showError, showSuccess, promiseToast } = useToast();
+
   const [cpu, setCpu] = useState("");
   const [gpu, setGpu] = useState("");
   const [mac, setMac] = useState("");
@@ -38,26 +37,22 @@ function AddDeviceForm({ onSuccess }) {
     },
     onSuccess: data => {
       setIsLoading(false);
-      toast.success("تم جلب بيانات الجهاز بنجاح");
-      console.log("Hardware Data:", data);
-
+      showSuccess("تم جلب بيانات الجهاز بنجاح");
       setCpu(data.cpu || "");
       setGpu(data.gpu || "");
       setMac(data.macAddress || "");
       setRamTotal(data.ram.totalRAM || "");
       setUsername(data.username || "");
-      console.log(data.macAddress);
     },
     onError: error => {
       setIsLoading(false);
-      toast.error("فشل في جلب بيانات الجهاز");
-      console.error("Error fetching hardware data:", error);
+      showError(error);
     },
   });
 
   const handleFetchHardware = () => {
     if (!ipAddress) {
-      toast.error("يرجى إدخال عنوان IP");
+      showError({ response: { data: { errors: { ipAddress: "يرجى إدخال عنوان IP" } } } });
       return;
     }
     hardwareMutation.mutate(ipAddress);
@@ -114,11 +109,9 @@ function AddDeviceForm({ onSuccess }) {
 
   useEffect(() => {
     regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionData }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [regionRes.data]);
   useEffect(() => {
     gateRes.data && setGateState(prevState => ({ ...prevState, items: gateData }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gateRes.data]);
   useEffect(() => {
     departmentRes.data &&
@@ -164,33 +157,30 @@ function AddDeviceForm({ onSuccess }) {
     const accessToken = window.localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
 
-    const data = JSON.stringify(Object.fromEntries(new FormData(event.currentTarget)));
-    let config = {
-      method: "post",
-      url:
-        getUrl() +
-        `api/regions/${regionState.selectedKey}/gates/${gateState.selectedKey}/departments/${departmentState.selectedKey}/offices/${officeState.selectedKey}/devices`,
-      headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
-      data,
-    };
+    try {
+      setErrors({});
 
-    toast.promise(axios.request(config), {
-      loading: <p>جاري اضافة الجهاز</p>,
-      success: () => {
-        onSuccess?.();
-        return "تم اضافة الجهاز بنجاح";
-      },
-      error: err => {
-        if (err.response?.data?.errors) {
-          setErrors(err.response.data.errors);
-          const errorMessages = Object.values(err.response.data.errors).flat();
-          toast.error(errorMessages.join(" - "));
-        } else {
-          toast.error("حدث خطأ اثناء اضافة الجهاز");
-        }
-        return;
-      },
-    });
+      const data = JSON.stringify(Object.fromEntries(new FormData(event.currentTarget)));
+      let config = {
+        method: "post",
+        url:
+          getUrl() +
+          `api/regions/${regionState.selectedKey}/gates/${gateState.selectedKey}/departments/${departmentState.selectedKey}/offices/${officeState.selectedKey}/devices`,
+        headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
+        data,
+      };
+
+      promiseToast(axios.request(config), {
+        loading: "جاري اضافة الجهاز",
+        success: () => {
+          onSuccess?.();
+          return "تم اضافة الجهاز بنجاح";
+        },
+        duration: 5000,
+      });
+    } catch (error) {
+      showError(error);
+    }
   };
 
   const elList = useMemo(
@@ -201,12 +191,6 @@ function AddDeviceForm({ onSuccess }) {
         placeholder: "ادخل رقم الجهاز",
         name: "domainIDIfExists",
         value: username,
-        // maxLength: 36,
-        // errorMessage: ({ validationDetails: { valueMissing } }) => {
-        //   // if (tooShort) return "لا يقل عن 10 احرف";
-        //   // if (tooLong) return "لا يقل عن 36 احرف";
-        //   if (valueMissing) return "رقم الجهاز مطلوب";
-        // },
         errorMessage: errors.domainIDIfExists,
         onChange: e => setUsername(e.target.value),
       },
@@ -217,7 +201,6 @@ function AddDeviceForm({ onSuccess }) {
         name: "ipAddress",
         value: ipAddress,
         onChange: e => setIpAddress(e.target.value),
-        // errorMessage: "عنوان IP مطلوب",
         errorMessage: errors.ipAddress,
       },
       {
@@ -229,7 +212,6 @@ function AddDeviceForm({ onSuccess }) {
         setState: setRegionState,
         data: regionData,
         placeholder: "اختر القطاع",
-        // errorMessage: "القطاع مطلوب",
         errorMessage: errors.region,
       },
       {
@@ -242,7 +224,6 @@ function AddDeviceForm({ onSuccess }) {
         setState: setGateState,
         data: gateData,
         placeholder: "اختر البوابة",
-        // errorMessage: "البوابة مطلوبة",
         errorMessage: errors.gate,
       },
       {
@@ -255,7 +236,6 @@ function AddDeviceForm({ onSuccess }) {
         setState: setDepartmentState,
         data: departmentRes.data,
         placeholder: "اختر الإدارة",
-        // errorMessage: "الإدارة مطلوبة",
         errorMessage: errors.department,
       },
       {
@@ -268,7 +248,6 @@ function AddDeviceForm({ onSuccess }) {
         setState: setOfficeState,
         data: officeRes.data,
         placeholder: "اختر المكتب",
-        // errorMessage: "المكتب مطلوب",
         errorMessage: errors.office,
       },
       {
@@ -276,14 +255,7 @@ function AddDeviceForm({ onSuccess }) {
         title: "اسم المسؤول عن الجهاز",
         placeholder: "ادخل الاسم ",
         name: "owner",
-
         minLength: 2,
-        // maxLength: 36,
-        // errorMessage: ({ validationDetails: { tooShort, valueMissing } }) => {
-        //   if (tooShort) return "لا يقل عن 2 احرف";
-        //   // if (tooLong) return "لا يقل عن 36 احرف";
-        //   if (valueMissing) return "اسم المسؤول مطلوب";
-        // },
         errorMessage: errors.owner,
       },
       {
@@ -308,9 +280,7 @@ function AddDeviceForm({ onSuccess }) {
         title: "نوع الجهاز",
         placeholder: "ادخل نوع الجهاز",
         name: "type",
-        // errorMessage: "نوع الجهاز مطلوب",
       },
-      //
       {
         isRequired: false,
         title: "CPU",
@@ -417,9 +387,9 @@ function AddDeviceForm({ onSuccess }) {
       </div>
       <div className="flex justify-end mt-4">
         <Button
-          isLoading={isLoading} // Pass loading state to the button
+          isLoading={isLoading}
           type="button"
-          onClick={handleFetchHardware}
+          onPress={handleFetchHardware}
           className="btn btn-primary"
         >
           جلب بيانات الجهاز

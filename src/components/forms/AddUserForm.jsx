@@ -1,5 +1,5 @@
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons";
-import { customFetch, getUrl } from "@/lib/utils";
+import { customFetch, getUrl } from "@/utils/utils";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Select, SelectItem } from "@heroui/select";
@@ -7,11 +7,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 function AddUserForm({ onSuccess }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { showError, showSuccess, promiseToast } = useToast();
   const [isVisible, setIsVisible] = useState({ password: false, confirmPass: false });
   const [value, setValue] = useState(new Set([]));
   const [errors, setErrors] = useState({}); // State to store backend errors
@@ -94,36 +94,36 @@ function AddUserForm({ onSuccess }) {
     event.preventDefault();
     const accessToken = window.localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
-    // Get form data as an object.
-    const data = Object.fromEntries(new FormData(event.currentTarget));
-    data.roles = Array.from(value);
-    data.departmentId = departmentState.selectedKey;
 
-    let config = {
-      method: "post",
-      url: getUrl() + "api/Users",
-      headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
-      data: JSON.stringify(data),
-    };
+    try {
+      // Clear previous errors
+      setErrors({});
 
-    toast.promise(axios.request(config), {
-      loading: "جاري اضافة مستخدم جديد",
-      success: () => {
-        onSuccess?.();
-        queryClient.refetchQueries({ type: "active" });
-        return "تم اضافة المستخدم بنجاح";
-      },
-      error: err => {
-        if (err.response?.data?.errors) {
-          setErrors(err.response.data.errors);
-          const errorMessages = Object.values(err.response.data.errors).flat();
-          toast.error(errorMessages.join(" - "));
-        } else {
-          toast.error("حدث خطأ ما");
-        }
-        return;
-      },
-    });
+      // Get form data as an object.
+      const data = Object.fromEntries(new FormData(event.currentTarget));
+      data.roles = Array.from(value);
+      data.departmentId = departmentState.selectedKey;
+
+      let config = {
+        method: "post",
+        url: getUrl() + "api/Users",
+        headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
+        data: JSON.stringify(data),
+      };
+
+      promiseToast(axios.request(config), {
+        loading: "جاري اضافة مستخدم جديد",
+        success: () => {
+          onSuccess?.();
+          queryClient.refetchQueries({ type: "active" });
+          return "تم اضافة المستخدم بنجاح";
+        },
+        duration: 5000,
+      });
+    } catch (error) {
+      // This will catch any synchronous errors
+      showError(error);
+    }
   };
 
   return (

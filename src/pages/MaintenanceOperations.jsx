@@ -1,10 +1,10 @@
-import Table from "@/components/op-table/table";
-import { Input } from "@/components/ui/input";
-// import { UpdateOpForm } from "@/components/update-op-form";
-import OpModal from "@/components/op-modal";
-import UpdateOPModal from "@/components/update-op-modal";
-import { objectToSearchParamsStr } from "@/lib/utils";
+import { Input } from "@/components/common/input";
+import Table from "@/components/tables/op-table/table";
+// import { UpdateOpForm } from "@/components/forms/update-op-form";
+import OpModal from "@/components/modals/op-modal";
+import UpdateOPModal from "@/components/modals/update-op-modal";
 import { closeModal } from "@/store/delRegionModalSlice";
+import { objectToSearchParamsStr } from "@/utils/utils";
 import { Button } from "@heroui/button";
 import { useDisclosure } from "@heroui/modal";
 import { useEffect, useState } from "react";

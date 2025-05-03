@@ -1,4 +1,4 @@
-import AddUserForm from "@/components/AddUserForm";
+import AddUserForm from "@/components/forms/AddUserForm";
 import { Button } from "@heroui/button";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";

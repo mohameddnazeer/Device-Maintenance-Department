@@ -1,5 +1,5 @@
-import { getUrl } from "@/lib/utils";
 import { closeModal } from "@/store/failureModalSlice";
+import { getUrl } from "@/utils/utils";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
@@ -16,7 +16,6 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 function FailureModal({ isOpen, onOpenChange }) {
   const [errors, setErrors] = useState({}); // State to store backend errors
@@ -25,41 +24,41 @@ function FailureModal({ isOpen, onOpenChange }) {
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { showError, showSuccess, promiseToast } = useToast();
 
   const onSubmit = e => {
     // Prevent default browser page refresh.
     e.preventDefault();
 
-    // Get form data as an object.
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-    const accessToken = window.localStorage.getItem("accessToken");
-    if (!accessToken) return navigate("/login");
+    try {
+      // Clear previous errors
+      setErrors({});
 
-    let config = {
-      method: "post",
-      url: getUrl() + `api/failures`,
-      headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
-      data: data.name,
-    };
+      // Get form data as an object.
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      const accessToken = window.localStorage.getItem("accessToken");
+      if (!accessToken) return navigate("/login");
 
-    toast.promise(axios.request(config), {
-      loading: <p>جاري اضافة العطل</p>,
-      success: () => {
-        dispatch(closeModal());
-        queryClient.refetchQueries({ type: "active" });
-        return "تم اضافة العطل بنجاح";
-      },
-      error: err => {
-        if (err.response?.data?.errors) {
-          setErrors(err.response.data.errors); // Set errors in the state
-          const errorMessages = Object.values(err.response.data.errors).flat();
-          toast.error(errorMessages.join(" - "));
-        } else {
-          toast.error("حدث خطأ اثناء اضافة العطل");
-        }
-        return;
-      },
-    });
+      let config = {
+        method: "post",
+        url: getUrl() + `api/failures`,
+        headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
+        data: data.name,
+      };
+
+      promiseToast(axios.request(config), {
+        loading: "جاري اضافة العطل",
+        success: () => {
+          dispatch(closeModal());
+          queryClient.refetchQueries({ type: "active" });
+          return "تم اضافة العطل بنجاح";
+        },
+        duration: 5000,
+      });
+    } catch (error) {
+      // This will catch any synchronous errors
+      showError(error);
+    }
   };
 
   return (

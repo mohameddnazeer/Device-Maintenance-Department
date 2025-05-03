@@ -1,5 +1,5 @@
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@/components/icons";
-import { getUrl } from "@/lib/utils";
+import { getUrl } from "@/utils/utils";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";

@@ -22,14 +22,12 @@ export function searchParamsToObject(searchParams) {
   return obj;
 }
 
-// delete keys from search params
 export function deleteKeysFromSearchParams(keys, prevParams) {
   const searchParams = new URLSearchParams(prevParams);
   keys.forEach(key => searchParams.delete(key));
   return searchParams;
 }
 
-// set search params from regular object to URLSearchParams object
 export function objectToSearchParamsStr(obj, prevParams) {
   const searchParams = new URLSearchParams(prevParams);
   for (const key in obj) {
@@ -44,7 +42,6 @@ export function objectToSearchParamsStr(obj, prevParams) {
   return searchParams;
 }
 
-// set search params from regular object to URLSearchParams object
 export function objectToSearchParams(obj, prevParams) {
   const searchParams = new URLSearchParams(prevParams);
   for (const key in obj) {
