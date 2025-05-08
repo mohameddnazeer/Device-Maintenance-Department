@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/toast";
 
 function AddUserForm({ onSuccess }) {
   const navigate = useNavigate();
@@ -50,21 +51,21 @@ function AddUserForm({ onSuccess }) {
 
   useEffect(() => {
     regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionRes?.data?.data }));
-  }, [regionRes?.data?.data]);
+  }, [regionRes.data]);
   useEffect(() => {
     gateRes.data && setGateState(prevState => ({ ...prevState, items: gateRes?.data?.data }));
-  }, [gateRes?.data?.data]);
+  }, [gateRes.data]);
   useEffect(() => {
     departmentRes.data &&
       setDepartmentState(prevState => ({ ...prevState, items: departmentRes?.data?.data }));
-  }, [departmentRes?.data?.data]);
+  }, [departmentRes.data]);
 
   const toggleVisibility = useCallback(
     value => setIsVisible(prev => ({ ...prev, [value]: !prev[value] })),
     []
   );
 
-  const onSelectionChange = (key, setState, data, name) => {
+  const _onSelectionChange = (key, setState, data, name) => {
     setState(prevState => {
       let selectedItem = prevState.items?.find(option => option.id.toString() === key?.toString());
       return { inputValue: selectedItem?.name || "", selectedKey: key, items: data };
@@ -82,7 +83,7 @@ function AddUserForm({ onSuccess }) {
     }
   };
 
-  const onInputChange = (value, setState, data) => {
+  const _onInputChange = (value, setState, data) => {
     setState(state => ({
       ...state,
       inputValue: value,

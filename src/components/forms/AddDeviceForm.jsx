@@ -7,6 +7,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/components/ui/toast";
 
 function AddDeviceForm({ onSuccess }) {
   const navigate = useNavigate();
@@ -109,10 +110,10 @@ function AddDeviceForm({ onSuccess }) {
 
   useEffect(() => {
     regionRes.data && setRegionState(prevState => ({ ...prevState, items: regionData }));
-  }, [regionRes.data]);
+  }, [regionRes.data, regionData]);
   useEffect(() => {
     gateRes.data && setGateState(prevState => ({ ...prevState, items: gateData }));
-  }, [gateRes.data]);
+  }, [gateRes.data, gateData]);
   useEffect(() => {
     departmentRes.data &&
       setDepartmentState(prevState => ({ ...prevState, items: departmentRes.data }));
