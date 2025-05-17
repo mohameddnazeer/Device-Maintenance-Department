@@ -1,8 +1,8 @@
-import { getUrl } from "@/lib/utils";
 import AddDevice from "@/pages/AddDevice";
 import AddUser from "@/pages/AddUser";
 import DeviceDetailsPage from "@/pages/DeviceDetailsPage";
 import { HomePage } from "@/pages/HomePage";
+import { getUrl } from "@/utils/utils";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { Route, Routes, useNavigate } from "react-router-dom";

@@ -1,5 +1,5 @@
-import Table from "@/components/device-table/table";
-import { fetchData, objectToSearchParamsStr } from "@/lib/utils";
+import Table from "@/components/tables/device-table/table";
+import { fetchData, objectToSearchParamsStr } from "@/utils/utils";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";

@@ -1,4 +1,4 @@
-import AddDeviceForm from "@/components/AddDeviceForm";
+import AddDeviceForm from "@/components/forms/AddDeviceForm";
 import { Button } from "@heroui/button";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "./Layout";

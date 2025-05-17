@@ -1,4 +1,4 @@
-import { getUrl } from "@/lib/utils";
+import { getUrl } from "@/utils/utils";
 import { Button } from "@heroui/button";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
@@ -14,50 +14,48 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 function RegionModal({ onClose, isOpen, onOpenChange }) {
   const [errors, setErrors] = useState({}); // State to store backend errors
-
   const targetRef = useRef(null);
   const queryClient = useQueryClient();
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
   const navigate = useNavigate();
+  const { showError, showSuccess, promiseToast } = useToast();
 
   const onSubmit = e => {
     // Prevent default browser page refresh.
     e.preventDefault();
 
-    // Get form data as an object.
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-    const accessToken = window.localStorage.getItem("accessToken");
-    if (!accessToken) return navigate("/login");
+    try {
+      // Clear previous errors
+      setErrors({});
 
-    let config = {
-      method: "post",
-      url: getUrl() + `api/regions`,
-      headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
-      data: data.name,
-    };
+      // Get form data as an object.
+      const data = Object.fromEntries(new FormData(e.currentTarget));
+      const accessToken = window.localStorage.getItem("accessToken");
+      if (!accessToken) return navigate("/login");
 
-    toast.promise(axios.request(config), {
-      loading: <p>جاري اضافة القطاع</p>,
-      success: () => {
-        onClose();
-        queryClient.refetchQueries({ type: "active" });
-        return "تم اضافة القطاع بنجاح";
-      },
-      error: err => {
-        if (err.response?.data?.errors) {
-          setErrors(err.response.data.errors); // Set errors in the state
-          const errorMessages = Object.values(err.response.data.errors).flat();
-          toast.error(errorMessages.join(" - "));
-        } else {
-          toast.error("حدث خطأ اثناء اضافة القطاع");
-        }
-        return;
-      },
-    });
+      let config = {
+        method: "post",
+        url: getUrl() + `api/regions`,
+        headers: { "Content-Type": "application/json", Authorization: `bearer ${accessToken}` },
+        data: data.name,
+      };
+
+      promiseToast(axios.request(config), {
+        loading: "جاري اضافة القطاع",
+        success: () => {
+          onClose();
+          queryClient.refetchQueries({ type: "active" });
+          return "تم اضافة القطاع بنجاح";
+        },
+        duration: 5000,
+      });
+    } catch (error) {
+      // This will catch any synchronous errors
+      showError(error);
+    }
   };
 
   return (

@@ -13,7 +13,7 @@ import { DataTable } from "./data-table";
 export default function Table() {
   const dispatch = useDispatch();
   const [QueryParams] = useSearchParams();
-  const { error, data, isFetching, refetch } = useQuery({
+  const { error, data, isFetching, refetch, isPending } = useQuery({
     select: data => data.data,
     queryKey: ["device-table", "devices"],
     queryFn: async () => customFetch(`api/devices?${QueryParams.toString()}`),
@@ -24,7 +24,7 @@ export default function Table() {
     refetch();
   }, [QueryParams, refetch]);
 
-  if (isFetching) return <Loader />;
+  if (isFetching || isPending) return <Loader />;
   if (error) return <div>Error: {error.message}</div>;
   return (
     <>
