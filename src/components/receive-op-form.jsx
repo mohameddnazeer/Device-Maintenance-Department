@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export function DeliverDevice() {
+export function DeliverDevice({ onComplete}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const rowData = useSelector(state => state.updateModal.rowData); // Access row data from Redux store
@@ -29,6 +29,7 @@ export function DeliverDevice() {
         dispatch(closeModal());
         dispatch(nextTab());
         queryClient.refetchQueries(["op-table", "maintenance"]);
+        onComplete();
         return "تم تسليم الجهاز بنجاح";
       },
       error: err => {

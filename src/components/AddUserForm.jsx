@@ -235,7 +235,7 @@ function AddUserForm({ onSuccess }) {
           labelPlacement="outside"
           size="lg"
           name="phoneNumber"
-          placeholder="01122334455"
+          placeholder="برجاء ادخال رقم الهاتف"
           pattern="^(010|011|012|015)[0-9]{8}$" // Egyptian phone number format
           minLength={10}
           maxLength={11}
@@ -260,7 +260,7 @@ function AddUserForm({ onSuccess }) {
           selectedKeys={value}
           onSelectionChange={setValue}
           items={[
-            { key: "Admin", label: "ادمن" },
+            // { key: "Admin", label: "ادمن" },
             { key: "User", label: "مستخدم" },
           ]}
           classNames={{ label: "-mb-2" }}

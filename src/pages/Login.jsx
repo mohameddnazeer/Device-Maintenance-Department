@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import maintenanceImage from "../assets/images/loginImage.svg";
+import logoImage from "../assets/images/foeLogo.png";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -98,8 +99,11 @@ export const Login = () => {
 
       <div dir="rtl" className="min-h-full w-full md:w-1/2 items-center justify-center flex">
         <div className="p-6 dark:bg-light-background rounded-lg shadow-lg text-center max-w-md flex-1">
-          <p className="text-2xl font-bold mb-4 text-center">Login into</p>
-          <p className="text-2xl font-bold text-center ">Maintenance System</p>
+        <img
+          src={logoImage}
+          alt=" System Illustration"
+          className="w-full max-w-md md:max-w-lg"
+        />
 
           <Form className="mt-6 gap-y-6 text-right" onSubmit={onSubmit}>
             {formFields.map((field, index) => (
@@ -131,15 +135,7 @@ export const Login = () => {
               تسجيل الدخول
             </Button>
           </Form>
-          <p className="flex gap-x-2 mt-10 text-muted-foreground">
-            هل انت مستخدم جديد؟
-            <Link
-              className="link hover:opacity-50 transition-opacity duration-300 text-primary"
-              to="/register"
-            >
-              تسجيل مستخدم
-            </Link>
-          </p>
+       
         </div>
       </div>
     </div>

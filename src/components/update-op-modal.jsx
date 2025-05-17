@@ -2,7 +2,7 @@ import { closeModal, setSelectedTab } from "@/store/updateModalSlice";
 import { Modal, ModalBody, ModalContent, ModalHeader, useDraggable } from "@heroui/modal";
 import { Tab, Tabs } from "@heroui/tabs";
 import { Tally1Icon, Tally2Icon, Tally3Icon } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { DeliverDevice } from "./receive-op-form";
 import { UpdateOpForm } from "./update-op-form";
@@ -14,14 +14,12 @@ export const tabs = [
     icon: <Tally1Icon className="text-muted-foreground" />,
     title: "تحديث حالة الأعطال",
     description: "يرجى التأكد من عدم وجود أي عطل لم يتم حله قبل تسليم الجهاز",
-    content: <UpdateStatusForm />,
   },
   {
     key: "updateOp",
     icon: <Tally2Icon className="text-muted-foreground" />,
     title: "تحديث عملية صيانة",
     description: "يرجى التأكد من ان حالة عملية الصيانة منتهية قبل تسليم الجهاز",
-    content: <UpdateOpForm />,
   },
   {
     key: "receiveOp",
@@ -29,17 +27,49 @@ export const tabs = [
     title: "تسليم جهاز",
     description:
       "يرجى التأكد من عدم وجود أي عطل لم يتم حله قبل تسليم الجهاز وان عملية الصيانة منتهية",
-    content: <DeliverDevice />,
   },
 ];
 
-function UpdateOPModal({ isOpen, onOpenChange, onClose }) {
+function UpdateOPModal({ isOpen, onOpenChange }) {
   const dispatch = useDispatch();
   const targetRef = useRef(null);
   const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
 
-  const selectedTabKey = useSelector(state => state.updateModal.selectedTab); // Access selected tab from Redux store
-  const selectedTab = tabs.find(tab => tab.key === selectedTabKey); // Get the selected tab object
+  const selectedTabKey = useSelector((state) => state.updateModal.selectedTab);
+  const selectedTab = tabs.find((tab) => tab.key === selectedTabKey);
+
+  const [completedTabs, setCompletedTabs] = useState([]);
+
+  const markTabAsComplete = (key) => {
+    if (!completedTabs.includes(key)) {
+      setCompletedTabs((prev) => [...prev, key]);
+    }
+  };
+
+  const handleTabChange = (nextKey) => {
+    const currentIndex = tabs.findIndex((tab) => tab.key === selectedTabKey);
+    const nextIndex = tabs.findIndex((tab) => tab.key === nextKey);
+
+    if (nextIndex > currentIndex && !completedTabs.includes(selectedTabKey)) {
+      alert("يرجى إكمال النموذج قبل الانتقال إلى التبويب التالي.");
+      return;
+    }
+
+    dispatch(setSelectedTab(nextKey));
+  };
+
+  const renderTabContent = (key) => {
+    switch (key) {
+      case "updateStatus":
+        return <UpdateStatusForm onComplete={() => markTabAsComplete("updateStatus")} />;
+      case "updateOp":
+        return <UpdateOpForm onComplete={() => markTabAsComplete("updateOp")} />;
+      case "receiveOp":
+        return <DeliverDevice onComplete={() => markTabAsComplete("receiveOp")} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <Modal
@@ -62,11 +92,10 @@ function UpdateOPModal({ isOpen, onOpenChange, onClose }) {
               aria-label="Options"
               items={tabs}
               selectedKey={selectedTabKey}
-              onSelectionChange={selectedKey => dispatch(setSelectedTab(selectedKey))}
+              onSelectionChange={handleTabChange}
               classNames={{ panel: "h-[50vh] overflow-auto" }}
-              // className="overflow-auto"
             >
-              {({ key, title, content, icon }) => (
+              {({ key, title, icon }) => (
                 <Tab
                   key={key}
                   title={
@@ -76,7 +105,7 @@ function UpdateOPModal({ isOpen, onOpenChange, onClose }) {
                     </div>
                   }
                 >
-                  {content}
+                  {renderTabContent(key)}
                 </Tab>
               )}
             </Tabs>

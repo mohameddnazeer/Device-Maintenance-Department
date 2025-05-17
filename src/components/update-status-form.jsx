@@ -18,7 +18,7 @@ const states = [
   { id: 4, name: "NotSolved", label: "لم يتم الحل" },
 ];
 
-export function UpdateStatusForm() {
+export function UpdateStatusForm({ onComplete}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [failures, setFailures] = useState(new Set([]));
@@ -49,6 +49,7 @@ export function UpdateStatusForm() {
             `api/maintenance/ChangeFailureStatus?MaintainId=${rowData.id}&FailureId=${key}&status=${value}`,
         });
       }
+      onComplete();
     });
 
     toast.promise(Promise.all(configs.map(config => axios.request(config))), {

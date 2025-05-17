@@ -14,66 +14,84 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Loader from "./loader";
 
-export function UpdateOpForm() {
+export function UpdateOpForm({ onComplete }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [maintainerId, setMaintainerId] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
   const queryClient = useQueryClient();
-  const rowData = useSelector(state => state.updateModal.rowData); // Access row data from Redux store
+  const rowData = useSelector((state) => state.updateModal.rowData);
 
   const { isFetching: isFetchingUser, data: users } = useQuery({
-    select: data => data.data,
+    select: (data) => data.data,
     queryKey: ["update-op-form", "users"],
     queryFn: async () => customFetch("api/Users/UsersNamesWithIds"),
   });
 
   useEffect(() => {
-    if (rowData) setMaintainerId(rowData.maintainerId);
+    if (rowData) {
+      setMaintainerId(rowData.maintainerId ?? null);
+      setSelectedState(rowData.state ?? null);
+    }
   }, [rowData]);
 
-  const onSubmit = e => {
-    // Prevent default browser page refresh.
+  const onSubmit = (e) => {
     e.preventDefault();
-    const accessToken = window.localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem("accessToken");
     if (!accessToken) return navigate("/login");
 
-    // Get form data as an object.
     const formData = Object.fromEntries(new FormData(e.currentTarget));
-    const data = [];
-    Object.entries(formData).forEach(([key, value]) => {
-      if (rowData[key] !== value && key !== "solution")
-        data.push({ op: "replace", path: `/${key}`, value });
-    });
-    if (maintainerId !== rowData.maintainerId)
-      data.push({ op: "replace", path: `/maintainerId`, value: maintainerId });
+    const patchData = [];
 
-    // if (data?.length === 0) return toast.warning("لا توجد تغييرات لتحديثها");
+    // Compare and collect changes
+    for (const [key, value] of Object.entries(formData)) {
+      if (rowData[key] !== value) {
+        patchData.push({ op: "replace", path: `/${key}`, value });
+      }
+    }
 
-    let config = {
+    // Handle selected state separately
+    if (selectedState !== rowData.state) {
+      patchData.push({ op: "replace", path: "/state", value: selectedState });
+    }
+
+    // Handle selected maintainerId
+    if (maintainerId !== rowData.maintainerId) {
+      patchData.push({ op: "replace", path: "/maintainerId", value: maintainerId });
+    }
+
+    if (patchData.length === 0) {
+      toast.warning("لا توجد تغييرات لتحديثها");
+      return;
+    }
+
+    const config = {
       method: "patch",
-      url: getUrl() + `api/maintenance/${rowData.id}`,
+      url: `${getUrl()}api/maintenance/${rowData.id}`,
       headers: {
         "Content-Type": "application/json-patch+json",
-        Authorization: `bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
-      data: JSON.stringify(data),
+      data: JSON.stringify(patchData),
     };
+
     toast.promise(axios.request(config), {
       loading: "جاري تحديث البيانات",
       success: () => {
         dispatch(nextTab());
         queryClient.refetchQueries(["op-table", "maintenance"]);
-
+        onComplete();
         return "تم تحديث البيانات بنجاح";
       },
-      error: err => {
-        console.log(err);
-        return err.response.data.message || "فشل تحديث البيانات";
+      error: (err) => {
+        console.error(err);
+        return err.response?.data?.message || "فشل تحديث البيانات";
       },
     });
   };
 
   if (isFetchingUser || !rowData) return <Loader />;
+
   return (
     <Form
       id="update-op-form"
@@ -97,6 +115,7 @@ export function UpdateOpForm() {
           defaultValue={rowData.delievryPhoneNumber}
           placeholder="رقم العميل"
         />
+
         <Autocomplete
           defaultItems={users?.data ?? []}
           selectedKey={maintainerId}
@@ -131,19 +150,12 @@ export function UpdateOpForm() {
           startContent={<SearchIcon className="text-default-400" size={20} strokeWidth={2.5} />}
           variant="flat"
         >
-          {item => (
+          {(item) => (
             <AutocompleteItem key={item.id} textValue={item.name}>
               <div className="flex justify-between items-center">
                 <div className="flex gap-2 items-center">
                   <div className="flex flex-col">
                     <span className="text-small">{item.name}</span>
-                    {/* <div className="flex gap-x-2">
-                      {item.specializations.map((spec, index) => (
-                        <span key={index} className="text-tiny text-default-400">
-                          {spec.name}
-                        </span>
-                      ))}
-                    </div> */}
                   </div>
                 </div>
               </div>
@@ -152,35 +164,30 @@ export function UpdateOpForm() {
         </Autocomplete>
 
         <Select
-          name="state"
           className="col-span-2"
+          name="state"
           label="الحالة"
           size="lg"
           labelPlacement="outside"
           placeholder="اختر الحالة"
           selectionMode="single"
+          selectedKeys={selectedState ? [selectedState] : []}
+          onSelectionChange={(keys) => {
+            const key = Array.from(keys)[0];
+            setSelectedState(key);
+          }}
           items={[
             { id: 1, name: "WorkingOnIt", label: "قيد العمل" },
             { id: 2, name: "Canceled", label: "مغلقة" },
             { id: 3, name: "Done", label: "تم الحل" },
           ]}
-          defaultSelectedKeys={[rowData.state]}
         >
-          {item => (
+          {(item) => (
             <SelectItem dir="rtl" className="text-start" key={item.name}>
               {item.label}
             </SelectItem>
           )}
         </Select>
-
-        {/* <Input
-          size="lg"
-          label="طريقة الحل"
-          labelPlacement="outside"
-          name="solution"
-          placeholder="طريقة الحل"
-          className="col-span-2"
-        /> */}
 
         <Input
           size="lg"
@@ -192,6 +199,7 @@ export function UpdateOpForm() {
           className="col-span-2"
         />
       </div>
+
       <div className="justify-end mt-auto w-full flex gap-2 p-2">
         <Button type="reset" color="danger" variant="light" onPress={() => dispatch(closeModal())}>
           إلغاء
