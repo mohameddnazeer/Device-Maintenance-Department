@@ -100,7 +100,11 @@ This page allows users to authenticate and log in.
 
 This page shows all devices under maintenance.
 
-![All Devices Page](./Design/home.png)
+![All Devices Page](./Design/allDevices.png)
+![Update Device Information](./Design/updateInformation.png)
+![ Devices Table ](./Design/allDataInTable.png)
+![ Devices Details ](./Design/deviceDetails.png)
+![ Devices history ](./Design/deviceDetails2.png)
 
 ### 3. Add Device
 
@@ -113,12 +117,15 @@ On this page, users can add a new device to the system.
 This page lists all devices currently under maintenance.
 
 ![Maintenance Operations Page](./Design/maintenanceOperations.png)
+![Maintenance Operations ](./Design/maintenanceOperations2.png)
 
 ### 5. Ready for Delivery
 
 This page shows devices that are ready to be delivered.
 
-![Ready for Delivery Page](./Design/readyForDelivery.png)
+![update Maintenance  Status](./Design/updateMaintenanceStatus.png)
+![update Maintenance Status](./Design/updateMaintenanceStatus2.png)
+![Ready for Delivery ](./Design/readyForDelivery.png)
 
 ## Technologies Used
 
@@ -133,6 +140,6 @@ To get this project running locally:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/mohameddnazeer/maintenance-system.git
+   git clone https://github.com/mohameddnazeer/Device-Maintenance-Department
    cd maintenance-system
    ```
