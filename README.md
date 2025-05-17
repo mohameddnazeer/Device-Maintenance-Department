@@ -141,5 +141,5 @@ To get this project running locally:
 
    ```bash
    git clone https://github.com/mohameddnazeer/Device-Maintenance-Department
-   cd maintenance-system
+   cd Device-Maintenance-Department
    ```
