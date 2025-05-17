@@ -142,4 +142,6 @@ To get this project running locally:
    ```bash
    git clone https://github.com/mohameddnazeer/Device-Maintenance-Department
    cd Device-Maintenance-Department
+
+   old repo https://github.com/mohameddnazeer/Project-Maintenance-
    ```
