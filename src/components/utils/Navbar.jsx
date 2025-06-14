@@ -171,7 +171,7 @@ export const Navbar = () => {
           </Dropdown>
         )}
 
-        {user.role === "Admin" && (
+        {/* {user.role === "Admin" && ( */}
           <Dropdown dir="rtl">
             <DropdownTrigger>
               <Button isIconOnly variant="solid" radius="lg">
@@ -203,7 +203,7 @@ export const Navbar = () => {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-        )}
+        {/* )} */}
       </div>
 
       <div

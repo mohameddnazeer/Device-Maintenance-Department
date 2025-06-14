@@ -9,7 +9,7 @@ import { MaintainActions } from "./MaintainActions";
 
 const columns = [
   { key: "maintainLocation", label: "مكان الصيانة" },
-  { key: "maintainerId", label: "القائم بالصيانة" },
+  { key: "maintainerName", label: "القائم بالصيانة" },
   { key: "state", label: "الحالة" },
   { key: "failureMaintains", label: "الاعطال" },
   { key: "createdDate", label: "تاريخ الإضافة" },
